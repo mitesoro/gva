@@ -12,7 +12,7 @@ autocode:
     server-api: /api/v1/%s
     server-plug: /plugin/%s
     server-initialize: /initialize
-    root: /Users/yangkeai/go/src/gin-vue-admin
+    root: /Users/liuhaigang/go/src/gva
     web-table: /view
     web: /web/src
     server-service: /service/%s
@@ -83,7 +83,7 @@ hua-wei-obs:
     access-key: you-access-key
     secret-key: you-secret-key
 jwt:
-    signing-key: ac1a97b0-5996-4217-b751-e9e7434fa5d6
+    signing-key: 34c1e584-d197-48f1-9fe2-a8ccb86b2c58
     expires-time: 7d
     buffer-time: 1d
     issuer: qmPlus
@@ -109,9 +109,9 @@ mysql:
     port: "3306"
     config: charset=utf8mb4&parseTime=True&loc=Local
     db-name: gva
-    username: root
-    password: "123456"
-    path: 127.0.0.1
+    username: gva
+    password: GeXDLz62whrx4Lf4
+    path: 101.34.210.69
     engine: ""
     log-mode: error
     max-idle-conns: 10
