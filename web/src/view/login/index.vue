@@ -4,7 +4,7 @@
     class="w-full h-full relative"
   >
     <div
-      class="rounded-lg flex items-center justify-evenly w-full h-full bg-white md:w-screen md:h-screen md:bg-[#194bfb]"
+      class="rounded-lg flex items-center justify-evenly w-full h-full bg-white md:w-screen md:h-screen md:bg-[#ffffff]"
     >
       <div class="md:w-3/5 w-10/12 h-full flex items-center justify-evenly">
         <div class="oblique h-[130%] w-3/5 bg-white transform -rotate-12 absolute -ml-52" />
@@ -85,23 +85,23 @@
                 >登 录</el-button>
               </el-form-item>
               <el-form-item class="mb-6">
-                <el-button
-                  class="shadow shadow-blue-600 h-11 w-full"
-                  type="primary"
-                  size="large"
-                  @click="checkInit"
-                >前往初始化</el-button>
+<!--                <el-button-->
+<!--                  class="shadow shadow-blue-600 h-11 w-full"-->
+<!--                  type="primary"-->
+<!--                  size="large"-->
+<!--                  @click="checkInit"-->
+<!--                >前往初始化</el-button>-->
 
               </el-form-item>
             </el-form>
           </div>
         </div>
       </div>
-      <div class="hidden md:block w-1/2 h-full float-right bg-[#194bfb]"><img
-        class="h-full"
-        src="@/assets/login_right_banner.jpg"
-        alt="banner"
-      ></div>
+<!--      <div class="hidden md:block w-1/2 h-full float-right bg-[#194bfb]"><img-->
+<!--        class="h-full"-->
+<!--        src="@/assets/1.jpeg"-->
+<!--        alt="banner"-->
+<!--      ></div>-->
     </div>
 
     <BottomInfo class="left-0 right-0 absolute bottom-3 mx-auto  w-full z-20">

@@ -11,12 +11,12 @@ var url = 'https://www.gin-vue-admin.com'
 var cmd = ''
 console.log(process.platform)
 switch (process.platform) {
-  case 'win32':
+  case 'win321':
     cmd = 'start'
     child_process.exec(cmd + ' ' + url)
     break
 
-  case 'darwin':
+  case 'darwin1':
     cmd = 'open'
     child_process.exec(cmd + ' ' + url)
     break
