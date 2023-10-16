@@ -3,7 +3,7 @@
  */
 
 const config = {
-  appName: 'Gin-Vue-Admin(中鼎)',
+  appName: '中鼎',
   appLogo: 'https://www.gin-vue-admin.com/img/logo.png',
   showViteLogo: true
 }

@@ -175,7 +175,7 @@ sqlite:
 system:
     env: local
     db-type: mysql
-    oss-type: local
+    oss-type: tencent-cos
     router-prefix: ""
     addr: 8888
     iplimit-count: 15000
@@ -183,12 +183,12 @@ system:
     use-multipoint: false
     use-redis: false
 tencent-cos:
-    bucket: xxxxx-10005608
-    region: ap-shanghai
-    secret-id: your-secret-id
-    secret-key: your-secret-key
-    base-url: https://gin.vue.admin
-    path-prefix: github.com/flipped-aurora/gin-vue-admin/server
+    bucket: zd-1321537534
+    region: ap-nanjing
+    secret-id: AKIDrhQEziNcmnbEgvxmNl180hOyFKH4d1GR
+    secret-key: DF8oERSXWIuJXzIZmocEduzCF5l4C8Vl
+    base-url: https://zd-1321537534.cos.ap-nanjing.myqcloud.com
+    path-prefix: zd/gva
 timer:
     spec: '@daily'
     detail:

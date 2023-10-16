@@ -124,20 +124,20 @@
                                   </span>
                                 </el-dropdown-item>
                               </template>
-                              <el-dropdown-item icon="avatar">
-                                <div
-                                  class="command-box"
-                                  style="display: flex"
-                                  @click="handleCommand"
-                                >
-                                  <div>指令菜单</div>
-                                  <div style="margin-left: 8px">
-                                    <span class="button">{{ first }}</span>
-                                    +
-                                    <span class="button">K</span>
-                                  </div>
-                                </div>
-                              </el-dropdown-item>
+<!--                              <el-dropdown-item icon="avatar">-->
+<!--                                <div-->
+<!--                                  class="command-box"-->
+<!--                                  style="display: flex"-->
+<!--                                  @click="handleCommand"-->
+<!--                                >-->
+<!--                                  <div>指令菜单</div>-->
+<!--                                  <div style="margin-left: 8px">-->
+<!--                                    <span class="button">{{ first }}</span>-->
+<!--                                    +-->
+<!--                                    <span class="button">K</span>-->
+<!--                                  </div>-->
+<!--                                </div>-->
+<!--                              </el-dropdown-item>-->
                               <el-dropdown-item
                                 icon="avatar"
                                 @click="toPerson"
