@@ -76,3 +76,19 @@ plugin:
 	&& if [ -d "server/plugin/${PLUGIN}" ];then cp -r server/plugin/${PLUGIN} .plugin/${PLUGIN}/server/plugin/ ; else echo "OK!"; fi \
 	&& if [ -d "web/src/plugin/${PLUGIN}" ];then cp -r web/src/plugin/${PLUGIN} .plugin/${PLUGIN}/web/plugin/ ; else echo "OK!"; fi \
 	&& cd .plugin && zip -r ${PLUGIN}.zip ${PLUGIN} && mv ${PLUGIN}.zip ../ && cd ..
+
+
+build_web:
+	cd web && npm run build
+
+
+dev_web:
+	rsync -avzP --delete --exclude-from=makefile.excludes ./web/dist ubuntu@101.34.210.69:/www/wwwroot/zd/
+
+
+
+build_server:
+	cd server &&  CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build .
+
+dev_server:
+	rsync -avzP --delete --exclude-from=makefile.excludes ./server/server ubuntu@101.34.210.69:/www/wwwroot/zd/

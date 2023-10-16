@@ -1,0 +1,11 @@
+nbproject
+*.swp
+.git
+.env
+.DS_store
+.idea
+Makefile
+storage
+cli_*.php
+sftp-*
+public/public/upload
