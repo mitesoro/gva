@@ -110,8 +110,8 @@ mysql:
     config: charset=utf8mb4&parseTime=True&loc=Local
     db-name: gva
     username: gva
-    password: GeXDLz62whrx4Lf4
-    path: 101.34.210.69
+    password: 123456
+    path: 127.0.0.1
     engine: ""
     log-mode: error
     max-idle-conns: 10
@@ -183,11 +183,11 @@ system:
     use-multipoint: false
     use-redis: false
 tencent-cos:
-    bucket: zd-1321537534
-    region: ap-nanjing
-    secret-id: AKIDrhQEziNcmnbEgvxmNl180hOyFKH4d1GR
-    secret-key: DF8oERSXWIuJXzIZmocEduzCF5l4C8Vl
-    base-url: https://zd-1321537534.cos.ap-nanjing.myqcloud.com
+    bucket: xxx
+    region: xxx
+    secret-id: xxx
+    secret-key: xxx
+    base-url: xxx
     path-prefix: zd/gva
 timer:
     spec: '@daily'
