@@ -15,13 +15,13 @@ import (
 // 初始化总路由
 
 func Routers() *gin.Engine {
-	
+
 	// 设置为发布模式
 	if global.GVA_CONFIG.System.Env == "public" {
 		gin.SetMode(gin.ReleaseMode) //DebugMode ReleaseMode TestMode
 	}
 	Router := gin.New()
-	
+
 	InstallPlugin(Router) // 安装插件
 	systemRouter := router.RouterGroupApp.System
 	exampleRouter := router.RouterGroupApp.Example
@@ -76,6 +76,10 @@ func Routers() *gin.Engine {
 		exampleRouter.InitCustomerRouter(PrivateGroup)              // 客户路由
 		exampleRouter.InitFileUploadAndDownloadRouter(PrivateGroup) // 文件上传下载功能路由
 
+	}
+	{
+		usersRouter := router.RouterGroupApp.Users
+		usersRouter.InitUsersRouter(PrivateGroup)
 	}
 
 	global.GVA_LOG.Info("router register success")
