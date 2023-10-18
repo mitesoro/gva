@@ -57,7 +57,6 @@
             <template #default="scope">{{ formatDate(scope.row.CreatedAt) }}</template>
         </el-table-column>
         <el-table-column sortable align="left" label="手机号" prop="phone" width="120" />
-        <el-table-column align="left" label="密码" prop="password" width="120" />
         <el-table-column align="left" label="昵称" prop="nickname" width="120" />
           <el-table-column label="头像" width="200">
               <template #default="scope">
@@ -120,9 +119,6 @@
         <el-descriptions column="1" border>
                 <el-descriptions-item label="手机号">
                         {{ formData.phone }}
-                </el-descriptions-item>
-                <el-descriptions-item label="密码">
-                        {{ formData.password }}
                 </el-descriptions-item>
                 <el-descriptions-item label="昵称">
                         {{ formData.nickname }}

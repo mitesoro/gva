@@ -18,7 +18,7 @@ func Routers() *gin.Engine {
 
 	// 设置为发布模式
 	if global.GVA_CONFIG.System.Env == "public" {
-		gin.SetMode(gin.ReleaseMode) //DebugMode ReleaseMode TestMode
+		gin.SetMode(gin.ReleaseMode) // DebugMode ReleaseMode TestMode
 	}
 	Router := gin.New()
 
@@ -38,7 +38,7 @@ func Routers() *gin.Engine {
 	// 跨域，如需跨域可以打开下面的注释
 	// Router.Use(middleware.Cors()) // 直接放行全部跨域请求
 	// Router.Use(middleware.CorsByRules()) // 按照配置的规则放行跨域请求
-	//global.GVA_LOG.Info("use middleware cors")
+	// global.GVA_LOG.Info("use middleware cors")
 	docs.SwaggerInfo.BasePath = global.GVA_CONFIG.System.RouterPrefix
 	Router.GET(global.GVA_CONFIG.System.RouterPrefix+"/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	global.GVA_LOG.Info("register swagger handler")
@@ -54,6 +54,11 @@ func Routers() *gin.Engine {
 	{
 		systemRouter.InitBaseRouter(PublicGroup) // 注册基础功能路由 不做鉴权
 		systemRouter.InitInitRouter(PublicGroup) // 自动初始化相关
+	}
+	{
+		// 注册api 接口 前端使用
+		apiRouter := router.RouterGroupApp.Api
+		apiRouter.InitApiRouter(PublicGroup)
 	}
 	PrivateGroup := Router.Group(global.GVA_CONFIG.System.RouterPrefix)
 	PrivateGroup.Use(middleware.JWTAuth()).Use(middleware.CasbinHandler())

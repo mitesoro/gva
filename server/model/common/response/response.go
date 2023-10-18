@@ -50,6 +50,10 @@ func FailWithMessage(message string, c *gin.Context) {
 	Result(ERROR, map[string]interface{}{}, message, c)
 }
 
+func FailWithMessageWithCode(code int, message string, c *gin.Context) {
+	Result(code, map[string]interface{}{}, message, c)
+}
+
 func FailWithDetailed(data interface{}, message string, c *gin.Context) {
 	Result(ERROR, data, message, c)
 }

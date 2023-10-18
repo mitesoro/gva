@@ -13,9 +13,9 @@ import (
 //go:generate go mod tidy
 //go:generate go mod download
 
-// @title                       Swagger Example API
+// @title                       中鼎接口API
 // @version                     0.0.1
-// @description                 This is a sample Server pets
+// @description                 接口文档
 // @securityDefinitions.apikey  ApiKeyAuth
 // @in                          header
 // @name                        x-token

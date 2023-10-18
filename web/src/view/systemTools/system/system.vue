@@ -434,10 +434,10 @@
         type="primary"
         @click="update"
       >立即更新</el-button>
-      <el-button
-        type="primary"
-        @click="reload"
-      >重启服务（开发中）</el-button>
+<!--      <el-button-->
+<!--        type="primary"-->
+<!--        @click="reload"-->
+<!--      >重启服务（开发中）</el-button>-->
     </div>
   </div>
 </template>
