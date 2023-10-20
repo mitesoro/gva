@@ -20,14 +20,14 @@ var apisService = service.ServiceGroupApp.ApisServiceGroup.ApisService
 var userService = service.ServiceGroupApp.UsersServiceGroup.UsersService
 
 // GetSmsCode 获取短信验证码
-// @Tags Sms
+// @Tags 前端接口API
 // @Summary 获取短信验证码
 // @Security ApiKeyAuth
 // @accept application/json
 // @Produce application/json
 // @Param data body users.Users true "创建用户"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"创建成功"}"
-// @Router /sms/send [post]
+// @Router /api/sms/send [post]
 func (uApi *ApisApi) GetSmsCode(c *gin.Context) {
 	var req apis.ReqSms
 	err := c.ShouldBindJSON(&req)
@@ -61,14 +61,14 @@ func (uApi *ApisApi) GetSmsCode(c *gin.Context) {
 }
 
 // Register 注册
-// @Tags user
+// @Tags 前端接口API
 // @Summary 注册
 // @Security ApiKeyAuth
 // @accept application/json
 // @Produce application/json
 // @Param data body users.Users true "创建用户"
 // @Success 200 {string} string "{"success":true,"data":{},"msg":"创建成功"}"
-// @Router /sms/send [post]
+// @Router /api/register [post]
 func (uApi *ApisApi) Register(c *gin.Context) {
 	var req apis.ReqRegister
 	err := c.ShouldBindJSON(&req)

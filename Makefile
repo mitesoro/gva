@@ -95,10 +95,7 @@ dev_server:
 	rsync -avzP --delete --exclude-from=makefile.excludes ./server/resource ubuntu@101.34.210.69:/www/wwwroot/zd/
 
 run:
-	cd server && go run main.go
+	cd server && swag init && go run main.go
 
 run_web:
 	cd web && npm run serve
-
-swag:
-	cd server && swag init

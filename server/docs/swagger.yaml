@@ -1773,6 +1773,52 @@ paths:
       summary: 分页获取API列表
       tags:
       - SysApi
+  /api/register:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 创建用户
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/users.Users'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"创建成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 注册
+      tags:
+      - 前端接口API
+  /api/sms/send:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 创建用户
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/users.Users'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"创建成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 获取短信验证码
+      tags:
+      - 前端接口API
   /api/updateApi:
     post:
       consumes:
