@@ -3,9 +3,9 @@ package apis
 import (
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/apis"
-	"github.com/flipped-aurora/gin-vue-admin/server/model/common/request"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/users"
 	usersReq "github.com/flipped-aurora/gin-vue-admin/server/model/users/request"
+	"time"
 )
 
 type ApisService struct {
@@ -17,32 +17,18 @@ func (uService *ApisService) CreateSms(u *apis.Sms) (err error) {
 	return err
 }
 
-// DeleteUsers 删除用户记录
-// Author [piexlmax](https://github.com/piexlmax)
-func (uService *ApisService) DeleteUsers(u users.Users) (err error) {
-	err = global.GVA_DB.Delete(&u).Error
-	return err
-}
-
-// DeleteUsersByIds 批量删除用户记录
-// Author [piexlmax](https://github.com/piexlmax)
-func (uService *ApisService) DeleteUsersByIds(ids request.IdsReq) (err error) {
-	err = global.GVA_DB.Delete(&[]users.Users{}, "id in ?", ids.Ids).Error
-	return err
-}
-
-// UpdateUsers 更新用户记录
-// Author [piexlmax](https://github.com/piexlmax)
-func (uService *ApisService) UpdateUsers(u users.Users) (err error) {
-	err = global.GVA_DB.Save(&u).Error
-	return err
-}
-
-// GetUsers 根据id获取用户记录
-// Author [piexlmax](https://github.com/piexlmax)
-func (uService *ApisService) GetUsers(id uint) (u users.Users, err error) {
-	err = global.GVA_DB.Where("id = ?", id).First(&u).Error
-	return
+// CheckSms 验证sms
+func (uService *ApisService) CheckSms(phone, code string) bool {
+	var sms apis.Sms
+	if err := global.GVA_DB.Where("phone = ? and code = ?", phone, code).Order("id DESC").
+		First(&sms).Error; err == nil {
+		if sms.ExpireAt < time.Now().Unix() && sms.Status == 0 {
+			sms.Status = 1
+			global.GVA_DB.Save(&sms)
+			return true
+		}
+	}
+	return false
 }
 
 // GetUsersInfoList 分页获取用户记录

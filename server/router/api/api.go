@@ -10,10 +10,11 @@ type ApiRouter struct {
 
 // InitApiRouter 初始化 api 路由信息
 func (s *ApiRouter) InitApiRouter(Router *gin.RouterGroup) {
-	uRouter := Router.Group("api/sms")
+	uRouter := Router.Group("api")
 	var aApi = v1.ApiGroupApp.ApisApiGroup.ApisApi
 	{
-		uRouter.POST("send", aApi.GetSmsCode) // 发送短信验证码
+		uRouter.POST("sms/send", aApi.GetSmsCode) // 发送短信验证码
+		uRouter.POST("register", aApi.Register)   // 注册
 	}
 
 }
