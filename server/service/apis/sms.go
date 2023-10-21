@@ -5,6 +5,7 @@ import (
 	"github.com/flipped-aurora/gin-vue-admin/server/model/apis"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/users"
 	usersReq "github.com/flipped-aurora/gin-vue-admin/server/model/users/request"
+	"log"
 	"time"
 )
 
@@ -22,11 +23,13 @@ func (uService *ApisService) CheckSms(phone, code string) bool {
 	var sms apis.Sms
 	if err := global.GVA_DB.Where("phone = ? and code = ?", phone, code).Order("id DESC").
 		First(&sms).Error; err == nil {
-		if sms.ExpireAt < time.Now().Unix() && sms.Status == 0 {
+		if sms.ExpireAt > time.Now().Unix() && sms.Status == 0 {
 			sms.Status = 1
 			global.GVA_DB.Save(&sms)
 			return true
 		}
+	} else {
+		log.Println(err)
 	}
 	return false
 }

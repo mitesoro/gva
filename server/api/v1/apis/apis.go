@@ -159,7 +159,7 @@ func (uApi *ApisApi) Login(c *gin.Context) {
 	p := map[string]string{
 		"uid":   cast.ToString(user.ID),
 		"phone": user.Phone,
-		"time":  cast.ToString(time.Now().Unix()),
+		"time":  cast.ToString(time.Now().Unix() + 86400*30),
 	}
 
 	data := map[string]interface{}{
@@ -178,7 +178,7 @@ func (uApi *ApisApi) Login(c *gin.Context) {
 // @Param     file  formData  file   true  "上传文件示例"
 // @Success   200   {object}  response.Response{data=object,msg=string}  "上传文件示例,返回包括文件详情"
 // @Router    /api/file/upload [post]
-func (a *ApisApi) UploadFile(c *gin.Context) {
+func (uApi *ApisApi) UploadFile(c *gin.Context) {
 	file, err := c.FormFile("file")
 	if err != nil {
 		response.FailWithMessageWithCode(10002, "文件错误", c)
@@ -196,5 +196,132 @@ func (a *ApisApi) UploadFile(c *gin.Context) {
 		"path": fmt.Sprintf("https://zd-1321537534.cos.ap-nanjing.myqcloud.com/%s", remoteFilePath),
 	}
 	response.OkWithData(data, c)
+	return
+}
+
+// UpdateUser 更新用户信息
+// @Tags 前端接口API
+// @Summary 更新用户信息
+// @Security ApiKeyAuth
+// @accept application/json
+// @Produce application/json
+// @Param data body apis.ReqUpdateUser true "更新用户信息"
+// @Success 200 {object} object "{"code":0,"data":{},"msg":"success"}"
+// @Router /api/user/update [post]
+func (uApi *ApisApi) UpdateUser(c *gin.Context) {
+	var req apis.ReqUpdateUser
+	err := c.ShouldBindJSON(&req)
+	if err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	verify := utils.Rules{
+		"avatar":   {utils.NotEmpty()},
+		"nickname": {utils.NotEmpty()},
+	}
+	if err = utils.Verify(req, verify); err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	id, _ := c.Get("uid")
+	user, err := userService.GetUsers(cast.ToUint(id))
+	if err != nil {
+		response.FailWithMessageWithCode(10002, "请重新登录", c)
+		return
+	}
+	user.Avatar = req.Avatar
+	user.Nickname = req.Nickname
+	if err = userService.UpdateUsers(user); err != nil {
+		response.FailWithMessageWithCode(10003, "更新失败", c)
+		return
+	}
+	response.OkWithMessage("success", c)
+	return
+}
+
+// UpdatePhone 更换手机号
+// @Tags 前端接口API
+// @Summary 更换手机号
+// @Security ApiKeyAuth
+// @accept application/json
+// @Produce application/json
+// @Param data body apis.ReqUpdatePhone true "更新手机号"
+// @Success 200 {object} object "{"code":0,"data":{},"msg":"success"}"
+// @Router /api/user/update-phone [post]
+func (uApi *ApisApi) UpdatePhone(c *gin.Context) {
+	var req apis.ReqUpdatePhone
+	err := c.ShouldBindJSON(&req)
+	if err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	verify := utils.Rules{
+		"phone": {utils.NotEmpty()},
+		"code":  {utils.NotEmpty()},
+	}
+	if err = utils.Verify(req, verify); err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	if !apisService.CheckSms(req.Phone, req.Code) {
+		response.FailWithMessageWithCode(10002, "验证码错误", c)
+		return
+	}
+
+	id, _ := c.Get("uid")
+	user, err := userService.GetUsers(cast.ToUint(id))
+	if err != nil {
+		response.FailWithMessageWithCode(10002, "请重新登录", c)
+		return
+	}
+	user.Phone = req.Phone
+	if err = userService.UpdateUsers(user); err != nil {
+		response.FailWithMessageWithCode(10003, "更新失败", c)
+		return
+	}
+	response.OkWithMessage("success", c)
+	return
+}
+
+// UpdatePassword 更换密码
+// @Tags 前端接口API
+// @Summary 更换密码
+// @Security ApiKeyAuth
+// @accept application/json
+// @Produce application/json
+// @Param data body apis.ReqUpdatePassword true "更新密码"
+// @Success 200 {object} object "{"code":0,"data":{},"msg":"success"}"
+// @Router /api/user/update-password [post]
+func (uApi *ApisApi) UpdatePassword(c *gin.Context) {
+	var req apis.ReqUpdatePassword
+	err := c.ShouldBindJSON(&req)
+	if err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	verify := utils.Rules{
+		"password": {utils.NotEmpty()},
+	}
+	if err = utils.Verify(req, verify); err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+
+	id, _ := c.Get("uid")
+	user, err := userService.GetUsers(cast.ToUint(id))
+	if err != nil {
+		response.FailWithMessageWithCode(10002, "请重新登录", c)
+		return
+	}
+	if user.Password != req.OldPassword {
+		response.FailWithMessageWithCode(10002, "旧密码错误", c)
+		return
+	}
+	user.Password = req.Password
+	if err = userService.UpdateUsers(user); err != nil {
+		response.FailWithMessageWithCode(10003, "更新失败", c)
+		return
+	}
+	response.OkWithMessage("success", c)
 	return
 }

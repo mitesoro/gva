@@ -26,3 +26,18 @@ type Sms struct {
 	ExpireAt int64  `json:"expire_at" form:"expire_at" gorm:"column:expire_at;comment:过期时间;"` // 过期时间
 	Status   int64  `json:"status" form:"status" gorm:"column:status;comment:状态;"`            // 状态 0 可用 1已使用
 }
+
+type ReqUpdateUser struct {
+	Avatar   string `json:"avatar" form:"avatar" gorm:"column:avatar;comment:手机号;size:129;"` // 头像
+	Nickname string `json:"nickname" form:"nickname" `                                       // 昵称
+}
+
+type ReqUpdatePhone struct {
+	Phone string `json:"phone" form:"phone" gorm:"column:phone;comment:手机号;size:129;"` // 手机号
+	Code  string `json:"code" form:"code" `                                            // 验证码
+}
+
+type ReqUpdatePassword struct {
+	Password    string `json:"password" form:"password" `         // 密码
+	OldPassword string `json:"old_password" form:"old_password" ` // 旧密码
+}
