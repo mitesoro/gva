@@ -51,6 +51,12 @@ func (uService *UsersService) GetUsersByPhone(phone string) (u users.Users, err 
 	return
 }
 
+// GetUsersByPhoneAndPassword 根据手机号获取用户记录
+func (uService *UsersService) GetUsersByPhoneAndPassword(phone, password string) (u users.Users, err error) {
+	err = global.GVA_DB.Where("phone = ? and password = ?", phone, password).First(&u).Error
+	return
+}
+
 // GetUsersInfoList 分页获取用户记录
 // Author [piexlmax](https://github.com/piexlmax)
 func (uService *UsersService) GetUsersInfoList(info usersReq.UsersSearch) (list []users.Users, total int64, err error) {

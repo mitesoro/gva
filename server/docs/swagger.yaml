@@ -1,4 +1,31 @@
 definitions:
+  apis.ReqLogin:
+    properties:
+      password:
+        description: 密码
+        type: string
+      phone:
+        description: 手机号
+        type: string
+    type: object
+  apis.ReqRegister:
+    properties:
+      code:
+        description: 验证码
+        type: string
+      password:
+        description: 密码
+        type: string
+      phone:
+        description: 手机号
+        type: string
+    type: object
+  apis.ReqSms:
+    properties:
+      phone:
+        description: 手机号
+        type: string
+    type: object
   config.AliyunOSS:
     properties:
       access-key-id:
@@ -1673,6 +1700,35 @@ paths:
       summary: 删除选中Api
       tags:
       - SysApi
+  /api/file/upload:
+    post:
+      consumes:
+      - multipart/form-data
+      parameters:
+      - description: 上传文件示例
+        in: formData
+        name: file
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: 上传文件示例,返回包括文件详情
+          schema:
+            allOf:
+            - $ref: '#/definitions/response.Response'
+            - properties:
+                data:
+                  type: object
+                msg:
+                  type: string
+              type: object
+      security:
+      - ApiKeyAuth: []
+      summary: 上传文件
+      tags:
+      - 前端接口API
   /api/freshCasbin:
     get:
       consumes:
@@ -1773,17 +1829,40 @@ paths:
       summary: 分页获取API列表
       tags:
       - SysApi
+  /api/login:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 登录
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/apis.ReqLogin'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"code":0,"data":{"access_token":"ZWdUJTJCUGliYWNZQ0NGVUwzQUtUbFZwd3ZlR3FDWURGMFFlZUdMWFJaQzdMY3BWbGxiUnR6VjJOc0JYVmRBMEpsdlJCayUyQjVLWHUxNHRLVXUwekZ5dE5nJTNEJTNE"},"msg":"查询成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 登录
+      tags:
+      - 前端接口API
   /api/register:
     post:
       consumes:
       - application/json
       parameters:
-      - description: 创建用户
+      - description: 注册
         in: body
         name: data
         required: true
         schema:
-          $ref: '#/definitions/users.Users'
+          $ref: '#/definitions/apis.ReqRegister'
       produces:
       - application/json
       responses:
@@ -1801,12 +1880,12 @@ paths:
       consumes:
       - application/json
       parameters:
-      - description: 创建用户
+      - description: 获取验证码
         in: body
         name: data
         required: true
         schema:
-          $ref: '#/definitions/users.Users'
+          $ref: '#/definitions/apis.ReqSms'
       produces:
       - application/json
       responses:

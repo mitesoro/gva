@@ -15,6 +15,8 @@ func (s *ApiRouter) InitApiRouter(Router *gin.RouterGroup) {
 	{
 		uRouter.POST("sms/send", aApi.GetSmsCode) // 发送短信验证码
 		uRouter.POST("register", aApi.Register)   // 注册
+		uRouter.POST("login", aApi.Login)         // 登录
+		uRouter.POST("file/upload", aApi.UploadFile)
 	}
 
 }

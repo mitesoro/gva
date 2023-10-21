@@ -91,6 +91,7 @@ build_server:
 	cd server &&  CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build .
 
 dev_server:
+	cd server &&  CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build .
 	rsync -avzP --delete --exclude-from=makefile.excludes ./server/server ubuntu@101.34.210.69:/www/wwwroot/zd/
 	rsync -avzP --delete --exclude-from=makefile.excludes ./server/resource ubuntu@101.34.210.69:/www/wwwroot/zd/
 
