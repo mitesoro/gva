@@ -53,6 +53,45 @@ definitions:
         description: 昵称
         type: string
     type: object
+  article.Article:
+    properties:
+      article_category:
+        description: 文章分类
+        type: integer
+      author:
+        description: 作者
+        type: string
+      content:
+        description: 内容
+        type: string
+      createdAt:
+        description: 创建时间
+        type: string
+      id:
+        description: 主键ID
+        type: integer
+      title:
+        description: 标题
+        type: string
+      updatedAt:
+        description: 更新时间
+        type: string
+    type: object
+  article_category.ArticleCategory:
+    properties:
+      createdAt:
+        description: 创建时间
+        type: string
+      id:
+        description: 主键ID
+        type: integer
+      name:
+        description: 名称
+        type: string
+      updatedAt:
+        description: 更新时间
+        type: string
+    type: object
   config.AliyunOSS:
     properties:
       access-key-id:
@@ -1643,6 +1682,382 @@ info:
   title: 中鼎接口API
   version: 0.0.1
 paths:
+  /a/createArticle:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 创建文章
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/article.Article'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"创建成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 创建文章
+      tags:
+      - Article
+  /a/deleteArticle:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: 删除文章
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/article.Article'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"删除成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 删除文章
+      tags:
+      - Article
+  /a/deleteArticleByIds:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: 批量删除文章
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.IdsReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"批量删除成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 批量删除文章
+      tags:
+      - Article
+  /a/findArticle:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: 文章分类
+        in: query
+        name: article_category
+        type: integer
+      - description: 作者
+        in: query
+        name: author
+        type: string
+      - description: 内容
+        in: query
+        name: content
+        type: string
+      - description: 创建时间
+        in: query
+        name: createdAt
+        type: string
+      - description: 主键ID
+        in: query
+        name: id
+        type: integer
+      - description: 标题
+        in: query
+        name: title
+        type: string
+      - description: 更新时间
+        in: query
+        name: updatedAt
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"查询成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 用id查询文章
+      tags:
+      - Article
+  /a/getArticleList:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: 文章分类
+        in: query
+        name: article_category
+        type: integer
+      - description: 作者
+        in: query
+        name: author
+        type: string
+      - description: 内容
+        in: query
+        name: content
+        type: string
+      - description: 创建时间
+        in: query
+        name: createdAt
+        type: string
+      - in: query
+        name: endCreatedAt
+        type: string
+      - description: 主键ID
+        in: query
+        name: id
+        type: integer
+      - description: 关键字
+        in: query
+        name: keyword
+        type: string
+      - description: 页码
+        in: query
+        name: page
+        type: integer
+      - description: 每页大小
+        in: query
+        name: pageSize
+        type: integer
+      - in: query
+        name: startCreatedAt
+        type: string
+      - description: 标题
+        in: query
+        name: title
+        type: string
+      - description: 更新时间
+        in: query
+        name: updatedAt
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"获取成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 分页获取文章列表
+      tags:
+      - Article
+  /a/updateArticle:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: 更新文章
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/article.Article'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"更新成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 更新文章
+      tags:
+      - Article
+  /ac/createArticleCategory:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 创建文章分类
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/article_category.ArticleCategory'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"创建成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 创建文章分类
+      tags:
+      - ArticleCategory
+  /ac/deleteArticleCategory:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: 删除文章分类
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/article_category.ArticleCategory'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"删除成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 删除文章分类
+      tags:
+      - ArticleCategory
+  /ac/deleteArticleCategoryByIds:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: 批量删除文章分类
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.IdsReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"批量删除成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 批量删除文章分类
+      tags:
+      - ArticleCategory
+  /ac/findArticleCategory:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: 创建时间
+        in: query
+        name: createdAt
+        type: string
+      - description: 主键ID
+        in: query
+        name: id
+        type: integer
+      - description: 名称
+        in: query
+        name: name
+        type: string
+      - description: 更新时间
+        in: query
+        name: updatedAt
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"查询成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 用id查询文章分类
+      tags:
+      - ArticleCategory
+  /ac/getArticleCategoryList:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: 创建时间
+        in: query
+        name: createdAt
+        type: string
+      - in: query
+        name: endCreatedAt
+        type: string
+      - description: 主键ID
+        in: query
+        name: id
+        type: integer
+      - description: 关键字
+        in: query
+        name: keyword
+        type: string
+      - description: 名称
+        in: query
+        name: name
+        type: string
+      - description: 页码
+        in: query
+        name: page
+        type: integer
+      - description: 每页大小
+        in: query
+        name: pageSize
+        type: integer
+      - in: query
+        name: startCreatedAt
+        type: string
+      - description: 更新时间
+        in: query
+        name: updatedAt
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"获取成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 分页获取文章分类列表
+      tags:
+      - ArticleCategory
+  /ac/updateArticleCategory:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: 更新文章分类
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/article_category.ArticleCategory'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"更新成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 更新文章分类
+      tags:
+      - ArticleCategory
   /api/createApi:
     post:
       consumes:
