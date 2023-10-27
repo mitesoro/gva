@@ -267,7 +267,7 @@ getTableData()
 
 // 获取需要的字典 可能为空 按需保留
 const setOptions = async () =>{
-    genderOptions.value = await getDictFunc('gender')
+    genderOptions.value = await getDictFunc('article_category')
 }
 
 // 获取需要的字典 可能为空 按需保留
