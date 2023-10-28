@@ -6,6 +6,7 @@ import (
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/apis"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/common/response"
+	"github.com/flipped-aurora/gin-vue-admin/server/model/orders"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/users"
 	"github.com/flipped-aurora/gin-vue-admin/server/service"
 	"github.com/flipped-aurora/gin-vue-admin/server/utils"
@@ -37,6 +38,7 @@ type ApisApi struct {
 
 var apisService = service.ServiceGroupApp.ApisServiceGroup.ApisService
 var userService = service.ServiceGroupApp.UsersServiceGroup.UsersService
+var orderService = service.ServiceGroupApp.OrdersServiceGroup.OrdersService
 
 // GetSmsCode 获取短信验证码
 // @Tags 前端接口API
@@ -322,6 +324,56 @@ func (uApi *ApisApi) UpdatePassword(c *gin.Context) {
 		response.FailWithMessageWithCode(10003, "更新失败", c)
 		return
 	}
+	response.OkWithMessage("success", c)
+	return
+}
+
+// OrdersCreate 下单
+// @Tags 前端接口API
+// @Summary 下单
+// @Security ApiKeyAuth
+// @accept application/json
+// @Produce application/json
+// @Param data body apis.ReqOrders true "下单参数"
+// @Success 200 {object} object "{"code":0,"data":{},"msg":"success"}"
+// @Router /api/orders/create [post]
+func (uApi *ApisApi) OrdersCreate(c *gin.Context) {
+	var req apis.ReqOrders
+	err := c.ShouldBindJSON(&req)
+	if err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	verify := utils.Rules{
+		"volume":    {utils.NotEmpty()},
+		"price":     {utils.NotEmpty()},
+		"direction": {utils.NotEmpty()},
+	}
+	if err = utils.Verify(req, verify); err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+
+	id, _ := c.Get("uid")
+	userID := cast.ToInt(id)
+	price := int(req.Price)
+	volume := int(req.Volume)
+	direction := int(req.Direction)
+	accountID := 1
+	order := &orders.Orders{
+		User_id:    &userID,
+		Account_id: &accountID,
+		Price:      &price,
+		Volume:     &volume,
+		Direction:  &direction,
+		Order_no:   utils.MD5(fmt.Sprintf("%d", time.Now().UnixNano())),
+	}
+	err = orderService.CreateOrders(order)
+	if err != nil {
+		response.FailWithMessageWithCode(10002, "下单失败", c)
+		return
+	}
+
 	response.OkWithMessage("success", c)
 	return
 }

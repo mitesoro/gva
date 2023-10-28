@@ -8,6 +8,18 @@ definitions:
         description: 手机号
         type: string
     type: object
+  apis.ReqOrders:
+    properties:
+      direction:
+        description: 类型 0买 1卖
+        type: integer
+      price:
+        description: 价格(分)
+        type: integer
+      volume:
+        description: 几手
+        type: integer
+    type: object
   apis.ReqRegister:
     properties:
       code:
@@ -799,6 +811,36 @@ definitions:
       to:
         description: 收件人:多个以英文逗号分隔 例：a@qq.com b@qq.com 正式开发中请把此项目作为参数使用
         type: string
+    type: object
+  orders.Orders:
+    properties:
+      account_id:
+        description: 账户
+        type: integer
+      createdAt:
+        description: 创建时间
+        type: string
+      direction:
+        description: 类型
+        type: integer
+      id:
+        description: 主键ID
+        type: integer
+      order_no:
+        description: 订单号
+        type: string
+      price:
+        description: 价格
+        type: integer
+      updatedAt:
+        description: 更新时间
+        type: string
+      user_id:
+        description: 用户编号
+        type: integer
+      volume:
+        description: 手
+        type: integer
     type: object
   request.AddMenuAuthorityInfo:
     properties:
@@ -2292,6 +2334,29 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: 登录
+      tags:
+      - 前端接口API
+  /api/orders/create:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 下单参数
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/apis.ReqOrders'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"code":0,"data":{},"msg":"success"}'
+          schema:
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: 下单
       tags:
       - 前端接口API
   /api/register:
@@ -3917,6 +3982,222 @@ paths:
       summary: 更新菜单
       tags:
       - Menu
+  /os/createOrders:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 创建订单
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/orders.Orders'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"创建成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 创建订单
+      tags:
+      - Orders
+  /os/deleteOrders:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: 删除订单
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/orders.Orders'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"删除成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 删除订单
+      tags:
+      - Orders
+  /os/deleteOrdersByIds:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: 批量删除订单
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.IdsReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"批量删除成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 批量删除订单
+      tags:
+      - Orders
+  /os/findOrders:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: 账户
+        in: query
+        name: account_id
+        type: integer
+      - description: 创建时间
+        in: query
+        name: createdAt
+        type: string
+      - description: 类型
+        in: query
+        name: direction
+        type: integer
+      - description: 主键ID
+        in: query
+        name: id
+        type: integer
+      - description: 订单号
+        in: query
+        name: order_no
+        type: string
+      - description: 价格
+        in: query
+        name: price
+        type: integer
+      - description: 更新时间
+        in: query
+        name: updatedAt
+        type: string
+      - description: 用户编号
+        in: query
+        name: user_id
+        type: integer
+      - description: 手
+        in: query
+        name: volume
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"查询成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 用id查询订单
+      tags:
+      - Orders
+  /os/getOrdersList:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: 账户
+        in: query
+        name: account_id
+        type: integer
+      - description: 创建时间
+        in: query
+        name: createdAt
+        type: string
+      - description: 类型
+        in: query
+        name: direction
+        type: integer
+      - in: query
+        name: endCreatedAt
+        type: string
+      - description: 主键ID
+        in: query
+        name: id
+        type: integer
+      - description: 关键字
+        in: query
+        name: keyword
+        type: string
+      - description: 订单号
+        in: query
+        name: order_no
+        type: string
+      - description: 页码
+        in: query
+        name: page
+        type: integer
+      - description: 每页大小
+        in: query
+        name: pageSize
+        type: integer
+      - description: 价格
+        in: query
+        name: price
+        type: integer
+      - in: query
+        name: startCreatedAt
+        type: string
+      - description: 更新时间
+        in: query
+        name: updatedAt
+        type: string
+      - description: 用户编号
+        in: query
+        name: user_id
+        type: integer
+      - description: 手
+        in: query
+        name: volume
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"获取成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 分页获取订单列表
+      tags:
+      - Orders
+  /os/updateOrders:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: 更新订单
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/orders.Orders'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"更新成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 更新订单
+      tags:
+      - Orders
   /sysDictionary/createSysDictionary:
     post:
       consumes:

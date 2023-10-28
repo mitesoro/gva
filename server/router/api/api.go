@@ -17,10 +17,11 @@ func (s *ApiRouter) InitApiRouter(Router *gin.RouterGroup) {
 		uRouter.POST("sms/send", aApi.GetSmsCode)                                         // 发送短信验证码
 		uRouter.POST("register", aApi.Register)                                           // 注册
 		uRouter.POST("login", aApi.Login)                                                 // 登录
-		uRouter.POST("file/upload", aApi.UploadFile).Use(middleware.Token())              //上传文件
+		uRouter.POST("file/upload", aApi.UploadFile)                                      //上传文件
 		uRouter.POST("user/update", aApi.UpdateUser).Use(middleware.Token())              // 修改用户信息
 		uRouter.POST("user/update-phone", aApi.UpdatePhone).Use(middleware.Token())       // 修改手机号
 		uRouter.POST("user/update-password", aApi.UpdatePassword).Use(middleware.Token()) // 修改密码
+		uRouter.POST("orders/create", aApi.OrdersCreate).Use(middleware.Token())          // 下单
 	}
 
 }

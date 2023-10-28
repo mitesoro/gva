@@ -83,6 +83,7 @@ build_web:
 
 
 dev_web:
+	cd web && npm run build
 	rsync -avzP --delete --exclude-from=makefile.excludes ./web/dist ubuntu@101.34.210.69:/www/wwwroot/zd/
 
 

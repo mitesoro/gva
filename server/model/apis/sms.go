@@ -41,3 +41,9 @@ type ReqUpdatePassword struct {
 	Password    string `json:"password" form:"password" `         // 密码
 	OldPassword string `json:"old_password" form:"old_password" ` // 旧密码
 }
+
+type ReqOrders struct {
+	Volume    int64 `json:"volume" form:"volume" `       // 几手
+	Price     int64 `json:"price" form:"price" `         // 价格(分)
+	Direction int64 `json:"direction" form:"direction" ` // 类型 0买 1卖
+}
