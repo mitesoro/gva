@@ -47,3 +47,18 @@ type ReqOrders struct {
 	Price     int64 `json:"price" form:"price" `         // 价格(分)
 	Direction int64 `json:"direction" form:"direction" ` // 类型 0买 1卖
 }
+
+type KData struct {
+	Period int64 `json:"period" form:"period" ` // 周期
+	Rows   int64 `json:"rows" form:"rows" `     // 返回条数
+}
+
+type KDataResp struct {
+	Uptime int64   `json:"uptime"`
+	Open   float64 `json:"open"`
+	High   float64 `json:"high"`
+	Low    float64 `json:"low"`
+	Close  float64 `json:"close"`
+	Vol    float64 `json:"vol"`
+	Cjl    float64 `json:"cjl"`
+}

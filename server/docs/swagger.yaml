@@ -1,4 +1,13 @@
 definitions:
+  apis.KData:
+    properties:
+      period:
+        description: 周期
+        type: integer
+      rows:
+        description: 返回条数
+        type: integer
+    type: object
   apis.ReqLogin:
     properties:
       password:
@@ -2313,6 +2322,29 @@ paths:
       summary: 分页获取API列表
       tags:
       - SysApi
+  /api/k/data:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: 下单参数
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/apis.KData'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"code":0,"data":{},"msg":"success"}'
+          schema:
+            type: object
+      security:
+      - ApiKeyAuth: []
+      summary: k线数据
+      tags:
+      - 前端接口API
   /api/login:
     post:
       consumes:

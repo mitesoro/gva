@@ -1003,6 +1003,44 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/k/data": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "前端接口API"
+                ],
+                "summary": "k线数据",
+                "parameters": [
+                    {
+                        "description": "下单参数",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/apis.KData"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\":0,\"data\":{},\"msg\":\"success\"}",
+                        "schema": {
+                            "type": "object"
+                        }
+                    }
+                }
+            }
+        },
         "/api/login": {
             "post": {
                 "security": [
@@ -6383,6 +6421,19 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "apis.KData": {
+            "type": "object",
+            "properties": {
+                "period": {
+                    "description": "周期",
+                    "type": "integer"
+                },
+                "rows": {
+                    "description": "返回条数",
+                    "type": "integer"
+                }
+            }
+        },
         "apis.ReqLogin": {
             "type": "object",
             "properties": {

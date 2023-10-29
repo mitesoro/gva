@@ -14,6 +14,7 @@ import (
 	"github.com/spf13/cast"
 	"github.com/tencentyun/cos-go-sdk-v5"
 	"go.uber.org/zap"
+	"math/rand"
 	"net/http"
 	"net/url"
 	"time"
@@ -375,5 +376,38 @@ func (uApi *ApisApi) OrdersCreate(c *gin.Context) {
 	}
 
 	response.OkWithMessage("success", c)
+	return
+}
+
+// PriceData k线数据
+// @Tags 前端接口API
+// @Summary k线数据
+// @Security ApiKeyAuth
+// @accept application/json
+// @Produce application/json
+// @Param data body apis.KData true "下单参数"
+// @Success 200 {object} object "{"code":0,"data":{},"msg":"success"}"
+// @Router /api/k/data [get]
+func (uApi *ApisApi) PriceData(c *gin.Context) {
+	var req apis.KData
+	err := c.ShouldBindQuery(&req)
+	if err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	var resps []apis.KDataResp
+	tm := time.Now().Unix()
+	for i := 0; i < int(req.Rows); i++ {
+		resps = append(resps, apis.KDataResp{
+			Uptime: tm - int64(i),
+			Open:   rand.Float64() * 10000,
+			High:   rand.Float64() * 10000,
+			Low:    rand.Float64() * 10000,
+			Close:  rand.Float64() * 10000,
+			Vol:    rand.Float64() * 10000,
+			Cjl:    rand.Float64() * 10000,
+		})
+	}
+	response.OkWithData(resps, c)
 	return
 }
