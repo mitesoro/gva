@@ -98,6 +98,10 @@ func Routers() *gin.Engine {
 		ordersRouter := router.RouterGroupApp.Orders
 		ordersRouter.InitOrdersRouter(PrivateGroup)
 	}
+	{
+		configsRouter := router.RouterGroupApp.Configs
+		configsRouter.InitConfigRouter(PrivateGroup)
+	}
 
 	global.GVA_LOG.Info("router register success")
 	return Router

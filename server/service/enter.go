@@ -4,6 +4,7 @@ import (
 	"github.com/flipped-aurora/gin-vue-admin/server/service/apis"
 	"github.com/flipped-aurora/gin-vue-admin/server/service/article"
 	"github.com/flipped-aurora/gin-vue-admin/server/service/article_category"
+	"github.com/flipped-aurora/gin-vue-admin/server/service/configs"
 	"github.com/flipped-aurora/gin-vue-admin/server/service/example"
 	"github.com/flipped-aurora/gin-vue-admin/server/service/orders"
 	"github.com/flipped-aurora/gin-vue-admin/server/service/system"
@@ -18,6 +19,7 @@ type ServiceGroup struct {
 	Article_categoryServiceGroup article_category.ServiceGroup
 	ArticleServiceGroup          article.ServiceGroup
 	OrdersServiceGroup           orders.ServiceGroup
+	ConfigsServiceGroup          configs.ServiceGroup
 }
 
 var ServiceGroupApp = new(ServiceGroup)

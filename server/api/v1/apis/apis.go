@@ -395,10 +395,10 @@ func (uApi *ApisApi) PriceData(c *gin.Context) {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
-	var resps []apis.KDataResp
+	var yData []apis.YdData
 	tm := time.Now().Unix()
 	for i := 0; i < int(req.Rows); i++ {
-		resps = append(resps, apis.KDataResp{
+		yData = append(yData, apis.YdData{
 			Uptime: tm - int64(i),
 			Open:   rand.Float64() * 10000,
 			High:   rand.Float64() * 10000,
@@ -408,6 +408,9 @@ func (uApi *ApisApi) PriceData(c *gin.Context) {
 			Cjl:    rand.Float64() * 10000,
 		})
 	}
-	response.OkWithData(resps, c)
+	response.OkWithData(apis.KDataResp{
+		YdClosePrice: rand.Float64() * 10000,
+		Results:      yData,
+	}, c)
 	return
 }

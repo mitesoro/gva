@@ -2742,6 +2742,316 @@ const docTemplate = `{
                 }
             }
         },
+        "/config/createConfig": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Config"
+                ],
+                "summary": "创建配置管理",
+                "parameters": [
+                    {
+                        "description": "创建配置管理",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/configs.Config"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"success\":true,\"data\":{},\"msg\":\"创建成功\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/config/deleteConfig": {
+            "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Config"
+                ],
+                "summary": "删除配置管理",
+                "parameters": [
+                    {
+                        "description": "删除配置管理",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/configs.Config"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"success\":true,\"data\":{},\"msg\":\"删除成功\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/config/deleteConfigByIds": {
+            "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Config"
+                ],
+                "summary": "批量删除配置管理",
+                "parameters": [
+                    {
+                        "description": "批量删除配置管理",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.IdsReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"success\":true,\"data\":{},\"msg\":\"批量删除成功\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/config/findConfig": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Config"
+                ],
+                "summary": "用id查询配置管理",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "创建时间",
+                        "name": "createdAt",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "描述",
+                        "name": "desc",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "字段",
+                        "name": "field",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "主键ID",
+                        "name": "id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "更新时间",
+                        "name": "updatedAt",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "值",
+                        "name": "value",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"success\":true,\"data\":{},\"msg\":\"查询成功\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/config/getConfigList": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Config"
+                ],
+                "summary": "分页获取配置管理列表",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "创建时间",
+                        "name": "createdAt",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "描述",
+                        "name": "desc",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "endCreatedAt",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "字段",
+                        "name": "field",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "主键ID",
+                        "name": "id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "关键字",
+                        "name": "keyword",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页码",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "每页大小",
+                        "name": "pageSize",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "startCreatedAt",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "更新时间",
+                        "name": "updatedAt",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "值",
+                        "name": "value",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"success\":true,\"data\":{},\"msg\":\"获取成功\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/config/updateConfig": {
+            "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Config"
+                ],
+                "summary": "更新配置管理",
+                "parameters": [
+                    {
+                        "description": "更新配置管理",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/configs.Config"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"success\":true,\"data\":{},\"msg\":\"更新成功\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/customer/customer": {
             "get": {
                 "security": [
@@ -5751,6 +6061,11 @@ const docTemplate = `{
                         "in": "query"
                     },
                     {
+                        "type": "integer",
+                        "name": "order_type",
+                        "in": "query"
+                    },
+                    {
                         "type": "string",
                         "description": "密码",
                         "name": "password",
@@ -5760,6 +6075,11 @@ const docTemplate = `{
                         "type": "string",
                         "description": "手机号",
                         "name": "phone",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "rate",
                         "in": "query"
                     },
                     {
@@ -5839,6 +6159,11 @@ const docTemplate = `{
                     },
                     {
                         "type": "integer",
+                        "name": "order_type",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
                         "description": "页码",
                         "name": "page",
                         "in": "query"
@@ -5859,6 +6184,11 @@ const docTemplate = `{
                         "type": "string",
                         "description": "手机号",
                         "name": "phone",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "rate",
                         "in": "query"
                     },
                     {
@@ -6431,6 +6761,9 @@ const docTemplate = `{
                 "rows": {
                     "description": "返回条数",
                     "type": "integer"
+                },
+                "symbol": {
+                    "type": "string"
                 }
             }
         },
@@ -7427,6 +7760,35 @@ const docTemplate = `{
                 },
                 "stacktrace-key": {
                     "description": "栈名",
+                    "type": "string"
+                }
+            }
+        },
+        "configs.Config": {
+            "type": "object",
+            "properties": {
+                "createdAt": {
+                    "description": "创建时间",
+                    "type": "string"
+                },
+                "desc": {
+                    "description": "描述",
+                    "type": "string"
+                },
+                "field": {
+                    "description": "字段",
+                    "type": "string"
+                },
+                "id": {
+                    "description": "主键ID",
+                    "type": "integer"
+                },
+                "updatedAt": {
+                    "description": "更新时间",
+                    "type": "string"
+                },
+                "value": {
+                    "description": "值",
                     "type": "string"
                 }
             }
@@ -8885,6 +9247,9 @@ const docTemplate = `{
                     "description": "昵称",
                     "type": "string"
                 },
+                "order_type": {
+                    "type": "integer"
+                },
                 "password": {
                     "description": "密码",
                     "type": "string"
@@ -8892,6 +9257,9 @@ const docTemplate = `{
                 "phone": {
                     "description": "手机号",
                     "type": "string"
+                },
+                "rate": {
+                    "type": "integer"
                 },
                 "updatedAt": {
                     "description": "更新时间",

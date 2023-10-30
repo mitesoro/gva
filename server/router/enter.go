@@ -4,6 +4,7 @@ import (
 	"github.com/flipped-aurora/gin-vue-admin/server/router/api"
 	"github.com/flipped-aurora/gin-vue-admin/server/router/article"
 	"github.com/flipped-aurora/gin-vue-admin/server/router/article_category"
+	"github.com/flipped-aurora/gin-vue-admin/server/router/configs"
 	"github.com/flipped-aurora/gin-vue-admin/server/router/example"
 	"github.com/flipped-aurora/gin-vue-admin/server/router/orders"
 	"github.com/flipped-aurora/gin-vue-admin/server/router/system"
@@ -18,6 +19,7 @@ type RouterGroup struct {
 	Article_category article_category.RouterGroup
 	Article          article.RouterGroup
 	Orders           orders.RouterGroup
+	Configs          configs.RouterGroup
 }
 
 var RouterGroupApp = new(RouterGroup)

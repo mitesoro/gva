@@ -15,12 +15,12 @@
        —
       <el-date-picker v-model="searchInfo.endCreatedAt" type="datetime" placeholder="结束日期" :disabled-date="time=> searchInfo.startCreatedAt ? time.getTime() < searchInfo.startCreatedAt.getTime() : false"></el-date-picker>
       </el-form-item>
-        <el-form-item label="手机号" prop="phone">
-         <el-input v-model="searchInfo.phone" placeholder="搜索条件" />
+        <el-form-item label="字段" prop="field">
+         <el-input v-model="searchInfo.field" placeholder="搜索条件" />
 
         </el-form-item>
-        <el-form-item label="昵称" prop="nickname">
-         <el-input v-model="searchInfo.nickname" placeholder="搜索条件" />
+        <el-form-item label="值" prop="value">
+         <el-input v-model="searchInfo.value" placeholder="搜索条件" />
 
         </el-form-item>
         <el-form-item>
@@ -50,32 +50,21 @@
         :data="tableData"
         row-key="ID"
         @selection-change="handleSelectionChange"
-        @sort-change="sortChange"
         >
         <el-table-column type="selection" width="55" />
         <el-table-column align="left" label="日期" width="180">
             <template #default="scope">{{ formatDate(scope.row.CreatedAt) }}</template>
         </el-table-column>
-        <el-table-column sortable align="left" label="手机号" prop="phone" width="120" />
-        <el-table-column align="left" label="昵称" prop="nickname" width="120" />
-        <el-table-column align="left" label="盈亏比(%)" prop="rate" width="120" />
-        <el-table-column align="left" label="订单正反手" prop="order_type" width="120" >
-          <template #default="scope">
-            {{ filterDict(scope.row.order_type,genderOptions) }}
-          </template>
-          </el-table-column>
-          <el-table-column label="头像" width="200">
-              <template #default="scope">
-                <el-image style="width: 100px; height: 100px" :src="getUrl(scope.row.avatar)" fit="cover"/>
-              </template>
-          </el-table-column>
+        <el-table-column align="left" label="字段(不要随意改变)" prop="field" width="120" />
+        <el-table-column align="left" label="值" prop="value" width="120" />
+        <el-table-column align="left" label="描述" prop="desc" width="120" />
         <el-table-column align="left" label="操作">
             <template #default="scope">
             <el-button type="primary" link class="table-button" @click="getDetails(scope.row)">
                 <el-icon style="margin-right: 5px"><InfoFilled /></el-icon>
                 查看详情
             </el-button>
-            <el-button type="primary" link icon="edit" class="table-button" @click="updateUsersFunc(scope.row)">变更</el-button>
+            <el-button type="primary" link icon="edit" class="table-button" @click="updateConfigFunc(scope.row)">变更</el-button>
             <el-button type="primary" link icon="delete" @click="deleteRow(scope.row)">删除</el-button>
             </template>
         </el-table-column>
@@ -95,25 +84,14 @@
     <el-dialog v-model="dialogFormVisible" :before-close="closeDialog" :title="type==='create'?'添加':'修改'" destroy-on-close>
       <el-scrollbar height="500px">
           <el-form :model="formData" label-position="right" ref="elFormRef" :rules="rule" label-width="80px">
-            <el-form-item label="手机号:"  prop="phone" >
-              <el-input v-model="formData.phone" :clearable="true"  placeholder="请输入手机号" />
+            <el-form-item label="字段:"  prop="field" >
+              <el-input v-model="formData.field" :clearable="true"  placeholder="请输入字段" />
             </el-form-item>
-            <el-form-item label="密码:"  prop="password" >
-              <el-input v-model="formData.password" :clearable="true"  placeholder="请输入密码" />
+            <el-form-item label="值:"  prop="value" >
+              <el-input v-model="formData.value" :clearable="true"  placeholder="请输入值" />
             </el-form-item>
-            <el-form-item label="昵称:"  prop="nickname" >
-              <el-input v-model="formData.nickname" :clearable="true"  placeholder="请输入昵称" />
-            </el-form-item>
-            <el-form-item label="订单正反手:"  prop="article_category" >
-              <el-select v-model="formData.order_type" placeholder="请选择订单正反手" style="width:100%" :clearable="true" >
-                <el-option v-for="(item,key) in genderOptions" :key="key" :label="item.label" :value="item.value" />
-              </el-select>
-            </el-form-item>
-            <el-form-item label="头像:"  prop="avatar" >
-                <SelectImage
-                 v-model="formData.avatar"
-                 file-type="image"
-                />
+            <el-form-item label="描述:"  prop="desc" >
+              <el-input v-model="formData.desc" :clearable="true"  placeholder="请输入描述" />
             </el-form-item>
           </el-form>
       </el-scrollbar>
@@ -128,17 +106,14 @@
     <el-dialog v-model="detailShow" style="width: 800px" lock-scroll :before-close="closeDetailShow" title="查看详情" destroy-on-close>
       <el-scrollbar height="550px">
         <el-descriptions column="1" border>
-                <el-descriptions-item label="手机号">
-                        {{ formData.phone }}
+                <el-descriptions-item label="字段">
+                        {{ formData.field }}
                 </el-descriptions-item>
-                <el-descriptions-item label="昵称">
-                        {{ formData.nickname }}
+                <el-descriptions-item label="值">
+                        {{ formData.value }}
                 </el-descriptions-item>
-                <el-descriptions-item label="头像">
-                        <el-image style="width: 50px; height: 50px" :preview-src-list="ReturnArrImg(formData.avatar)" :src="getUrl(formData.avatar)" fit="cover" />
-                </el-descriptions-item>
-                <el-descriptions-item label="订单正反手">
-                  {{ filterDict(formData.order_type,genderOptions) }}
+                <el-descriptions-item label="描述">
+                        {{ formData.desc }}
                 </el-descriptions-item>
         </el-descriptions>
       </el-scrollbar>
@@ -148,16 +123,13 @@
 
 <script setup>
 import {
-  createUsers,
-  deleteUsers,
-  deleteUsersByIds,
-  updateUsers,
-  findUsers,
-  getUsersList
-} from '@/api/users'
-import { getUrl } from '@/utils/image'
-// 图片选择组件
-import SelectImage from '@/components/selectImage/selectImage.vue'
+  createConfig,
+  deleteConfig,
+  deleteConfigByIds,
+  updateConfig,
+  findConfig,
+  getConfigList
+} from '@/api/config'
 
 // 全量引入格式化工具 请按需保留
 import { getDictFunc, formatDate, formatBoolean, filterDict, ReturnArrImg, onDownloadFile } from '@/utils/format'
@@ -165,34 +137,20 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 import { ref, reactive } from 'vue'
 
 defineOptions({
-    name: 'Users'
+    name: 'Config'
 })
 
-const genderOptions = ref([])
 // 自动化生成的字典（可能为空）以及字段
 const formData = ref({
-        phone: '',
-        password: '',
-        nickname: '',
-        avatar: "",
-        order_type: "",
+        field: '',
+        value: '',
+        desc: '',
         })
 
 
 // 验证规则
 const rule = reactive({
-               phone : [{
-                   required: true,
-                   message: '手机号不能为空',
-                   trigger: ['input','blur'],
-               },
-               {
-                   whitespace: true,
-                   message: '不能只输入空格',
-                   trigger: ['input', 'blur'],
-              }
-              ],
-               password : [{
+               field : [{
                    required: true,
                    message: '',
                    trigger: ['input','blur'],
@@ -203,7 +161,7 @@ const rule = reactive({
                    trigger: ['input', 'blur'],
               }
               ],
-               nickname : [{
+               value : [{
                    required: true,
                    message: '',
                    trigger: ['input','blur'],
@@ -214,11 +172,16 @@ const rule = reactive({
                    trigger: ['input', 'blur'],
               }
               ],
-               avatar : [{
+               desc : [{
                    required: true,
                    message: '',
                    trigger: ['input','blur'],
                },
+               {
+                   whitespace: true,
+                   message: '不能只输入空格',
+                   trigger: ['input', 'blur'],
+              }
               ],
 })
 
@@ -247,12 +210,6 @@ const total = ref(0)
 const pageSize = ref(10)
 const tableData = ref([])
 const searchInfo = ref({})
-// 排序
-const sortChange = ({ prop, order }) => {
-  searchInfo.value.sort = prop
-  searchInfo.value.order = order
-  getTableData()
-}
 
 // 重置
 const onReset = () => {
@@ -284,7 +241,7 @@ const handleCurrentChange = (val) => {
 
 // 查询
 const getTableData = async() => {
-  const table = await getUsersList({ page: page.value, pageSize: pageSize.value, ...searchInfo.value })
+  const table = await getConfigList({ page: page.value, pageSize: pageSize.value, ...searchInfo.value })
   if (table.code === 0) {
     tableData.value = table.data.list
     total.value = table.data.total
@@ -299,7 +256,6 @@ getTableData()
 
 // 获取需要的字典 可能为空 按需保留
 const setOptions = async () =>{
-  genderOptions.value = await getDictFunc('order_type')
 }
 
 // 获取需要的字典 可能为空 按需保留
@@ -320,7 +276,7 @@ const deleteRow = (row) => {
         cancelButtonText: '取消',
         type: 'warning'
     }).then(() => {
-            deleteUsersFunc(row)
+            deleteConfigFunc(row)
         })
     }
 
@@ -342,7 +298,7 @@ const onDelete = async() => {
         multipleSelection.value.map(item => {
           ids.push(item.ID)
         })
-      const res = await deleteUsersByIds({ ids })
+      const res = await deleteConfigByIds({ ids })
       if (res.code === 0) {
         ElMessage({
           type: 'success',
@@ -360,19 +316,19 @@ const onDelete = async() => {
 const type = ref('')
 
 // 更新行
-const updateUsersFunc = async(row) => {
-    const res = await findUsers({ ID: row.ID })
+const updateConfigFunc = async(row) => {
+    const res = await findConfig({ ID: row.ID })
     type.value = 'update'
     if (res.code === 0) {
-        formData.value = res.data.reu
+        formData.value = res.data.reconfig
         dialogFormVisible.value = true
     }
 }
 
 
 // 删除行
-const deleteUsersFunc = async (row) => {
-    const res = await deleteUsers({ ID: row.ID })
+const deleteConfigFunc = async (row) => {
+    const res = await deleteConfig({ ID: row.ID })
     if (res.code === 0) {
         ElMessage({
                 type: 'success',
@@ -402,9 +358,9 @@ const openDetailShow = () => {
 // 打开详情
 const getDetails = async (row) => {
   // 打开弹窗
-  const res = await findUsers({ ID: row.ID })
+  const res = await findConfig({ ID: row.ID })
   if (res.code === 0) {
-    formData.value = res.data.reu
+    formData.value = res.data.reconfig
     openDetailShow()
   }
 }
@@ -414,10 +370,9 @@ const getDetails = async (row) => {
 const closeDetailShow = () => {
   detailShow.value = false
   formData.value = {
-          phone: '',
-          password: '',
-          nickname: '',
-          order_type: '',
+          field: '',
+          value: '',
+          desc: '',
           }
 }
 
@@ -432,10 +387,9 @@ const openDialog = () => {
 const closeDialog = () => {
     dialogFormVisible.value = false
     formData.value = {
-        phone: '',
-        password: '',
-        nickname: '',
-        order_type: '',
+        field: '',
+        value: '',
+        desc: '',
         }
 }
 // 弹窗确定
@@ -445,13 +399,13 @@ const enterDialog = async () => {
               let res
               switch (type.value) {
                 case 'create':
-                  res = await createUsers(formData.value)
+                  res = await createConfig(formData.value)
                   break
                 case 'update':
-                  res = await updateUsers(formData.value)
+                  res = await updateConfig(formData.value)
                   break
                 default:
-                  res = await createUsers(formData.value)
+                  res = await createConfig(formData.value)
                   break
               }
               if (res.code === 0) {

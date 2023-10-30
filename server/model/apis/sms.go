@@ -49,11 +49,17 @@ type ReqOrders struct {
 }
 
 type KData struct {
-	Period int64 `json:"period" form:"period" ` // 周期
-	Rows   int64 `json:"rows" form:"rows" `     // 返回条数
+	Period int64  `json:"period" form:"period" ` // 周期
+	Rows   int64  `json:"rows" form:"rows" `     // 返回条数
+	Symbol string `json:"symbol"`
 }
 
 type KDataResp struct {
+	YdClosePrice float64  `json:"yd_close_price"`
+	Results      []YdData `json:"results"`
+}
+
+type YdData struct {
 	Uptime int64   `json:"uptime"`
 	Open   float64 `json:"open"`
 	High   float64 `json:"high"`

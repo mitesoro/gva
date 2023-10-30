@@ -7,6 +7,8 @@ definitions:
       rows:
         description: 返回条数
         type: integer
+      symbol:
+        type: string
     type: object
   apis.ReqLogin:
     properties:
@@ -699,6 +701,27 @@ definitions:
         type: boolean
       stacktrace-key:
         description: 栈名
+        type: string
+    type: object
+  configs.Config:
+    properties:
+      createdAt:
+        description: 创建时间
+        type: string
+      desc:
+        description: 描述
+        type: string
+      field:
+        description: 字段
+        type: string
+      id:
+        description: 主键ID
+        type: integer
+      updatedAt:
+        description: 更新时间
+        type: string
+      value:
+        description: 值
         type: string
     type: object
   example.ExaCustomer:
@@ -1717,12 +1740,16 @@ definitions:
       nickname:
         description: 昵称
         type: string
+      order_type:
+        type: integer
       password:
         description: 密码
         type: string
       phone:
         description: 手机号
         type: string
+      rate:
+        type: integer
       updatedAt:
         description: 更新时间
         type: string
@@ -3318,6 +3345,198 @@ paths:
       summary: 获取权限列表
       tags:
       - Casbin
+  /config/createConfig:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 创建配置管理
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/configs.Config'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"创建成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 创建配置管理
+      tags:
+      - Config
+  /config/deleteConfig:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: 删除配置管理
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/configs.Config'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"删除成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 删除配置管理
+      tags:
+      - Config
+  /config/deleteConfigByIds:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: 批量删除配置管理
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.IdsReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"批量删除成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 批量删除配置管理
+      tags:
+      - Config
+  /config/findConfig:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: 创建时间
+        in: query
+        name: createdAt
+        type: string
+      - description: 描述
+        in: query
+        name: desc
+        type: string
+      - description: 字段
+        in: query
+        name: field
+        type: string
+      - description: 主键ID
+        in: query
+        name: id
+        type: integer
+      - description: 更新时间
+        in: query
+        name: updatedAt
+        type: string
+      - description: 值
+        in: query
+        name: value
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"查询成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 用id查询配置管理
+      tags:
+      - Config
+  /config/getConfigList:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: 创建时间
+        in: query
+        name: createdAt
+        type: string
+      - description: 描述
+        in: query
+        name: desc
+        type: string
+      - in: query
+        name: endCreatedAt
+        type: string
+      - description: 字段
+        in: query
+        name: field
+        type: string
+      - description: 主键ID
+        in: query
+        name: id
+        type: integer
+      - description: 关键字
+        in: query
+        name: keyword
+        type: string
+      - description: 页码
+        in: query
+        name: page
+        type: integer
+      - description: 每页大小
+        in: query
+        name: pageSize
+        type: integer
+      - in: query
+        name: startCreatedAt
+        type: string
+      - description: 更新时间
+        in: query
+        name: updatedAt
+        type: string
+      - description: 值
+        in: query
+        name: value
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"获取成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 分页获取配置管理列表
+      tags:
+      - Config
+  /config/updateConfig:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: 更新配置管理
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/configs.Config'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"更新成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 更新配置管理
+      tags:
+      - Config
   /customer/customer:
     delete:
       consumes:
@@ -5075,6 +5294,9 @@ paths:
         in: query
         name: nickname
         type: string
+      - in: query
+        name: order_type
+        type: integer
       - description: 密码
         in: query
         name: password
@@ -5083,6 +5305,9 @@ paths:
         in: query
         name: phone
         type: string
+      - in: query
+        name: rate
+        type: integer
       - description: 更新时间
         in: query
         name: updatedAt
@@ -5130,6 +5355,9 @@ paths:
       - in: query
         name: order
         type: string
+      - in: query
+        name: order_type
+        type: integer
       - description: 页码
         in: query
         name: page
@@ -5146,6 +5374,9 @@ paths:
         in: query
         name: phone
         type: string
+      - in: query
+        name: rate
+        type: integer
       - in: query
         name: sort
         type: string
