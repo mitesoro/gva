@@ -1,19 +1,20 @@
 package initialize
 
 import (
+	"github.com/flipped-aurora/gin-vue-admin/server/model/data"
 	"os"
 
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/example"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/system"
 
+	"github.com/flipped-aurora/gin-vue-admin/server/model/article"
+	"github.com/flipped-aurora/gin-vue-admin/server/model/article_category"
+	"github.com/flipped-aurora/gin-vue-admin/server/model/configs"
+	"github.com/flipped-aurora/gin-vue-admin/server/model/orders"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/users"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
-	"github.com/flipped-aurora/gin-vue-admin/server/model/article_category"
-	"github.com/flipped-aurora/gin-vue-admin/server/model/article"
-	"github.com/flipped-aurora/gin-vue-admin/server/model/orders"
-	"github.com/flipped-aurora/gin-vue-admin/server/model/configs"
 )
 
 func Gorm() *gorm.DB {
@@ -55,6 +56,7 @@ func RegisterTables() {
 		example.ExaFile{},
 		example.ExaCustomer{},
 		example.ExaFileChunk{},
+		data.Data{},
 		example.ExaFileUploadAndDownload{}, users.Users{}, article_category.ArticleCategory{}, article.Article{}, orders.Orders{}, configs.Config{},
 	)
 	if err != nil {
