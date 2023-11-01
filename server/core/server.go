@@ -54,6 +54,19 @@ func RunWindowsServer() {
 					continue
 				}
 				d.InsertAt = time.Now().Unix()
+				// 获取当前时间
+				now := time.Now()
+
+				// 判断是否是1分钟K线时间点
+				if now.Minute()%1 == 0 && now.Second() == 0 {
+					fmt.Println("当前时间是1分钟K线时间点")
+				}
+
+				// 判断是否是5分钟K线时间点
+				if now.Minute()%5 == 0 && now.Second() == 0 {
+					fmt.Println("当前时间是5分钟K线时间点")
+				}
+
 				err = global.GVA_DB.Create(&d).Error
 				if err != nil {
 					fmt.Println(err)
