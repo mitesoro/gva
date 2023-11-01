@@ -101,3 +101,12 @@ run:
 
 run_web:
 	cd web && npm run serve
+
+.PHONY: pb
+CONF_PROTO_FILES=$(shell find server/pb -name *.proto)
+# 生成配置文件和枚举
+pb:
+	protoc --proto_path=./server/pb \
+     	       --go_out=paths=source_relative:./server/pb \
+     	       --go-grpc_out=paths=source_relative:./server/pb \
+    	       $(CONF_PROTO_FILES)

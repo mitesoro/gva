@@ -2,10 +2,15 @@ package core
 
 import (
 	"context"
+	"crypto/tls"
 	"encoding/json"
 	"fmt"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/data"
+	"github.com/flipped-aurora/gin-vue-admin/server/pb"
 	"github.com/flipped-aurora/gin-vue-admin/server/utils"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials"
+	"log"
 	"time"
 
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
@@ -27,6 +32,21 @@ func RunWindowsServer() {
 	// 从db加载jwt数据
 	if global.GVA_DB != nil {
 		system.LoadAll()
+	}
+	// 初始化grpc
+
+	if global.GVA_GrpcCLient == nil {
+		// 创建与gRPC服务器的连接
+		creds := credentials.NewTLS(&tls.Config{
+			InsecureSkipVerify: false,
+		})
+		conn, err := grpc.Dial("127.0.0.1:50051", grpc.WithTransportCredentials(creds))
+		if err != nil {
+			log.Fatalf("无法连接到gRPC服务器: %v", err)
+		}
+		defer conn.Close()
+
+		global.GVA_GrpcCLient = pb.NewGreeterClient(conn)
 	}
 
 	Router := initialize.Routers()
@@ -71,6 +91,12 @@ func RunWindowsServer() {
 				if err != nil {
 					fmt.Println(err)
 				}
+				res, err := global.GVA_GrpcCLient.SayHello(context.Background(), &pb.HelloRequest{Name: "name"})
+				if err != nil {
+					fmt.Println("err", err)
+				}
+
+				fmt.Println(res.GetMessage())
 			}
 		})
 	})

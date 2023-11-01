@@ -1,9 +1,10 @@
 package global
 
 import (
+	"github.com/flipped-aurora/gin-vue-admin/server/pb"
+	"github.com/flipped-aurora/gin-vue-admin/server/utils/timer"
 	"sync"
 
-	"github.com/flipped-aurora/gin-vue-admin/server/utils/timer"
 	"github.com/songzhibin97/gkit/cache/local_cache"
 
 	"golang.org/x/sync/singleflight"
@@ -28,8 +29,9 @@ var (
 	GVA_Timer               timer.Timer = timer.NewTimerTask()
 	GVA_Concurrency_Control             = &singleflight.Group{}
 
-	BlackCache local_cache.Cache
-	lock       sync.RWMutex
+	BlackCache     local_cache.Cache
+	lock           sync.RWMutex
+	GVA_GrpcCLient pb.GreeterClient
 )
 
 // GetGlobalDBByDBName 通过名称获取db list中的db
