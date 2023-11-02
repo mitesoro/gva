@@ -5,6 +5,7 @@ import "github.com/flipped-aurora/gin-vue-admin/server/global"
 // k线数据 结构体  Data
 type Data struct {
 	global.GVA_MODEL
+	SymbolId           string  `json:"symbol_id"  form:"symbol_id" gorm:"column:symbol_id;comment:合约代码;"`                                  // 合约代码
 	InstrumentRef      int64   `json:"instrument_ref"  form:"instrument_ref" gorm:"column:instrument_ref;comment:合约序号;"`                   // 合约序号
 	TradingDay         int64   `json:"trading_day"  form:"trading_day" gorm:"column:trading_day;comment:交易日;"`                             // 交易日
 	PreSettlementPrice float64 `json:"pre_settlement_price"  form:"pre_settlement_price" gorm:"column:pre_settlement_price;comment:前结算价;"` // 前结算价

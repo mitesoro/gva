@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/data"
+	"github.com/flipped-aurora/gin-vue-admin/server/model/symbols"
 	"github.com/flipped-aurora/gin-vue-admin/server/pb"
 	"github.com/flipped-aurora/gin-vue-admin/server/utils"
 	"google.golang.org/grpc"
@@ -99,6 +100,31 @@ func RunWindowsServer() {
 				fmt.Println(res.GetMessage())
 			}
 		})
+	})
+
+	// 缓存品种
+	utils.SafeGO(func() {
+		if global.GVA_REDIS == nil {
+			initialize.Redis()
+		}
+		ticker := time.NewTicker(time.Minute)
+		for {
+			select {
+			case <-ticker.C:
+				var sbs []symbols.Symbol
+				if err := global.GVA_DB.Find(&sbs).Error; err != nil {
+					fmt.Println("GVA_DB find Symbol err", err)
+					continue
+				}
+				mm := make(map[string]string)
+				for _, sb := range sbs {
+					mm[sb.Code] = sb.Code
+				}
+				if err := global.GVA_REDIS.HMSet(context.Background(), "symbol", mm).Err(); err != nil {
+					fmt.Println("GVA_REDIS HMSet Symbol err", err)
+				}
+			}
+		}
 	})
 	time.Sleep(10 * time.Microsecond)
 	global.GVA_LOG.Info("server run success on ", zap.String("address", address))

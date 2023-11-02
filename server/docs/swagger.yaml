@@ -1241,6 +1241,45 @@ definitions:
       user:
         $ref: '#/definitions/system.SysUser'
     type: object
+  symbols.Symbol:
+    properties:
+      bond:
+        description: 保证金
+        type: integer
+      code:
+        description: 代码
+        type: string
+      createdAt:
+        description: 创建时间
+        type: string
+      id:
+        description: 主键ID
+        type: integer
+      multiple:
+        description: 倍数
+        type: integer
+      name:
+        description: 名称
+        type: string
+      point_fail:
+        description: 止损点位
+        type: integer
+      point_fail_price:
+        description: 止损点位价格
+        type: integer
+      point_success:
+        description: 止赢点位
+        type: integer
+      point_success_price:
+        description: 止赢点位价格
+        type: integer
+      status:
+        description: 状态
+        type: boolean
+      updatedAt:
+        description: 更新时间
+        type: string
+    type: object
   system.AutoCodeStruct:
     properties:
       abbreviation:
@@ -4449,6 +4488,246 @@ paths:
       summary: 更新订单
       tags:
       - Orders
+  /sb/createSymbol:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 创建合约品种
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/symbols.Symbol'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"创建成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 创建合约品种
+      tags:
+      - Symbol
+  /sb/deleteSymbol:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: 删除合约品种
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/symbols.Symbol'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"删除成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 删除合约品种
+      tags:
+      - Symbol
+  /sb/deleteSymbolByIds:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: 批量删除合约品种
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.IdsReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"批量删除成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 批量删除合约品种
+      tags:
+      - Symbol
+  /sb/findSymbol:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: 保证金
+        in: query
+        name: bond
+        type: integer
+      - description: 代码
+        in: query
+        name: code
+        type: string
+      - description: 创建时间
+        in: query
+        name: createdAt
+        type: string
+      - description: 主键ID
+        in: query
+        name: id
+        type: integer
+      - description: 倍数
+        in: query
+        name: multiple
+        type: integer
+      - description: 名称
+        in: query
+        name: name
+        type: string
+      - description: 止损点位
+        in: query
+        name: point_fail
+        type: integer
+      - description: 止损点位价格
+        in: query
+        name: point_fail_price
+        type: integer
+      - description: 止赢点位
+        in: query
+        name: point_success
+        type: integer
+      - description: 止赢点位价格
+        in: query
+        name: point_success_price
+        type: integer
+      - description: 状态
+        in: query
+        name: status
+        type: boolean
+      - description: 更新时间
+        in: query
+        name: updatedAt
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"查询成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 用id查询合约品种
+      tags:
+      - Symbol
+  /sb/getSymbolList:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: 保证金
+        in: query
+        name: bond
+        type: integer
+      - description: 代码
+        in: query
+        name: code
+        type: string
+      - description: 创建时间
+        in: query
+        name: createdAt
+        type: string
+      - in: query
+        name: endCreatedAt
+        type: string
+      - description: 主键ID
+        in: query
+        name: id
+        type: integer
+      - description: 关键字
+        in: query
+        name: keyword
+        type: string
+      - description: 倍数
+        in: query
+        name: multiple
+        type: integer
+      - description: 名称
+        in: query
+        name: name
+        type: string
+      - description: 页码
+        in: query
+        name: page
+        type: integer
+      - description: 每页大小
+        in: query
+        name: pageSize
+        type: integer
+      - description: 止损点位
+        in: query
+        name: point_fail
+        type: integer
+      - description: 止损点位价格
+        in: query
+        name: point_fail_price
+        type: integer
+      - description: 止赢点位
+        in: query
+        name: point_success
+        type: integer
+      - description: 止赢点位价格
+        in: query
+        name: point_success_price
+        type: integer
+      - in: query
+        name: startCreatedAt
+        type: string
+      - description: 状态
+        in: query
+        name: status
+        type: boolean
+      - description: 更新时间
+        in: query
+        name: updatedAt
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"获取成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 分页获取合约品种列表
+      tags:
+      - Symbol
+  /sb/updateSymbol:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: 更新合约品种
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/symbols.Symbol'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"更新成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 更新合约品种
+      tags:
+      - Symbol
   /sysDictionary/createSysDictionary:
     post:
       consumes:
