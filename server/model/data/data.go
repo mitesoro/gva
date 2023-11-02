@@ -25,3 +25,21 @@ type Data struct {
 	AveragePrice       float64 `json:"average_price"  form:"average_price" gorm:"column:average_price;comment:市场均价;"`                      // 市场均价
 	InsertAt           int64   `json:"insert_at"  form:"insert_at" gorm:"column:insert_at;comment:插入时间;"`                                  // 插入时间
 }
+
+type Data5 Data
+
+type Data15 Data
+
+type Data30 Data
+
+type Data60 Data
+
+type Data120 Data
+
+type Data240 Data
+
+type Data360 Data
+
+type Data480 Data
+
+type Data1440 Data

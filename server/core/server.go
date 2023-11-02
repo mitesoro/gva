@@ -68,30 +68,105 @@ func RunWindowsServer() {
 		// 在单独的goroutine中处理接收到的消息
 		utils.SafeGO(func() {
 			for msg := range channel {
+				now := time.Now()
 				var d data.Data
 				err := json.Unmarshal([]byte(msg.Payload), &d)
 				if err != nil {
 					fmt.Println("Received message:", msg.Payload, err)
 					continue
 				}
-				d.InsertAt = time.Now().Unix()
-				// 获取当前时间
-				now := time.Now()
 
-				// 判断是否是1分钟K线时间点
-				if now.Minute()%1 == 0 && now.Second() == 0 {
-					fmt.Println("当前时间是1分钟K线时间点")
-				}
-
-				// 判断是否是5分钟K线时间点
-				if now.Minute()%5 == 0 && now.Second() == 0 {
-					fmt.Println("当前时间是5分钟K线时间点")
-				}
+				d.InsertAt = now.Unix()
+				d.PreSettlementPrice = utils.Decimal(d.PreSettlementPrice)
+				d.PreClosePrice = utils.Decimal(d.PreClosePrice)
+				d.PreOpenInterest = utils.Decimal(d.PreOpenInterest)
+				d.UpperLimitPrice = utils.Decimal(d.UpperLimitPrice)
+				d.LowerLimitPrice = utils.Decimal(d.LowerLimitPrice)
+				d.LastPrice = utils.Decimal(d.LastPrice)
+				d.BidPrice = utils.Decimal(d.BidPrice)
+				d.AskPrice = utils.Decimal(d.AskPrice)
+				d.Turnover = utils.Decimal(d.Turnover)
+				d.OpenInterest = utils.Decimal(d.OpenInterest)
+				d.AveragePrice = utils.Decimal(d.AveragePrice)
 
 				err = global.GVA_DB.Create(&d).Error
 				if err != nil {
 					fmt.Println(err)
+					continue
 				}
+				if now.Minute()%5 == 0 && now.Second() == 0 {
+					dd := data.Data5(d)
+					err = global.GVA_DB.Create(&dd).Error
+					if err != nil {
+						fmt.Println(err)
+						continue
+					}
+				}
+				if now.Minute()%15 == 0 && now.Second() == 0 {
+					dd := data.Data15(d)
+					err = global.GVA_DB.Create(&dd).Error
+					if err != nil {
+						fmt.Println(err)
+						continue
+					}
+				}
+				if now.Minute()%30 == 0 && now.Second() == 0 {
+					dd := data.Data30(d)
+					err = global.GVA_DB.Create(&dd).Error
+					if err != nil {
+						fmt.Println(err)
+						continue
+					}
+				}
+				if now.Minute() == 0 && now.Second() == 0 {
+					dd := data.Data60(d)
+					err = global.GVA_DB.Create(&dd).Error
+					if err != nil {
+						fmt.Println(err)
+						continue
+					}
+				}
+				if now.Minute() == 0 && now.Second() == 0 && now.Hour()%2 == 0 {
+					dd := data.Data120(d)
+					err = global.GVA_DB.Create(&dd).Error
+					if err != nil {
+						fmt.Println(err)
+						continue
+					}
+				}
+				if now.Minute() == 0 && now.Second() == 0 && now.Hour()%4 == 0 {
+					dd := data.Data240(d)
+					err = global.GVA_DB.Create(&dd).Error
+					if err != nil {
+						fmt.Println(err)
+						continue
+					}
+				}
+				if now.Minute() == 0 && now.Second() == 0 && now.Hour()%6 == 0 {
+					dd := data.Data360(d)
+					err = global.GVA_DB.Create(&dd).Error
+					if err != nil {
+						fmt.Println(err)
+						continue
+					}
+				}
+				if now.Minute() == 0 && now.Second() == 0 && now.Hour()%8 == 0 {
+					dd := data.Data480(d)
+					err = global.GVA_DB.Create(&dd).Error
+					if err != nil {
+						fmt.Println(err)
+						continue
+					}
+				}
+				if now.Minute() == 0 && now.Second() == 0 && now.Hour() == 0 {
+					dd := data.Data1440(d)
+					err = global.GVA_DB.Create(&dd).Error
+					if err != nil {
+						fmt.Println(err)
+						continue
+					}
+				}
+
 				res, err := global.GVA_GrpcCLient.SayHello(context.Background(), &pb.HelloRequest{Name: "name"})
 				if err != nil {
 					fmt.Println("err", err)

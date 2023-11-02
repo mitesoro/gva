@@ -12,10 +12,10 @@ import (
 	"github.com/flipped-aurora/gin-vue-admin/server/model/article_category"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/configs"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/orders"
+	"github.com/flipped-aurora/gin-vue-admin/server/model/symbols"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/users"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
-	"github.com/flipped-aurora/gin-vue-admin/server/model/symbols"
 )
 
 func Gorm() *gorm.DB {
@@ -58,6 +58,15 @@ func RegisterTables() {
 		example.ExaCustomer{},
 		example.ExaFileChunk{},
 		data.Data{},
+		data.Data5{},
+		data.Data15{},
+		data.Data30{},
+		data.Data60{},
+		data.Data120{},
+		data.Data240{},
+		data.Data360{},
+		data.Data480{},
+		data.Data1440{},
 		example.ExaFileUploadAndDownload{}, users.Users{}, article_category.ArticleCategory{}, article.Article{}, orders.Orders{}, configs.Config{}, symbols.Symbol{},
 	)
 	if err != nil {
