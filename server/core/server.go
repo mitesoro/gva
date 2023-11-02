@@ -39,7 +39,7 @@ func RunWindowsServer() {
 	if global.GVA_GrpcCLient == nil {
 		// 创建与gRPC服务器的连接
 		creds := credentials.NewTLS(&tls.Config{
-			InsecureSkipVerify: false,
+			InsecureSkipVerify: true,
 		})
 		conn, err := grpc.Dial("127.0.0.1:50051", grpc.WithTransportCredentials(creds))
 		if err != nil {
@@ -68,11 +68,12 @@ func RunWindowsServer() {
 		// 在单独的goroutine中处理接收到的消息
 		utils.SafeGO(func() {
 			for msg := range channel {
+
 				now := time.Now()
 				var d data.Data
 				err := json.Unmarshal([]byte(msg.Payload), &d)
 				if err != nil {
-					fmt.Println("Received message:", msg.Payload, err)
+					global.GVA_LOG.Error("Received message:", zap.Error(err), zap.String("Payload", msg.Payload))
 					continue
 				}
 
@@ -91,14 +92,14 @@ func RunWindowsServer() {
 
 				err = global.GVA_DB.Create(&d).Error
 				if err != nil {
-					fmt.Println(err)
+					global.GVA_LOG.Error("Received message:", zap.Error(err), zap.String("Payload", msg.Payload))
 					continue
 				}
 				if now.Minute()%5 == 0 && now.Second() == 0 {
 					dd := data.Data5(d)
 					err = global.GVA_DB.Create(&dd).Error
 					if err != nil {
-						fmt.Println(err)
+						global.GVA_LOG.Error("Received message:", zap.Error(err), zap.String("Payload", msg.Payload))
 						continue
 					}
 				}
@@ -106,7 +107,7 @@ func RunWindowsServer() {
 					dd := data.Data15(d)
 					err = global.GVA_DB.Create(&dd).Error
 					if err != nil {
-						fmt.Println(err)
+						global.GVA_LOG.Error("Received message:", zap.Error(err), zap.String("Payload", msg.Payload))
 						continue
 					}
 				}
@@ -114,7 +115,7 @@ func RunWindowsServer() {
 					dd := data.Data30(d)
 					err = global.GVA_DB.Create(&dd).Error
 					if err != nil {
-						fmt.Println(err)
+						global.GVA_LOG.Error("Received message:", zap.Error(err), zap.String("Payload", msg.Payload))
 						continue
 					}
 				}
@@ -122,7 +123,7 @@ func RunWindowsServer() {
 					dd := data.Data60(d)
 					err = global.GVA_DB.Create(&dd).Error
 					if err != nil {
-						fmt.Println(err)
+						global.GVA_LOG.Error("Received message:", zap.Error(err), zap.String("Payload", msg.Payload))
 						continue
 					}
 				}
@@ -130,7 +131,7 @@ func RunWindowsServer() {
 					dd := data.Data120(d)
 					err = global.GVA_DB.Create(&dd).Error
 					if err != nil {
-						fmt.Println(err)
+						global.GVA_LOG.Error("Received message:", zap.Error(err), zap.String("Payload", msg.Payload))
 						continue
 					}
 				}
@@ -138,7 +139,7 @@ func RunWindowsServer() {
 					dd := data.Data240(d)
 					err = global.GVA_DB.Create(&dd).Error
 					if err != nil {
-						fmt.Println(err)
+						global.GVA_LOG.Error("Received message:", zap.Error(err), zap.String("Payload", msg.Payload))
 						continue
 					}
 				}
@@ -146,7 +147,7 @@ func RunWindowsServer() {
 					dd := data.Data360(d)
 					err = global.GVA_DB.Create(&dd).Error
 					if err != nil {
-						fmt.Println(err)
+						global.GVA_LOG.Error("Received message:", zap.Error(err), zap.String("Payload", msg.Payload))
 						continue
 					}
 				}
@@ -154,7 +155,7 @@ func RunWindowsServer() {
 					dd := data.Data480(d)
 					err = global.GVA_DB.Create(&dd).Error
 					if err != nil {
-						fmt.Println(err)
+						global.GVA_LOG.Error("Received message:", zap.Error(err), zap.String("Payload", msg.Payload))
 						continue
 					}
 				}
@@ -162,17 +163,16 @@ func RunWindowsServer() {
 					dd := data.Data1440(d)
 					err = global.GVA_DB.Create(&dd).Error
 					if err != nil {
-						fmt.Println(err)
+						global.GVA_LOG.Error("Received message:", zap.Error(err), zap.String("Payload", msg.Payload))
 						continue
 					}
 				}
 
 				res, err := global.GVA_GrpcCLient.SayHello(context.Background(), &pb.HelloRequest{Name: "name"})
 				if err != nil {
-					fmt.Println("err", err)
+					global.GVA_LOG.Error("SayHello", zap.Error(err))
 				}
-
-				fmt.Println(res.GetMessage())
+				global.GVA_LOG.Error("SayHello", zap.String("message", res.GetMessage()))
 			}
 		})
 	})
