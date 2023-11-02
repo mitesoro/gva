@@ -1767,12 +1767,18 @@ definitions:
     type: object
   users.Users:
     properties:
+      amount:
+        type: integer
+      available_amount:
+        type: integer
       avatar:
         description: 头像
         type: string
       createdAt:
         description: 创建时间
         type: string
+      freeze_amount:
+        type: integer
       id:
         description: 主键ID
         type: integer
@@ -5557,6 +5563,12 @@ paths:
       consumes:
       - application/json
       parameters:
+      - in: query
+        name: amount
+        type: integer
+      - in: query
+        name: available_amount
+        type: integer
       - description: 头像
         in: query
         name: avatar
@@ -5565,6 +5577,9 @@ paths:
         in: query
         name: createdAt
         type: string
+      - in: query
+        name: freeze_amount
+        type: integer
       - description: 主键ID
         in: query
         name: id
@@ -5608,6 +5623,12 @@ paths:
       consumes:
       - application/json
       parameters:
+      - in: query
+        name: amount
+        type: integer
+      - in: query
+        name: available_amount
+        type: integer
       - description: 头像
         in: query
         name: avatar
@@ -5619,6 +5640,9 @@ paths:
       - in: query
         name: endCreatedAt
         type: string
+      - in: query
+        name: freeze_amount
+        type: integer
       - description: 主键ID
         in: query
         name: id

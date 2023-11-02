@@ -63,12 +63,15 @@
           <template #default="scope">
             {{ filterDict(scope.row.order_type,genderOptions) }}
           </template>
-          </el-table-column>
-          <el-table-column label="头像" width="200">
-              <template #default="scope">
-                <el-image style="width: 100px; height: 100px" :src="getUrl(scope.row.avatar)" fit="cover"/>
-              </template>
-          </el-table-column>
+        </el-table-column>
+        <el-table-column align="left" label="总金额" :formatter="row => formatCurrency(row.amount)" width="120" />
+        <el-table-column align="left" label="可用金额" :formatter="row => formatCurrency(row.available_amount)" width="120" />
+        <el-table-column align="left" label="冻结金额" :formatter="row => formatCurrency(row.freeze_amount)" width="120" />
+<!--          <el-table-column label="头像" width="200">-->
+<!--              <template #default="scope">-->
+<!--                <el-image style="width: 100px; height: 100px" :src="getUrl(scope.row.avatar)" fit="cover"/>-->
+<!--              </template>-->
+<!--          </el-table-column>-->
         <el-table-column align="left" label="操作">
             <template #default="scope">
             <el-button type="primary" link class="table-button" @click="getDetails(scope.row)">
@@ -109,12 +112,12 @@
                 <el-option v-for="(item,key) in genderOptions" :key="key" :label="item.label" :value="item.value" />
               </el-select>
             </el-form-item>
-            <el-form-item label="头像:"  prop="avatar" >
-                <SelectImage
-                 v-model="formData.avatar"
-                 file-type="image"
-                />
-            </el-form-item>
+<!--            <el-form-item label="头像:"  prop="avatar" >-->
+<!--                <SelectImage-->
+<!--                 v-model="formData.avatar"-->
+<!--                 file-type="image"-->
+<!--                />-->
+<!--            </el-form-item>-->
           </el-form>
       </el-scrollbar>
       <template #footer>
@@ -134,9 +137,9 @@
                 <el-descriptions-item label="昵称">
                         {{ formData.nickname }}
                 </el-descriptions-item>
-                <el-descriptions-item label="头像">
-                        <el-image style="width: 50px; height: 50px" :preview-src-list="ReturnArrImg(formData.avatar)" :src="getUrl(formData.avatar)" fit="cover" />
-                </el-descriptions-item>
+<!--                <el-descriptions-item label="头像">-->
+<!--                        <el-image style="width: 50px; height: 50px" :preview-src-list="ReturnArrImg(formData.avatar)" :src="getUrl(formData.avatar)" fit="cover" />-->
+<!--                </el-descriptions-item>-->
                 <el-descriptions-item label="订单正反手">
                   {{ filterDict(formData.order_type,genderOptions) }}
                 </el-descriptions-item>
@@ -176,6 +179,7 @@ const formData = ref({
         nickname: '',
         avatar: "",
         order_type: "",
+        amount: 0,
         })
 
 
@@ -463,6 +467,10 @@ const enterDialog = async () => {
                 getTableData()
               }
       })
+}
+
+const formatCurrency = (amount) => {
+  return (amount / 100).toFixed(2);
 }
 
 </script>

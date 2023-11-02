@@ -6419,6 +6419,16 @@ const docTemplate = `{
                 "summary": "用id查询用户",
                 "parameters": [
                     {
+                        "type": "integer",
+                        "name": "amount",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "available_amount",
+                        "in": "query"
+                    },
+                    {
                         "type": "string",
                         "description": "头像",
                         "name": "avatar",
@@ -6428,6 +6438,11 @@ const docTemplate = `{
                         "type": "string",
                         "description": "创建时间",
                         "name": "createdAt",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "freeze_amount",
                         "in": "query"
                     },
                     {
@@ -6500,6 +6515,16 @@ const docTemplate = `{
                 "summary": "分页获取用户列表",
                 "parameters": [
                     {
+                        "type": "integer",
+                        "name": "amount",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "available_amount",
+                        "in": "query"
+                    },
+                    {
                         "type": "string",
                         "description": "头像",
                         "name": "avatar",
@@ -6514,6 +6539,11 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "name": "endCreatedAt",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "freeze_amount",
                         "in": "query"
                     },
                     {
@@ -9666,6 +9696,12 @@ const docTemplate = `{
         "users.Users": {
             "type": "object",
             "properties": {
+                "amount": {
+                    "type": "integer"
+                },
+                "available_amount": {
+                    "type": "integer"
+                },
                 "avatar": {
                     "description": "头像",
                     "type": "string"
@@ -9673,6 +9709,9 @@ const docTemplate = `{
                 "createdAt": {
                     "description": "创建时间",
                     "type": "string"
+                },
+                "freeze_amount": {
+                    "type": "integer"
                 },
                 "id": {
                     "description": "主键ID",
