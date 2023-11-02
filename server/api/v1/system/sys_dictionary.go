@@ -5,6 +5,7 @@ import (
 	"github.com/flipped-aurora/gin-vue-admin/server/model/common/response"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/system"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/system/request"
+	"github.com/flipped-aurora/gin-vue-admin/server/model/users"
 	"github.com/flipped-aurora/gin-vue-admin/server/utils"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
@@ -103,6 +104,29 @@ func (s *DictionaryApi) FindSysDictionary(c *gin.Context) {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
+	if dictionary.Type == "user" { // 查询用户
+		t := true
+		sysDictionary := system.SysDictionary{
+			Name:   dictionary.Type,
+			Status: &t,
+			Type:   dictionary.Type,
+		}
+		var us []users.Users
+		if err = global.GVA_DB.Find(&us).Error; err == nil {
+			var details []system.SysDictionaryDetail
+			for _, user := range us {
+				details = append(details, system.SysDictionaryDetail{
+					Value:           int(user.ID),
+					Label:           user.Nickname,
+					SysDictionaryID: 999,
+				})
+			}
+			sysDictionary.SysDictionaryDetails = details
+		}
+		response.OkWithDetailed(gin.H{"resysDictionary": sysDictionary}, "查询成功", c)
+		return
+	}
+
 	sysDictionary, err := dictionaryService.GetSysDictionary(dictionary.Type, dictionary.ID, dictionary.Status)
 	if err != nil {
 		global.GVA_LOG.Error("字典未创建或未开启!", zap.Error(err))

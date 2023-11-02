@@ -25,10 +25,12 @@
 
         </el-form-item>
         <el-form-item label="类型" prop="direction">
-            
-             <el-input v-model.number="searchInfo.direction" placeholder="搜索条件" />
-
+          <el-select v-model="searchInfo.direction" placeholder="搜索条件">
+            <el-option label="止赢" value="1"></el-option>
+            <el-option label="止损" value="2"></el-option>
+          </el-select>
         </el-form-item>
+
         <el-form-item label="手" prop="volume">
             
              <el-input v-model.number="searchInfo.volume" placeholder="搜索条件" />
@@ -78,7 +80,13 @@
         </el-table-column>
         <el-table-column align="left" label="账户" prop="account_id" width="120" />
         <el-table-column align="left" label="订单号" prop="order_no" width="120" />
-        <el-table-column align="left" label="类型" prop="direction" width="120" />
+        <el-table-column align="left" label="类型"  width="120" >
+          <template #default="scope">
+            <div>
+              <el-tag :type="formatTagType(scope.row.direction)">{{ formatDirection(scope.row.direction) }}</el-tag>
+            </div>
+          </template>
+        </el-table-column>
         <el-table-column align="left" label="手" prop="volume" width="120" />
         <el-table-column align="left" label="价格" prop="price" width="120" />
         <el-table-column align="left" label="操作">
@@ -87,8 +95,8 @@
                 <el-icon style="margin-right: 5px"><InfoFilled /></el-icon>
                 查看详情
             </el-button>
-            <el-button type="primary" link icon="edit" class="table-button" @click="updateOrdersFunc(scope.row)">变更</el-button>
-            <el-button type="primary" link icon="delete" @click="deleteRow(scope.row)">删除</el-button>
+<!--            <el-button type="primary" link icon="edit" class="table-button" @click="updateOrdersFunc(scope.row)">变更</el-button>-->
+<!--            <el-button type="primary" link icon="delete" @click="deleteRow(scope.row)">删除</el-button>-->
             </template>
         </el-table-column>
         </el-table>
@@ -311,7 +319,7 @@ getTableData()
 
 // 获取需要的字典 可能为空 按需保留
 const setOptions = async () =>{
-    intOptions.value = await getDictFunc('int')
+    intOptions.value = await getDictFunc('user')
 }
 
 // 获取需要的字典 可能为空 按需保留
@@ -479,6 +487,16 @@ const enterDialog = async () => {
                 getTableData()
               }
       })
+}
+const formatDirection = (direction) => {
+  if (direction === 2) {
+    return "止损";
+  }
+  return "止赢" ;
+}
+
+const formatTagType = (direction) => {
+  return direction === 1 ? 'success' : 'danger';
 }
 
 </script>

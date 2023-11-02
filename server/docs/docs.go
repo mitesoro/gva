@@ -4416,6 +4416,24 @@ const docTemplate = `{
                         "in": "query"
                     },
                     {
+                        "type": "integer",
+                        "description": "盈利金额",
+                        "name": "amount",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "保证金",
+                        "name": "bond",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "期货下单返回数据",
+                        "name": "content",
+                        "in": "query"
+                    },
+                    {
                         "type": "string",
                         "description": "创建时间",
                         "name": "createdAt",
@@ -4443,6 +4461,12 @@ const docTemplate = `{
                         "type": "integer",
                         "description": "价格",
                         "name": "price",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "状态 0下单中 1成功 2取消 3失败",
+                        "name": "status",
                         "in": "query"
                     },
                     {
@@ -4496,6 +4520,24 @@ const docTemplate = `{
                         "type": "integer",
                         "description": "账户",
                         "name": "account_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "盈利金额",
+                        "name": "amount",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "保证金",
+                        "name": "bond",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "期货下单返回数据",
+                        "name": "content",
                         "in": "query"
                     },
                     {
@@ -4554,6 +4596,12 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "name": "startCreatedAt",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "状态 0下单中 1成功 2取消 3失败",
+                        "name": "status",
                         "in": "query"
                     },
                     {
@@ -8383,6 +8431,18 @@ const docTemplate = `{
                     "description": "账户",
                     "type": "integer"
                 },
+                "amount": {
+                    "description": "盈利金额",
+                    "type": "integer"
+                },
+                "bond": {
+                    "description": "保证金",
+                    "type": "integer"
+                },
+                "content": {
+                    "description": "期货下单返回数据",
+                    "type": "string"
+                },
                 "createdAt": {
                     "description": "创建时间",
                     "type": "string"
@@ -8401,6 +8461,10 @@ const docTemplate = `{
                 },
                 "price": {
                     "description": "价格",
+                    "type": "integer"
+                },
+                "status": {
+                    "description": "状态 0下单中 1成功 2取消 3失败",
                     "type": "integer"
                 },
                 "updatedAt": {
