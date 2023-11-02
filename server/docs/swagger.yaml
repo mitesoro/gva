@@ -1822,8 +1822,10 @@ definitions:
   users.Users:
     properties:
       amount:
+        description: 总金额
         type: integer
       available_amount:
+        description: 可用金额
         type: integer
       avatar:
         description: 头像
@@ -1832,6 +1834,7 @@ definitions:
         description: 创建时间
         type: string
       freeze_amount:
+        description: 冻结金额
         type: integer
       id:
         description: 主键ID
@@ -1848,6 +1851,7 @@ definitions:
         description: 手机号
         type: string
       rate:
+        description: 盈亏比
         type: integer
       updatedAt:
         description: 更新时间
@@ -2791,6 +2795,22 @@ paths:
       summary: 修改基础api
       tags:
       - SysApi
+  /api/user/info:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"code":0,"data":{},"msg":"success"}'
+          schema:
+            $ref: '#/definitions/users.Users'
+      security:
+      - ApiKeyAuth: []
+      summary: 获取用户信息
+      tags:
+      - 前端接口API
   /api/user/update:
     post:
       consumes:
@@ -6033,10 +6053,12 @@ paths:
       consumes:
       - application/json
       parameters:
-      - in: query
+      - description: 总金额
+        in: query
         name: amount
         type: integer
-      - in: query
+      - description: 可用金额
+        in: query
         name: available_amount
         type: integer
       - description: 头像
@@ -6047,7 +6069,8 @@ paths:
         in: query
         name: createdAt
         type: string
-      - in: query
+      - description: 冻结金额
+        in: query
         name: freeze_amount
         type: integer
       - description: 主键ID
@@ -6069,7 +6092,8 @@ paths:
         in: query
         name: phone
         type: string
-      - in: query
+      - description: 盈亏比
+        in: query
         name: rate
         type: integer
       - description: 更新时间
@@ -6093,10 +6117,12 @@ paths:
       consumes:
       - application/json
       parameters:
-      - in: query
+      - description: 总金额
+        in: query
         name: amount
         type: integer
-      - in: query
+      - description: 可用金额
+        in: query
         name: available_amount
         type: integer
       - description: 头像
@@ -6110,7 +6136,8 @@ paths:
       - in: query
         name: endCreatedAt
         type: string
-      - in: query
+      - description: 冻结金额
+        in: query
         name: freeze_amount
         type: integer
       - description: 主键ID
@@ -6147,7 +6174,8 @@ paths:
         in: query
         name: phone
         type: string
-      - in: query
+      - description: 盈亏比
+        in: query
         name: rate
         type: integer
       - in: query

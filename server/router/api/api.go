@@ -23,6 +23,7 @@ func (s *ApiRouter) InitApiRouter(Router *gin.RouterGroup) {
 		uRouter.POST("user/update-phone", aApi.UpdatePhone).Use(middleware.Token())       // 修改手机号
 		uRouter.POST("user/update-password", aApi.UpdatePassword).Use(middleware.Token()) // 修改密码
 		uRouter.POST("orders/create", aApi.OrdersCreate).Use(middleware.Token())          // 下单
+		uRouter.GET("user/info", aApi.GetUserInfo).Use(middleware.Token())                // 下单
 	}
 
 }

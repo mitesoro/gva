@@ -414,3 +414,26 @@ func (uApi *ApisApi) PriceData(c *gin.Context) {
 	}, c)
 	return
 }
+
+// GetUserInfo 获取用户信息
+// @Tags 前端接口API
+// @Summary 获取用户信息
+// @Security ApiKeyAuth
+// @accept application/json
+// @Produce application/json
+// @Success 200 {object} users.Users "{"code":0,"data":{},"msg":"success"}"
+// @Router /api/user/info [get]
+func (uApi *ApisApi) GetUserInfo(c *gin.Context) {
+
+	id, _ := c.Get("uid")
+	userID := cast.ToInt(id)
+	var u users.Users
+	err := global.GVA_DB.Where("id = ?", userID).First(&u).Error
+	if err != nil {
+		global.GVA_LOG.Error("GVA_DB get user err", zap.Error(err))
+		response.FailWithMessageWithCode(10002, "获取失败", c)
+		return
+	}
+	response.OkWithData(u, c)
+	return
+}
