@@ -79,6 +79,6 @@ func (acService *ArticleCategoryService) GetArticleCategoryInfoList(info article
 		db = db.Limit(limit).Offset(offset)
 	}
 
-	err = db.Find(&acs).Error
+	err = db.Order("id DESC").Find(&acs).Error
 	return acs, total, err
 }

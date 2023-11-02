@@ -1,12 +1,14 @@
 package service
 
 import (
+	"github.com/flipped-aurora/gin-vue-admin/server/service/alog"
 	"github.com/flipped-aurora/gin-vue-admin/server/service/apis"
 	"github.com/flipped-aurora/gin-vue-admin/server/service/article"
 	"github.com/flipped-aurora/gin-vue-admin/server/service/article_category"
 	"github.com/flipped-aurora/gin-vue-admin/server/service/configs"
 	"github.com/flipped-aurora/gin-vue-admin/server/service/example"
 	"github.com/flipped-aurora/gin-vue-admin/server/service/orders"
+	"github.com/flipped-aurora/gin-vue-admin/server/service/recharge"
 	"github.com/flipped-aurora/gin-vue-admin/server/service/symbols"
 	"github.com/flipped-aurora/gin-vue-admin/server/service/system"
 	"github.com/flipped-aurora/gin-vue-admin/server/service/users"
@@ -22,6 +24,8 @@ type ServiceGroup struct {
 	OrdersServiceGroup           orders.ServiceGroup
 	ConfigsServiceGroup          configs.ServiceGroup
 	SymbolsServiceGroup          symbols.ServiceGroup
+	RechargeServiceGroup         recharge.ServiceGroup
+	AlogServiceGroup             alog.ServiceGroup
 }
 
 var ServiceGroupApp = new(ServiceGroup)

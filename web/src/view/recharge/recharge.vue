@@ -15,32 +15,11 @@
        —
       <el-date-picker v-model="searchInfo.endCreatedAt" type="datetime" placeholder="结束日期" :disabled-date="time=> searchInfo.startCreatedAt ? time.getTime() < searchInfo.startCreatedAt.getTime() : false"></el-date-picker>
       </el-form-item>
-        <el-form-item label="账户" prop="account_id">
-            
-             <el-input v-model.number="searchInfo.account_id" placeholder="搜索条件" />
-
-        </el-form-item>
-        <el-form-item label="订单号" prop="order_no">
-         <el-input v-model="searchInfo.order_no" placeholder="搜索条件" />
-
-        </el-form-item>
-        <el-form-item label="类型" prop="direction">
-          <el-select v-model="searchInfo.direction" placeholder="搜索条件">
-            <el-option label="止赢" value="1"></el-option>
-            <el-option label="止损" value="2"></el-option>
-          </el-select>
-        </el-form-item>
-
-        <el-form-item label="手" prop="volume">
-            
-             <el-input v-model.number="searchInfo.volume" placeholder="搜索条件" />
-
-        </el-form-item>
-        <el-form-item label="价格" prop="price">
-            
-             <el-input v-model.number="searchInfo.price" placeholder="搜索条件" />
-
-        </el-form-item>
+           <el-form-item label="用户编号" prop="user_id">
+            <el-select v-model="searchInfo.user_id" clearable placeholder="请选择" @clear="()=>{searchInfo.user_id=undefined}">
+              <el-option v-for="(item,key) in userOptions" :key="key" :label="item.label" :value="item.value" />
+            </el-select>
+            </el-form-item>
         <el-form-item>
           <el-button type="primary" icon="search" @click="onSubmit">查询</el-button>
           <el-button icon="refresh" @click="onReset">重置</el-button>
@@ -48,19 +27,19 @@
       </el-form>
     </div>
     <div class="gva-table-box">
-<!--        <div class="gva-btn-list">-->
-<!--            <el-button type="primary" icon="plus" @click="openDialog">新增</el-button>-->
-<!--            <el-popover v-model:visible="deleteVisible" :disabled="!multipleSelection.length" placement="top" width="160">-->
-<!--            <p>确定要删除吗？</p>-->
-<!--            <div style="text-align: right; margin-top: 8px;">-->
-<!--                <el-button type="primary" link @click="deleteVisible = false">取消</el-button>-->
-<!--                <el-button type="primary" @click="onDelete">确定</el-button>-->
-<!--            </div>-->
-<!--            <template #reference>-->
-<!--                <el-button icon="delete" style="margin-left: 10px;" :disabled="!multipleSelection.length" @click="deleteVisible = true">删除</el-button>-->
-<!--            </template>-->
-<!--            </el-popover>-->
-<!--        </div>-->
+        <div class="gva-btn-list">
+            <el-button type="primary" icon="plus" @click="openDialog">新增</el-button>
+            <el-popover v-model:visible="deleteVisible" :disabled="!multipleSelection.length" placement="top" width="160">
+            <p>确定要删除吗？</p>
+            <div style="text-align: right; margin-top: 8px;">
+                <el-button type="primary" link @click="deleteVisible = false">取消</el-button>
+                <el-button type="primary" @click="onDelete">确定</el-button>
+            </div>
+            <template #reference>
+                <el-button icon="delete" style="margin-left: 10px;" :disabled="!multipleSelection.length" @click="deleteVisible = true">删除</el-button>
+            </template>
+            </el-popover>
+        </div>
         <el-table
         ref="multipleTable"
         style="width: 100%"
@@ -75,27 +54,17 @@
         </el-table-column>
         <el-table-column align="left" label="用户编号" prop="user_id" width="120">
             <template #default="scope">
-            {{ filterDict(scope.row.user_id,intOptions) }}
+            {{ filterDict(scope.row.user_id,userOptions) }}
             </template>
         </el-table-column>
-        <el-table-column align="left" label="账户" prop="account_id" width="120" />
-        <el-table-column align="left" label="订单号" prop="order_no" width="120" />
-        <el-table-column align="left" label="类型"  width="120" >
-          <template #default="scope">
-            <div>
-              <el-tag effect="dark" :type="formatTagType(scope.row.direction)">{{ formatDirection(scope.row.direction) }}</el-tag>
-            </div>
-          </template>
-        </el-table-column>
-        <el-table-column align="left" label="手" prop="volume" width="120" />
-        <el-table-column align="left" label="价格" prop="price" width="120" />
+        <el-table-column align="left" label="金额(分)" prop="amount" width="120" />
         <el-table-column align="left" label="操作">
             <template #default="scope">
             <el-button type="primary" link class="table-button" @click="getDetails(scope.row)">
                 <el-icon style="margin-right: 5px"><InfoFilled /></el-icon>
                 查看详情
             </el-button>
-<!--            <el-button type="primary" link icon="edit" class="table-button" @click="updateOrdersFunc(scope.row)">变更</el-button>-->
+<!--            <el-button type="primary" link icon="edit" class="table-button" @click="updateRechargeFunc(scope.row)">变更</el-button>-->
 <!--            <el-button type="primary" link icon="delete" @click="deleteRow(scope.row)">删除</el-button>-->
             </template>
         </el-table-column>
@@ -117,23 +86,11 @@
           <el-form :model="formData" label-position="right" ref="elFormRef" :rules="rule" label-width="80px">
             <el-form-item label="用户编号:"  prop="user_id" >
               <el-select v-model="formData.user_id" placeholder="请选择用户编号" style="width:100%" :clearable="true" >
-                <el-option v-for="(item,key) in intOptions" :key="key" :label="item.label" :value="item.value" />
+                <el-option v-for="(item,key) in userOptions" :key="key" :label="item.label" :value="item.value" />
               </el-select>
             </el-form-item>
-            <el-form-item label="账户:"  prop="account_id" >
-              <el-input v-model.number="formData.account_id" :clearable="true" placeholder="请输入账户" />
-            </el-form-item>
-            <el-form-item label="订单号:"  prop="order_no" >
-              <el-input v-model="formData.order_no" :clearable="true"  placeholder="请输入订单号" />
-            </el-form-item>
-            <el-form-item label="类型:"  prop="direction" >
-              <el-input v-model.number="formData.direction" :clearable="true" placeholder="请输入类型" />
-            </el-form-item>
-            <el-form-item label="手:"  prop="volume" >
-              <el-input v-model.number="formData.volume" :clearable="true" placeholder="请输入手" />
-            </el-form-item>
-            <el-form-item label="价格:"  prop="price" >
-              <el-input v-model.number="formData.price" :clearable="true" placeholder="请输入价格" />
+            <el-form-item label="金额(分):"  prop="amount" >
+              <el-input v-model.number="formData.amount" :clearable="true" placeholder="请输入金额" />
             </el-form-item>
           </el-form>
       </el-scrollbar>
@@ -149,22 +106,10 @@
       <el-scrollbar height="550px">
         <el-descriptions column="1" border>
                 <el-descriptions-item label="用户编号">
-                        {{ filterDict(formData.user_id,intOptions) }}
+                        {{ filterDict(formData.user_id,userOptions) }}
                 </el-descriptions-item>
-                <el-descriptions-item label="账户">
-                        {{ formData.account_id }}
-                </el-descriptions-item>
-                <el-descriptions-item label="订单号">
-                        {{ formData.order_no }}
-                </el-descriptions-item>
-                <el-descriptions-item label="类型">
-                        {{ formData.direction }}
-                </el-descriptions-item>
-                <el-descriptions-item label="手">
-                        {{ formData.volume }}
-                </el-descriptions-item>
-                <el-descriptions-item label="价格">
-                        {{ formData.price }}
+                <el-descriptions-item label="金额(分)">
+                        {{ formData.amount }}
                 </el-descriptions-item>
         </el-descriptions>
       </el-scrollbar>
@@ -174,13 +119,13 @@
 
 <script setup>
 import {
-  createOrders,
-  deleteOrders,
-  deleteOrdersByIds,
-  updateOrders,
-  findOrders,
-  getOrdersList
-} from '@/api/orders'
+  createRecharge,
+  deleteRecharge,
+  deleteRechargeByIds,
+  updateRecharge,
+  findRecharge,
+  getRechargeList
+} from '@/api/recharge'
 
 // 全量引入格式化工具 请按需保留
 import { getDictFunc, formatDate, formatBoolean, filterDict, ReturnArrImg, onDownloadFile } from '@/utils/format'
@@ -188,18 +133,14 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 import { ref, reactive } from 'vue'
 
 defineOptions({
-    name: 'Orders'
+    name: 'Recharge'
 })
 
 // 自动化生成的字典（可能为空）以及字段
-const intOptions = ref([])
+const userOptions = ref([])
 const formData = ref({
         user_id: undefined,
-        account_id: 0,
-        order_no: '',
-        direction: 0,
-        volume: 0,
-        price: 0,
+        amount: 0,
         })
 
 
@@ -211,36 +152,7 @@ const rule = reactive({
                    trigger: ['input','blur'],
                },
               ],
-               account_id : [{
-                   required: true,
-                   message: '',
-                   trigger: ['input','blur'],
-               },
-              ],
-               order_no : [{
-                   required: true,
-                   message: '',
-                   trigger: ['input','blur'],
-               },
-               {
-                   whitespace: true,
-                   message: '不能只输入空格',
-                   trigger: ['input', 'blur'],
-              }
-              ],
-               direction : [{
-                   required: true,
-                   message: '',
-                   trigger: ['input','blur'],
-               },
-              ],
-               volume : [{
-                   required: true,
-                   message: '',
-                   trigger: ['input','blur'],
-               },
-              ],
-               price : [{
+               amount : [{
                    required: true,
                    message: '',
                    trigger: ['input','blur'],
@@ -304,7 +216,7 @@ const handleCurrentChange = (val) => {
 
 // 查询
 const getTableData = async() => {
-  const table = await getOrdersList({ page: page.value, pageSize: pageSize.value, ...searchInfo.value })
+  const table = await getRechargeList({ page: page.value, pageSize: pageSize.value, ...searchInfo.value })
   if (table.code === 0) {
     tableData.value = table.data.list
     total.value = table.data.total
@@ -319,7 +231,7 @@ getTableData()
 
 // 获取需要的字典 可能为空 按需保留
 const setOptions = async () =>{
-    intOptions.value = await getDictFunc('user')
+    userOptions.value = await getDictFunc('user')
 }
 
 // 获取需要的字典 可能为空 按需保留
@@ -340,7 +252,7 @@ const deleteRow = (row) => {
         cancelButtonText: '取消',
         type: 'warning'
     }).then(() => {
-            deleteOrdersFunc(row)
+            deleteRechargeFunc(row)
         })
     }
 
@@ -362,7 +274,7 @@ const onDelete = async() => {
         multipleSelection.value.map(item => {
           ids.push(item.ID)
         })
-      const res = await deleteOrdersByIds({ ids })
+      const res = await deleteRechargeByIds({ ids })
       if (res.code === 0) {
         ElMessage({
           type: 'success',
@@ -380,19 +292,19 @@ const onDelete = async() => {
 const type = ref('')
 
 // 更新行
-const updateOrdersFunc = async(row) => {
-    const res = await findOrders({ ID: row.ID })
+const updateRechargeFunc = async(row) => {
+    const res = await findRecharge({ ID: row.ID })
     type.value = 'update'
     if (res.code === 0) {
-        formData.value = res.data.reos
+        formData.value = res.data.rerg
         dialogFormVisible.value = true
     }
 }
 
 
 // 删除行
-const deleteOrdersFunc = async (row) => {
-    const res = await deleteOrders({ ID: row.ID })
+const deleteRechargeFunc = async (row) => {
+    const res = await deleteRecharge({ ID: row.ID })
     if (res.code === 0) {
         ElMessage({
                 type: 'success',
@@ -422,9 +334,9 @@ const openDetailShow = () => {
 // 打开详情
 const getDetails = async (row) => {
   // 打开弹窗
-  const res = await findOrders({ ID: row.ID })
+  const res = await findRecharge({ ID: row.ID })
   if (res.code === 0) {
-    formData.value = res.data.reos
+    formData.value = res.data.rerg
     openDetailShow()
   }
 }
@@ -435,11 +347,7 @@ const closeDetailShow = () => {
   detailShow.value = false
   formData.value = {
           user_id: undefined,
-          account_id: 0,
-          order_no: '',
-          direction: 0,
-          volume: 0,
-          price: 0,
+          amount: 0,
           }
 }
 
@@ -455,11 +363,7 @@ const closeDialog = () => {
     dialogFormVisible.value = false
     formData.value = {
         user_id: undefined,
-        account_id: 0,
-        order_no: '',
-        direction: 0,
-        volume: 0,
-        price: 0,
+        amount: 0,
         }
 }
 // 弹窗确定
@@ -469,13 +373,13 @@ const enterDialog = async () => {
               let res
               switch (type.value) {
                 case 'create':
-                  res = await createOrders(formData.value)
+                  res = await createRecharge(formData.value)
                   break
                 case 'update':
-                  res = await updateOrders(formData.value)
+                  res = await updateRecharge(formData.value)
                   break
                 default:
-                  res = await createOrders(formData.value)
+                  res = await createRecharge(formData.value)
                   break
               }
               if (res.code === 0) {
@@ -487,16 +391,6 @@ const enterDialog = async () => {
                 getTableData()
               }
       })
-}
-const formatDirection = (direction) => {
-  if (direction === 2) {
-    return "止损";
-  }
-  return "止赢" ;
-}
-
-const formatTagType = (direction) => {
-  return direction === 1 ? 'success' : 'danger';
 }
 
 </script>

@@ -1,4 +1,28 @@
 definitions:
+  alog.Alog:
+    properties:
+      amount:
+        description: 金额
+        type: integer
+      amount_type:
+        description: 金额类型
+        type: integer
+      createdAt:
+        description: 创建时间
+        type: string
+      cur_amount:
+        description: 当前金额
+        type: integer
+      id:
+        description: 主键ID
+        type: integer
+      updatedAt:
+        description: 更新时间
+        type: string
+      user_id:
+        description: 用户编号
+        type: integer
+    type: object
   apis.KData:
     properties:
       period:
@@ -884,6 +908,24 @@ definitions:
         type: integer
       volume:
         description: 手
+        type: integer
+    type: object
+  recharge.Recharge:
+    properties:
+      amount:
+        description: 金额
+        type: integer
+      createdAt:
+        description: 创建时间
+        type: string
+      id:
+        description: 主键ID
+        type: integer
+      updatedAt:
+        description: 更新时间
+        type: string
+      user_id:
+        description: 用户编号
         type: integer
     type: object
   request.AddMenuAuthorityInfo:
@@ -2193,6 +2235,206 @@ paths:
       summary: 更新文章分类
       tags:
       - ArticleCategory
+  /al/createAlog:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 创建金额纪录
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/alog.Alog'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"创建成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 创建金额纪录
+      tags:
+      - Alog
+  /al/deleteAlog:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: 删除金额纪录
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/alog.Alog'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"删除成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 删除金额纪录
+      tags:
+      - Alog
+  /al/deleteAlogByIds:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: 批量删除金额纪录
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.IdsReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"批量删除成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 批量删除金额纪录
+      tags:
+      - Alog
+  /al/findAlog:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: 金额
+        in: query
+        name: amount
+        type: integer
+      - description: 金额类型
+        in: query
+        name: amount_type
+        type: integer
+      - description: 创建时间
+        in: query
+        name: createdAt
+        type: string
+      - description: 当前金额
+        in: query
+        name: cur_amount
+        type: integer
+      - description: 主键ID
+        in: query
+        name: id
+        type: integer
+      - description: 更新时间
+        in: query
+        name: updatedAt
+        type: string
+      - description: 用户编号
+        in: query
+        name: user_id
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"查询成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 用id查询金额纪录
+      tags:
+      - Alog
+  /al/getAlogList:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: 金额
+        in: query
+        name: amount
+        type: integer
+      - description: 金额类型
+        in: query
+        name: amount_type
+        type: integer
+      - description: 创建时间
+        in: query
+        name: createdAt
+        type: string
+      - description: 当前金额
+        in: query
+        name: cur_amount
+        type: integer
+      - in: query
+        name: endCreatedAt
+        type: string
+      - description: 主键ID
+        in: query
+        name: id
+        type: integer
+      - description: 关键字
+        in: query
+        name: keyword
+        type: string
+      - description: 页码
+        in: query
+        name: page
+        type: integer
+      - description: 每页大小
+        in: query
+        name: pageSize
+        type: integer
+      - in: query
+        name: startCreatedAt
+        type: string
+      - description: 更新时间
+        in: query
+        name: updatedAt
+        type: string
+      - description: 用户编号
+        in: query
+        name: user_id
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"获取成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 分页获取金额纪录列表
+      tags:
+      - Alog
+  /al/updateAlog:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: 更新金额纪录
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/alog.Alog'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"更新成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 更新金额纪录
+      tags:
+      - Alog
   /api/createApi:
     post:
       consumes:
@@ -4538,6 +4780,190 @@ paths:
       summary: 更新订单
       tags:
       - Orders
+  /rg/createRecharge:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 创建充值
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/recharge.Recharge'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"创建成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 创建充值
+      tags:
+      - Recharge
+  /rg/deleteRecharge:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: 删除充值
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/recharge.Recharge'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"删除成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 删除充值
+      tags:
+      - Recharge
+  /rg/deleteRechargeByIds:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: 批量删除充值
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/request.IdsReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"批量删除成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 批量删除充值
+      tags:
+      - Recharge
+  /rg/findRecharge:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: 金额
+        in: query
+        name: amount
+        type: integer
+      - description: 创建时间
+        in: query
+        name: createdAt
+        type: string
+      - description: 主键ID
+        in: query
+        name: id
+        type: integer
+      - description: 更新时间
+        in: query
+        name: updatedAt
+        type: string
+      - description: 用户编号
+        in: query
+        name: user_id
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"查询成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 用id查询充值
+      tags:
+      - Recharge
+  /rg/getRechargeList:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: 金额
+        in: query
+        name: amount
+        type: integer
+      - description: 创建时间
+        in: query
+        name: createdAt
+        type: string
+      - in: query
+        name: endCreatedAt
+        type: string
+      - description: 主键ID
+        in: query
+        name: id
+        type: integer
+      - description: 关键字
+        in: query
+        name: keyword
+        type: string
+      - description: 页码
+        in: query
+        name: page
+        type: integer
+      - description: 每页大小
+        in: query
+        name: pageSize
+        type: integer
+      - in: query
+        name: startCreatedAt
+        type: string
+      - description: 更新时间
+        in: query
+        name: updatedAt
+        type: string
+      - description: 用户编号
+        in: query
+        name: user_id
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"获取成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 分页获取充值列表
+      tags:
+      - Recharge
+  /rg/updateRecharge:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: 更新充值
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/recharge.Recharge'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"更新成功"}'
+          schema:
+            type: string
+      security:
+      - ApiKeyAuth: []
+      summary: 更新充值
+      tags:
+      - Recharge
   /sb/createSymbol:
     post:
       consumes:

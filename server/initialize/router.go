@@ -106,6 +106,14 @@ func Routers() *gin.Engine {
 		symbolsRouter := router.RouterGroupApp.Symbols
 		symbolsRouter.InitSymbolRouter(PrivateGroup)
 	}
+	{
+		rechargeRouter := router.RouterGroupApp.Recharge
+		rechargeRouter.InitRechargeRouter(PrivateGroup)
+	}
+	{
+		alogRouter := router.RouterGroupApp.Alog
+		alogRouter.InitAlogRouter(PrivateGroup)
+	}
 
 	global.GVA_LOG.Info("router register success")
 	return Router

@@ -94,6 +94,6 @@ func (uService *UsersService) GetUsersInfoList(info usersReq.UsersSearch) (list 
 		db = db.Limit(limit).Offset(offset)
 	}
 
-	err = db.Find(&us).Error
+	err = db.Order("id DESC").Find(&us).Error
 	return us, total, err
 }

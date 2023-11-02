@@ -15,32 +15,16 @@
        —
       <el-date-picker v-model="searchInfo.endCreatedAt" type="datetime" placeholder="结束日期" :disabled-date="time=> searchInfo.startCreatedAt ? time.getTime() < searchInfo.startCreatedAt.getTime() : false"></el-date-picker>
       </el-form-item>
-        <el-form-item label="账户" prop="account_id">
-            
-             <el-input v-model.number="searchInfo.account_id" placeholder="搜索条件" />
-
-        </el-form-item>
-        <el-form-item label="订单号" prop="order_no">
-         <el-input v-model="searchInfo.order_no" placeholder="搜索条件" />
-
-        </el-form-item>
-        <el-form-item label="类型" prop="direction">
-          <el-select v-model="searchInfo.direction" placeholder="搜索条件">
-            <el-option label="止赢" value="1"></el-option>
-            <el-option label="止损" value="2"></el-option>
-          </el-select>
-        </el-form-item>
-
-        <el-form-item label="手" prop="volume">
-            
-             <el-input v-model.number="searchInfo.volume" placeholder="搜索条件" />
-
-        </el-form-item>
-        <el-form-item label="价格" prop="price">
-            
-             <el-input v-model.number="searchInfo.price" placeholder="搜索条件" />
-
-        </el-form-item>
+           <el-form-item label="用户编号" prop="user_id">
+            <el-select v-model="searchInfo.user_id" clearable placeholder="请选择" @clear="()=>{searchInfo.user_id=undefined}">
+              <el-option v-for="(item,key) in userOptions" :key="key" :label="item.label" :value="item.value" />
+            </el-select>
+            </el-form-item>
+           <el-form-item label="金额类型" prop="amount_type">
+            <el-select v-model="searchInfo.amount_type" clearable placeholder="请选择" @clear="()=>{searchInfo.amount_type=undefined}">
+              <el-option v-for="(item,key) in amount_logOptions" :key="key" :label="item.label" :value="item.value" />
+            </el-select>
+            </el-form-item>
         <el-form-item>
           <el-button type="primary" icon="search" @click="onSubmit">查询</el-button>
           <el-button icon="refresh" @click="onReset">重置</el-button>
@@ -75,27 +59,23 @@
         </el-table-column>
         <el-table-column align="left" label="用户编号" prop="user_id" width="120">
             <template #default="scope">
-            {{ filterDict(scope.row.user_id,intOptions) }}
+            {{ filterDict(scope.row.user_id,userOptions) }}
             </template>
         </el-table-column>
-        <el-table-column align="left" label="账户" prop="account_id" width="120" />
-        <el-table-column align="left" label="订单号" prop="order_no" width="120" />
-        <el-table-column align="left" label="类型"  width="120" >
-          <template #default="scope">
-            <div>
-              <el-tag effect="dark" :type="formatTagType(scope.row.direction)">{{ formatDirection(scope.row.direction) }}</el-tag>
-            </div>
-          </template>
+        <el-table-column align="left" label="金额类型" prop="amount_type" width="120">
+            <template #default="scope">
+            {{ filterDict(scope.row.amount_type,amount_logOptions) }}
+            </template>
         </el-table-column>
-        <el-table-column align="left" label="手" prop="volume" width="120" />
-        <el-table-column align="left" label="价格" prop="price" width="120" />
+        <el-table-column align="left" label="金额" prop="amount" width="120" />
+        <el-table-column align="left" label="当前金额" prop="cur_amount" width="120" />
         <el-table-column align="left" label="操作">
             <template #default="scope">
             <el-button type="primary" link class="table-button" @click="getDetails(scope.row)">
                 <el-icon style="margin-right: 5px"><InfoFilled /></el-icon>
                 查看详情
             </el-button>
-<!--            <el-button type="primary" link icon="edit" class="table-button" @click="updateOrdersFunc(scope.row)">变更</el-button>-->
+<!--            <el-button type="primary" link icon="edit" class="table-button" @click="updateAlogFunc(scope.row)">变更</el-button>-->
 <!--            <el-button type="primary" link icon="delete" @click="deleteRow(scope.row)">删除</el-button>-->
             </template>
         </el-table-column>
@@ -117,23 +97,19 @@
           <el-form :model="formData" label-position="right" ref="elFormRef" :rules="rule" label-width="80px">
             <el-form-item label="用户编号:"  prop="user_id" >
               <el-select v-model="formData.user_id" placeholder="请选择用户编号" style="width:100%" :clearable="true" >
-                <el-option v-for="(item,key) in intOptions" :key="key" :label="item.label" :value="item.value" />
+                <el-option v-for="(item,key) in userOptions" :key="key" :label="item.label" :value="item.value" />
               </el-select>
             </el-form-item>
-            <el-form-item label="账户:"  prop="account_id" >
-              <el-input v-model.number="formData.account_id" :clearable="true" placeholder="请输入账户" />
+            <el-form-item label="金额类型:"  prop="amount_type" >
+              <el-select v-model="formData.amount_type" placeholder="请选择金额类型" style="width:100%" :clearable="true" >
+                <el-option v-for="(item,key) in amount_logOptions" :key="key" :label="item.label" :value="item.value" />
+              </el-select>
             </el-form-item>
-            <el-form-item label="订单号:"  prop="order_no" >
-              <el-input v-model="formData.order_no" :clearable="true"  placeholder="请输入订单号" />
+            <el-form-item label="金额:"  prop="amount" >
+              <el-input v-model.number="formData.amount" :clearable="true" placeholder="请输入金额" />
             </el-form-item>
-            <el-form-item label="类型:"  prop="direction" >
-              <el-input v-model.number="formData.direction" :clearable="true" placeholder="请输入类型" />
-            </el-form-item>
-            <el-form-item label="手:"  prop="volume" >
-              <el-input v-model.number="formData.volume" :clearable="true" placeholder="请输入手" />
-            </el-form-item>
-            <el-form-item label="价格:"  prop="price" >
-              <el-input v-model.number="formData.price" :clearable="true" placeholder="请输入价格" />
+            <el-form-item label="当前金额:"  prop="cur_amount" >
+              <el-input v-model.number="formData.cur_amount" :clearable="true" placeholder="请输入当前金额" />
             </el-form-item>
           </el-form>
       </el-scrollbar>
@@ -149,22 +125,16 @@
       <el-scrollbar height="550px">
         <el-descriptions column="1" border>
                 <el-descriptions-item label="用户编号">
-                        {{ filterDict(formData.user_id,intOptions) }}
+                        {{ filterDict(formData.user_id,userOptions) }}
                 </el-descriptions-item>
-                <el-descriptions-item label="账户">
-                        {{ formData.account_id }}
+                <el-descriptions-item label="金额类型">
+                        {{ filterDict(formData.amount_type,amount_logOptions) }}
                 </el-descriptions-item>
-                <el-descriptions-item label="订单号">
-                        {{ formData.order_no }}
+                <el-descriptions-item label="金额">
+                        {{ formData.amount }}
                 </el-descriptions-item>
-                <el-descriptions-item label="类型">
-                        {{ formData.direction }}
-                </el-descriptions-item>
-                <el-descriptions-item label="手">
-                        {{ formData.volume }}
-                </el-descriptions-item>
-                <el-descriptions-item label="价格">
-                        {{ formData.price }}
+                <el-descriptions-item label="当前金额">
+                        {{ formData.cur_amount }}
                 </el-descriptions-item>
         </el-descriptions>
       </el-scrollbar>
@@ -174,13 +144,13 @@
 
 <script setup>
 import {
-  createOrders,
-  deleteOrders,
-  deleteOrdersByIds,
-  updateOrders,
-  findOrders,
-  getOrdersList
-} from '@/api/orders'
+  createAlog,
+  deleteAlog,
+  deleteAlogByIds,
+  updateAlog,
+  findAlog,
+  getAlogList
+} from '@/api/alog'
 
 // 全量引入格式化工具 请按需保留
 import { getDictFunc, formatDate, formatBoolean, filterDict, ReturnArrImg, onDownloadFile } from '@/utils/format'
@@ -188,18 +158,17 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 import { ref, reactive } from 'vue'
 
 defineOptions({
-    name: 'Orders'
+    name: 'Alog'
 })
 
 // 自动化生成的字典（可能为空）以及字段
-const intOptions = ref([])
+const userOptions = ref([])
+const amount_logOptions = ref([])
 const formData = ref({
         user_id: undefined,
-        account_id: 0,
-        order_no: '',
-        direction: 0,
-        volume: 0,
-        price: 0,
+        amount_type: undefined,
+        amount: 0,
+        cur_amount: 0,
         })
 
 
@@ -211,36 +180,19 @@ const rule = reactive({
                    trigger: ['input','blur'],
                },
               ],
-               account_id : [{
+               amount_type : [{
                    required: true,
                    message: '',
                    trigger: ['input','blur'],
                },
               ],
-               order_no : [{
-                   required: true,
-                   message: '',
-                   trigger: ['input','blur'],
-               },
-               {
-                   whitespace: true,
-                   message: '不能只输入空格',
-                   trigger: ['input', 'blur'],
-              }
-              ],
-               direction : [{
+               amount : [{
                    required: true,
                    message: '',
                    trigger: ['input','blur'],
                },
               ],
-               volume : [{
-                   required: true,
-                   message: '',
-                   trigger: ['input','blur'],
-               },
-              ],
-               price : [{
+               cur_amount : [{
                    required: true,
                    message: '',
                    trigger: ['input','blur'],
@@ -304,7 +256,7 @@ const handleCurrentChange = (val) => {
 
 // 查询
 const getTableData = async() => {
-  const table = await getOrdersList({ page: page.value, pageSize: pageSize.value, ...searchInfo.value })
+  const table = await getAlogList({ page: page.value, pageSize: pageSize.value, ...searchInfo.value })
   if (table.code === 0) {
     tableData.value = table.data.list
     total.value = table.data.total
@@ -319,7 +271,8 @@ getTableData()
 
 // 获取需要的字典 可能为空 按需保留
 const setOptions = async () =>{
-    intOptions.value = await getDictFunc('user')
+    userOptions.value = await getDictFunc('user')
+    amount_logOptions.value = await getDictFunc('amount_log')
 }
 
 // 获取需要的字典 可能为空 按需保留
@@ -340,7 +293,7 @@ const deleteRow = (row) => {
         cancelButtonText: '取消',
         type: 'warning'
     }).then(() => {
-            deleteOrdersFunc(row)
+            deleteAlogFunc(row)
         })
     }
 
@@ -362,7 +315,7 @@ const onDelete = async() => {
         multipleSelection.value.map(item => {
           ids.push(item.ID)
         })
-      const res = await deleteOrdersByIds({ ids })
+      const res = await deleteAlogByIds({ ids })
       if (res.code === 0) {
         ElMessage({
           type: 'success',
@@ -380,19 +333,19 @@ const onDelete = async() => {
 const type = ref('')
 
 // 更新行
-const updateOrdersFunc = async(row) => {
-    const res = await findOrders({ ID: row.ID })
+const updateAlogFunc = async(row) => {
+    const res = await findAlog({ ID: row.ID })
     type.value = 'update'
     if (res.code === 0) {
-        formData.value = res.data.reos
+        formData.value = res.data.real
         dialogFormVisible.value = true
     }
 }
 
 
 // 删除行
-const deleteOrdersFunc = async (row) => {
-    const res = await deleteOrders({ ID: row.ID })
+const deleteAlogFunc = async (row) => {
+    const res = await deleteAlog({ ID: row.ID })
     if (res.code === 0) {
         ElMessage({
                 type: 'success',
@@ -422,9 +375,9 @@ const openDetailShow = () => {
 // 打开详情
 const getDetails = async (row) => {
   // 打开弹窗
-  const res = await findOrders({ ID: row.ID })
+  const res = await findAlog({ ID: row.ID })
   if (res.code === 0) {
-    formData.value = res.data.reos
+    formData.value = res.data.real
     openDetailShow()
   }
 }
@@ -435,11 +388,9 @@ const closeDetailShow = () => {
   detailShow.value = false
   formData.value = {
           user_id: undefined,
-          account_id: 0,
-          order_no: '',
-          direction: 0,
-          volume: 0,
-          price: 0,
+          amount_type: undefined,
+          amount: 0,
+          cur_amount: 0,
           }
 }
 
@@ -455,11 +406,9 @@ const closeDialog = () => {
     dialogFormVisible.value = false
     formData.value = {
         user_id: undefined,
-        account_id: 0,
-        order_no: '',
-        direction: 0,
-        volume: 0,
-        price: 0,
+        amount_type: undefined,
+        amount: 0,
+        cur_amount: 0,
         }
 }
 // 弹窗确定
@@ -469,13 +418,13 @@ const enterDialog = async () => {
               let res
               switch (type.value) {
                 case 'create':
-                  res = await createOrders(formData.value)
+                  res = await createAlog(formData.value)
                   break
                 case 'update':
-                  res = await updateOrders(formData.value)
+                  res = await updateAlog(formData.value)
                   break
                 default:
-                  res = await createOrders(formData.value)
+                  res = await createAlog(formData.value)
                   break
               }
               if (res.code === 0) {
@@ -487,16 +436,6 @@ const enterDialog = async () => {
                 getTableData()
               }
       })
-}
-const formatDirection = (direction) => {
-  if (direction === 2) {
-    return "止损";
-  }
-  return "止赢" ;
-}
-
-const formatTagType = (direction) => {
-  return direction === 1 ? 'success' : 'danger';
 }
 
 </script>

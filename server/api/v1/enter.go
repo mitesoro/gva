@@ -1,12 +1,14 @@
 package v1
 
 import (
+	"github.com/flipped-aurora/gin-vue-admin/server/api/v1/alog"
 	"github.com/flipped-aurora/gin-vue-admin/server/api/v1/apis"
 	"github.com/flipped-aurora/gin-vue-admin/server/api/v1/article"
 	"github.com/flipped-aurora/gin-vue-admin/server/api/v1/article_category"
 	"github.com/flipped-aurora/gin-vue-admin/server/api/v1/configs"
 	"github.com/flipped-aurora/gin-vue-admin/server/api/v1/example"
 	"github.com/flipped-aurora/gin-vue-admin/server/api/v1/orders"
+	"github.com/flipped-aurora/gin-vue-admin/server/api/v1/recharge"
 	"github.com/flipped-aurora/gin-vue-admin/server/api/v1/symbols"
 	"github.com/flipped-aurora/gin-vue-admin/server/api/v1/system"
 	"github.com/flipped-aurora/gin-vue-admin/server/api/v1/users"
@@ -22,6 +24,8 @@ type ApiGroup struct {
 	OrdersApiGroup           orders.ApiGroup
 	ConfigsApiGroup          configs.ApiGroup
 	SymbolsApiGroup          symbols.ApiGroup
+	RechargeApiGroup         recharge.ApiGroup
+	AlogApiGroup             alog.ApiGroup
 }
 
 var ApiGroupApp = new(ApiGroup)
