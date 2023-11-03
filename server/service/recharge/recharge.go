@@ -16,6 +16,8 @@ type RechargeService struct {
 // CreateRecharge 创建充值记录
 // Author [piexlmax](https://github.com/piexlmax)
 func (rgService *RechargeService) CreateRecharge(rg *recharge.Recharge) (err error) {
+	a := *rg.Amount * 100
+	rg.Amount = &a
 	err = global.GVA_DB.Create(rg).Error
 	if err == nil {
 		var u users.Users

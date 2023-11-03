@@ -64,6 +64,7 @@
             {{ filterDict(scope.row.order_type,genderOptions) }}
           </template>
         </el-table-column>
+          <el-table-column align="left" label="手" prop="volume" width="120" />
         <el-table-column align="left" label="总金额" :formatter="row => formatCurrency(row.amount)" width="120" />
         <el-table-column align="left" label="可用金额" :formatter="row => formatCurrency(row.available_amount)" width="120" />
         <el-table-column align="left" label="冻结金额" :formatter="row => formatCurrency(row.freeze_amount)" width="120" />
@@ -119,6 +120,9 @@
 <!--                />-->
 <!--            </el-form-item>-->
           </el-form>
+        <el-form-item label="手:"  prop="volume" >
+          <el-input v-model.number="formData.volume" :clearable="true"  placeholder="请输入手" />
+        </el-form-item>
       </el-scrollbar>
       <template #footer>
         <div class="dialog-footer">
@@ -143,6 +147,9 @@
                 <el-descriptions-item label="订单正反手">
                   {{ filterDict(formData.order_type,genderOptions) }}
                 </el-descriptions-item>
+          <el-descriptions-item label="手">
+            {{ formData.volume }}
+          </el-descriptions-item>
         </el-descriptions>
       </el-scrollbar>
     </el-dialog>
@@ -180,6 +187,7 @@ const formData = ref({
         avatar: "",
         order_type: "",
         amount: 0,
+        volume: 0,
         })
 
 

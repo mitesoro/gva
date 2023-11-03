@@ -7157,6 +7157,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "integer",
+                        "description": "下单正反手",
                         "name": "order_type",
                         "in": "query"
                     },
@@ -7182,6 +7183,12 @@ const docTemplate = `{
                         "type": "string",
                         "description": "更新时间",
                         "name": "updatedAt",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "手",
+                        "name": "volume",
                         "in": "query"
                     }
                 ],
@@ -7273,6 +7280,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "integer",
+                        "description": "下单正反手",
                         "name": "order_type",
                         "in": "query"
                     },
@@ -7320,6 +7328,12 @@ const docTemplate = `{
                         "type": "string",
                         "description": "更新时间",
                         "name": "updatedAt",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "手",
+                        "name": "volume",
                         "in": "query"
                     }
                 ],
@@ -7911,6 +7925,7 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "symbol": {
+                    "description": "品种",
                     "type": "string"
                 }
             }
@@ -7932,12 +7947,16 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "direction": {
-                    "description": "类型 0买 1卖",
+                    "description": "类型 1止赢 2止损",
                     "type": "integer"
                 },
                 "price": {
                     "description": "价格(分)",
                     "type": "integer"
+                },
+                "symbol": {
+                    "description": "品种",
+                    "type": "string"
                 },
                 "volume": {
                     "description": "几手",
@@ -10502,6 +10521,7 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "order_type": {
+                    "description": "下单正反手",
                     "type": "integer"
                 },
                 "password": {
@@ -10519,6 +10539,10 @@ const docTemplate = `{
                 "updatedAt": {
                     "description": "更新时间",
                     "type": "string"
+                },
+                "volume": {
+                    "description": "手",
+                    "type": "integer"
                 }
             }
         }

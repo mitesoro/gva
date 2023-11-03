@@ -57,7 +57,7 @@
             {{ filterDict(scope.row.user_id,userOptions) }}
             </template>
         </el-table-column>
-        <el-table-column align="left" label="金额(分)" prop="amount" width="120" />
+        <el-table-column align="left" label="金额" :formatter="row => formatCurrency(row.amount)" width="120" />
         <el-table-column align="left" label="操作">
             <template #default="scope">
             <el-button type="primary" link class="table-button" @click="getDetails(scope.row)">
@@ -89,7 +89,7 @@
                 <el-option v-for="(item,key) in userOptions" :key="key" :label="item.label" :value="item.value" />
               </el-select>
             </el-form-item>
-            <el-form-item label="金额(分):"  prop="amount" >
+            <el-form-item label="金额:"  prop="amount" >
               <el-input v-model.number="formData.amount" :clearable="true" placeholder="请输入金额" />
             </el-form-item>
           </el-form>
@@ -108,7 +108,7 @@
                 <el-descriptions-item label="用户编号">
                         {{ filterDict(formData.user_id,userOptions) }}
                 </el-descriptions-item>
-                <el-descriptions-item label="金额(分)">
+                <el-descriptions-item label="金额">
                         {{ formData.amount }}
                 </el-descriptions-item>
         </el-descriptions>
@@ -391,6 +391,9 @@ const enterDialog = async () => {
                 getTableData()
               }
       })
+}
+const formatCurrency = (amount) => {
+  return (amount / 100).toFixed(2);
 }
 
 </script>

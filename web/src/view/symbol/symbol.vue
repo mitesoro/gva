@@ -126,13 +126,13 @@
             <el-form-item label="止赢点位:"  prop="point_success" >
               <el-input v-model.number="formData.point_success" :clearable="true" placeholder="请输入止赢点位" />
             </el-form-item>
-            <el-form-item label="止赢点位赔付价格:"  prop="point_success_price" >
+            <el-form-item label="止赢价格:"  prop="point_success_price" >
               <el-input v-model.number="formData.point_success_price" :clearable="true" placeholder="请输入止赢点位赔付价格" />
             </el-form-item>
             <el-form-item label="止损点位:"  prop="point_fail" >
               <el-input v-model.number="formData.point_fail" :clearable="true" placeholder="请输入止损点位" />
             </el-form-item>
-            <el-form-item label="止损点位赔付价格:"  prop="point_fail_price" >
+            <el-form-item label="止损价格:"  prop="point_fail_price" >
               <el-input v-model.number="formData.point_fail_price" :clearable="true" placeholder="请输入止损点位赔付价格" />
             </el-form-item>
             <el-form-item label="状态:"  prop="status" >
