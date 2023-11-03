@@ -23,21 +23,6 @@ definitions:
         description: 用户编号
         type: integer
     type: object
-  apis.KData:
-    properties:
-      period:
-        description: 周期
-        type: integer
-      rows:
-        description: 返回条数
-        type: integer
-      symbol:
-        description: 品种
-        type: string
-    required:
-    - rows
-    - symbol
-    type: object
   apis.ReqLogin:
     properties:
       password:
@@ -908,7 +893,7 @@ definitions:
         description: 价格
         type: integer
       status:
-        description: 状态 0下单中 1成功 2取消 3失败
+        description: 状态 0下单中 1成功 2取消 3失败 4盈利 5平
         type: integer
       updatedAt:
         description: 更新时间
@@ -2671,12 +2656,20 @@ paths:
       consumes:
       - application/json
       parameters:
-      - description: 下单参数
-        in: body
-        name: data
+      - description: 周期
+        in: query
+        name: period
+        type: integer
+      - description: 返回条数
+        in: query
+        name: rows
         required: true
-        schema:
-          $ref: '#/definitions/apis.KData'
+        type: integer
+      - description: 品种
+        in: query
+        name: symbol
+        required: true
+        type: string
       produces:
       - application/json
       responses:
@@ -2733,6 +2726,34 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: 下单
+      tags:
+      - 前端接口API
+  /api/orders/list:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: 分页
+        in: query
+        name: page
+        required: true
+        type: integer
+      - description: 状态 0下单中 1成功 2取消 3失败 4盈利 5平
+        in: query
+        name: status
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"code":0,"data":{},"msg":"success"}'
+          schema:
+            items:
+              $ref: '#/definitions/orders.Orders'
+            type: array
+      security:
+      - ApiKeyAuth: []
+      summary: 交易记录
       tags:
       - 前端接口API
   /api/register:
@@ -4676,7 +4697,7 @@ paths:
         in: query
         name: price
         type: integer
-      - description: 状态 0下单中 1成功 2取消 3失败
+      - description: 状态 0下单中 1成功 2取消 3失败 4盈利 5平
         in: query
         name: status
         type: integer
@@ -4763,7 +4784,7 @@ paths:
       - in: query
         name: startCreatedAt
         type: string
-      - description: 状态 0下单中 1成功 2取消 3失败
+      - description: 状态 0下单中 1成功 2取消 3失败 4盈利 5平
         in: query
         name: status
         type: integer

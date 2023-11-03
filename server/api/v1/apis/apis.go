@@ -401,7 +401,7 @@ func (uApi *ApisApi) OrdersCreate(c *gin.Context) {
 // @Security ApiKeyAuth
 // @accept application/json
 // @Produce application/json
-// @Param data body apis.KData true "下单参数"
+// @Param data query apis.KData true "下单参数"
 // @Success 200 {object} object "{"code":0,"data":{},"msg":"success"}"
 // @Router /api/k/data [get]
 func (uApi *ApisApi) PriceData(c *gin.Context) {
@@ -634,5 +634,40 @@ func (uApi *ApisApi) GetUserInfo(c *gin.Context) {
 		return
 	}
 	response.OkWithData(u, c)
+	return
+}
+
+// OrdersList 交易记录
+// @Tags 前端接口API
+// @Summary 交易记录
+// @Security ApiKeyAuth
+// @accept application/json
+// @Produce application/json
+// @Param data query apis.ReqTrade true "查询参数"
+// @Success 200 {array} orders.Orders "{"code":0,"data":{},"msg":"success"}"
+// @Router /api/orders/list [get]
+func (uApi *ApisApi) OrdersList(c *gin.Context) {
+	var req apis.ReqTrade
+	err := c.ShouldBindQuery(&req)
+	if err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	page := 1
+	if req.Page > 1 {
+		page = int(req.Page)
+	}
+	limit := 20
+	offset := (page - 1) * limit
+	id, _ := c.Get("uid")
+	userID := cast.ToInt(id)
+	var os []*orders.Orders
+	err = global.GVA_DB.Where("user_id = ?", userID).Order("id DESC").Offset(offset).Limit(limit).Find(&os).Error
+	if err != nil {
+		global.GVA_LOG.Error("PriceData err", zap.Error(err))
+		response.FailWithMessageWithCode(10002, "获取失败", c)
+		return
+	}
+	response.OkWithData(os, c)
 	return
 }

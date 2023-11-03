@@ -1344,13 +1344,24 @@ const docTemplate = `{
                 "summary": "k线数据",
                 "parameters": [
                     {
-                        "description": "下单参数",
-                        "name": "data",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/apis.KData"
-                        }
+                        "type": "integer",
+                        "description": "周期",
+                        "name": "period",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "返回条数",
+                        "name": "rows",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "品种",
+                        "name": "symbol",
+                        "in": "query",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -1434,6 +1445,51 @@ const docTemplate = `{
                         "description": "{\"code\":0,\"data\":{},\"msg\":\"success\"}",
                         "schema": {
                             "type": "object"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/orders/list": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "前端接口API"
+                ],
+                "summary": "交易记录",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "分页",
+                        "name": "page",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "状态 0下单中 1成功 2取消 3失败 4盈利 5平",
+                        "name": "status",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\":0,\"data\":{},\"msg\":\"success\"}",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/orders.Orders"
+                            }
                         }
                     }
                 }
@@ -4814,7 +4870,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "integer",
-                        "description": "状态 0下单中 1成功 2取消 3失败",
+                        "description": "状态 0下单中 1成功 2取消 3失败 4盈利 5平",
                         "name": "status",
                         "in": "query"
                     },
@@ -4949,7 +5005,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "integer",
-                        "description": "状态 0下单中 1成功 2取消 3失败",
+                        "description": "状态 0下单中 1成功 2取消 3失败 4盈利 5平",
                         "name": "status",
                         "in": "query"
                     },
@@ -7913,27 +7969,6 @@ const docTemplate = `{
                 }
             }
         },
-        "apis.KData": {
-            "type": "object",
-            "required": [
-                "rows",
-                "symbol"
-            ],
-            "properties": {
-                "period": {
-                    "description": "周期",
-                    "type": "integer"
-                },
-                "rows": {
-                    "description": "返回条数",
-                    "type": "integer"
-                },
-                "symbol": {
-                    "description": "品种",
-                    "type": "string"
-                }
-            }
-        },
         "apis.ReqLogin": {
             "type": "object",
             "properties": {
@@ -9179,7 +9214,7 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "status": {
-                    "description": "状态 0下单中 1成功 2取消 3失败",
+                    "description": "状态 0下单中 1成功 2取消 3失败 4盈利 5平",
                     "type": "integer"
                 },
                 "updatedAt": {

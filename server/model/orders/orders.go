@@ -15,7 +15,7 @@ type Orders struct {
 	Volume     *int   `json:"volume" form:"volume" gorm:"column:volume;comment:手;size:手;"`       // 手
 	Price      *int   `json:"price" form:"price" gorm:"column:price;comment:价格;"`                // 价格
 	Bond       *int   `json:"bond" form:"bond" gorm:"column:bond;comment:保证金;"`                  // 保证金
-	Status     *int   `json:"status" form:"status" gorm:"column:status;comment:状态;"`             // 状态 0下单中 1成功 2取消 3失败
+	Status     *int   `json:"status" form:"status" gorm:"column:status;comment:状态;"`             // 状态 0下单中 1成功 2取消 3失败 4盈利 5平
 	Content    string `json:"content" form:"content" gorm:"column:content;comment:内容备注;"`        //  期货下单返回数据
 	Amount     *int   `json:"amount" form:"amount" gorm:"column:amount;comment:金额;"`             // 盈利金额
 }
