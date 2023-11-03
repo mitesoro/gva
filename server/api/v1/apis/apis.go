@@ -1,6 +1,7 @@
 package apis
 
 import (
+	"context"
 	"encoding/base64"
 	"fmt"
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
@@ -8,7 +9,9 @@ import (
 	"github.com/flipped-aurora/gin-vue-admin/server/model/common/response"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/data"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/orders"
+	"github.com/flipped-aurora/gin-vue-admin/server/model/symbols"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/users"
+	"github.com/flipped-aurora/gin-vue-admin/server/pb"
 	"github.com/flipped-aurora/gin-vue-admin/server/service"
 	"github.com/flipped-aurora/gin-vue-admin/server/utils"
 	"github.com/gin-gonic/gin"
@@ -390,6 +393,11 @@ func (uApi *ApisApi) OrdersCreate(c *gin.Context) {
 		return
 	}
 	// grpc 调用下单接口
+	res, err := global.GVA_GrpcCLient.SayHello(context.Background(), &pb.HelloRequest{Name: "name"})
+	if err != nil {
+		global.GVA_LOG.Error("SayHello", zap.Error(err))
+	}
+	global.GVA_LOG.Error("SayHello", zap.String("message", res.GetMessage()))
 
 	response.OkWithMessage("success", c)
 	return
@@ -605,6 +613,34 @@ func (uApi *ApisApi) PriceData(c *gin.Context) {
 	default:
 		response.FailWithMessageWithCode(10002, "获取失败", c)
 		return
+	}
+
+	response.OkWithData(apis.KDataResp{
+		YdClosePrice: price,
+		Results:      yData,
+	}, c)
+	return
+}
+
+// SymbolData 行情列表
+// @Tags 前端接口API
+// @Summary 行情列表
+// @Security ApiKeyAuth
+// @accept application/json
+// @Produce application/json
+// @Param data query apis.KData true "参数"
+// @Success 200 {object} object "{"code":0,"data":{},"msg":"success"}"
+// @Router /api/symbol/data [get]
+func (uApi *ApisApi) SymbolData(c *gin.Context) {
+	var sb []*symbols.Symbol
+	if err := global.GVA_DB.Find(&sb).Error; err != nil {
+		response.FailWithMessageWithCode(10002, "获取失败", c)
+		return
+	}
+	var keys []string
+
+	for _, s := range sb {
+		keys = append(keys, fmt.Sprintf("s:info:%s", s.Code))
 	}
 
 	response.OkWithData(apis.KDataResp{

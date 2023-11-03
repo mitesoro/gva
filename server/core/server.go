@@ -68,7 +68,6 @@ func RunWindowsServer() {
 		// 在单独的goroutine中处理接收到的消息
 		utils.SafeGO(func() {
 			for msg := range channel {
-
 				now := time.Now()
 				var d data.Data
 				err := json.Unmarshal([]byte(msg.Payload), &d)
@@ -167,12 +166,11 @@ func RunWindowsServer() {
 						continue
 					}
 				}
-
-				res, err := global.GVA_GrpcCLient.SayHello(context.Background(), &pb.HelloRequest{Name: "name"})
-				if err != nil {
-					global.GVA_LOG.Error("SayHello", zap.Error(err))
+				// 缓存最新的数据
+				key := fmt.Sprintf("s:info:%s", d.SymbolId)
+				if err = global.GVA_REDIS.Set(context.Background(), key, msg.Payload, 0).Err(); err != nil {
+					global.GVA_LOG.Error("Received message: redis set err ", zap.Error(err), zap.String("Payload", msg.Payload))
 				}
-				global.GVA_LOG.Error("SayHello", zap.String("message", res.GetMessage()))
 			}
 		})
 	})

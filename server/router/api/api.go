@@ -15,6 +15,7 @@ func (s *ApiRouter) InitApiRouter(Router *gin.RouterGroup) {
 	var aApi = v1.ApiGroupApp.ApisApiGroup.ApisApi
 	{
 		uRouter.GET("k/data", aApi.PriceData)                                             // k线
+		uRouter.GET("symbol/data", aApi.SymbolData)                                       // 行情列表
 		uRouter.POST("sms/send", aApi.GetSmsCode)                                         // 发送短信验证码
 		uRouter.POST("register", aApi.Register)                                           // 注册
 		uRouter.POST("login", aApi.Login)                                                 // 登录
