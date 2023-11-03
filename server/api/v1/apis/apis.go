@@ -3,6 +3,7 @@ package apis
 import (
 	"context"
 	"encoding/base64"
+	"encoding/json"
 	"fmt"
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/apis"
@@ -628,8 +629,7 @@ func (uApi *ApisApi) PriceData(c *gin.Context) {
 // @Security ApiKeyAuth
 // @accept application/json
 // @Produce application/json
-// @Param data query apis.KData true "参数"
-// @Success 200 {object} object "{"code":0,"data":{},"msg":"success"}"
+// @Success 200 {object} apis.SymbolDataResp "{"code":0,"data":{},"msg":"success"}"
 // @Router /api/symbol/data [get]
 func (uApi *ApisApi) SymbolData(c *gin.Context) {
 	var sb []*symbols.Symbol
@@ -637,16 +637,67 @@ func (uApi *ApisApi) SymbolData(c *gin.Context) {
 		response.FailWithMessageWithCode(10002, "获取失败", c)
 		return
 	}
-	var keys []string
-
+	var ds []apis.SymbolData
 	for _, s := range sb {
-		keys = append(keys, fmt.Sprintf("s:info:%s", s.Code))
+		key := fmt.Sprintf("s:info:%s", s.Code)
+		res, err := global.GVA_REDIS.Get(c.Request.Context(), key).Result()
+		if err != nil {
+			global.GVA_LOG.Error("SymbolData hgetall err ", zap.Error(err), zap.String("key", key))
+			continue
+		}
+		var d apis.SymbolData
+		if err = json.Unmarshal([]byte(res), &d); err != nil {
+			global.GVA_LOG.Error("SymbolData Unmarshal err ", zap.Error(err), zap.String("res", res))
+			continue
+		}
+		d.Name = s.Name
+		ds = append(ds, d)
+
 	}
 
-	response.OkWithData(apis.KDataResp{
-		YdClosePrice: price,
-		Results:      yData,
+	response.OkWithData(apis.SymbolDataResp{
+		List: ds,
 	}, c)
+	return
+}
+
+// SymbolDataInfo 行情详情
+// @Tags 前端接口API
+// @Summary 行情详情
+// @Security ApiKeyAuth
+// @accept application/json
+// @Produce application/json
+// @Param data query apis.ReqSymbolInfo true "参数"
+// @Success 200 {object} apis.SymbolData "{"code":0,"data":{},"msg":"success"}"
+// @Router /api/symbol/data/info [get]
+func (uApi *ApisApi) SymbolDataInfo(c *gin.Context) {
+	var req apis.ReqSymbolInfo
+	err := c.ShouldBindQuery(&req)
+	if err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	var s *symbols.Symbol
+	if err = global.GVA_DB.Where("code= ?", req.SymbolID).Find(&s).Error; err != nil {
+		response.FailWithMessageWithCode(10002, "获取失败", c)
+		return
+	}
+	key := fmt.Sprintf("s:info:%s", s.Code)
+	res, err := global.GVA_REDIS.Get(c.Request.Context(), key).Result()
+	if err != nil {
+		global.GVA_LOG.Error("SymbolData hgetall err ", zap.Error(err), zap.String("key", key))
+		response.FailWithMessageWithCode(10002, "获取失败", c)
+		return
+	}
+	var d apis.SymbolData
+	if err = json.Unmarshal([]byte(res), &d); err != nil {
+		global.GVA_LOG.Error("SymbolData Unmarshal err ", zap.Error(err), zap.String("res", res))
+		response.FailWithMessageWithCode(10002, "获取失败", c)
+		return
+	}
+	d.Name = s.Name
+
+	response.OkWithData(d, c)
 	return
 }
 

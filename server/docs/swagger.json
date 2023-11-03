@@ -1563,6 +1563,69 @@
                 }
             }
         },
+        "/api/symbol/data": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "前端接口API"
+                ],
+                "summary": "行情列表",
+                "responses": {
+                    "200": {
+                        "description": "{\"code\":0,\"data\":{},\"msg\":\"success\"}",
+                        "schema": {
+                            "$ref": "#/definitions/apis.SymbolDataResp"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/symbol/data/info": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "前端接口API"
+                ],
+                "summary": "行情详情",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "行情合约编号",
+                        "name": "symbol_id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\":0,\"data\":{},\"msg\":\"success\"}",
+                        "schema": {
+                            "$ref": "#/definitions/apis.SymbolData"
+                        }
+                    }
+                }
+            }
+        },
         "/api/updateApi": {
             "post": {
                 "security": [
@@ -8061,6 +8124,113 @@
                 "nickname": {
                     "description": "昵称",
                     "type": "string"
+                }
+            }
+        },
+        "apis.SymbolData": {
+            "type": "object",
+            "properties": {
+                "ask_price": {
+                    "description": "卖出价。为零代表无卖出价。",
+                    "type": "number"
+                },
+                "ask_volume": {
+                    "description": "卖出量。为零代表无卖出价。",
+                    "type": "integer"
+                },
+                "average_price": {
+                    "description": "市场均价",
+                    "type": "number"
+                },
+                "bid_price": {
+                    "description": "买入价。为零代表无买入价。",
+                    "type": "number"
+                },
+                "bid_volume": {
+                    "description": "买入量。为零代表无买入价。",
+                    "type": "integer"
+                },
+                "createdAt": {
+                    "description": "创建时间",
+                    "type": "string"
+                },
+                "id": {
+                    "description": "主键ID",
+                    "type": "integer"
+                },
+                "insert_at": {
+                    "description": "插入时间",
+                    "type": "integer"
+                },
+                "instrument_ref": {
+                    "description": "合约序号",
+                    "type": "integer"
+                },
+                "last_price": {
+                    "description": "最新价",
+                    "type": "number"
+                },
+                "lower_limit_price": {
+                    "description": "跌停板价",
+                    "type": "number"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "open_interest": {
+                    "description": "持仓量",
+                    "type": "number"
+                },
+                "pre_close_price": {
+                    "description": "前收盘价",
+                    "type": "number"
+                },
+                "pre_open_interest": {
+                    "description": "前持仓量",
+                    "type": "number"
+                },
+                "pre_settlement_price": {
+                    "description": "前结算价",
+                    "type": "number"
+                },
+                "symbol_id": {
+                    "description": "合约代码",
+                    "type": "string"
+                },
+                "time_stamp": {
+                    "description": "时间戳",
+                    "type": "integer"
+                },
+                "trading_day": {
+                    "description": "交易日",
+                    "type": "integer"
+                },
+                "turnover": {
+                    "description": "成交金额",
+                    "type": "number"
+                },
+                "updatedAt": {
+                    "description": "更新时间",
+                    "type": "string"
+                },
+                "upper_limit_price": {
+                    "description": "涨停板价",
+                    "type": "number"
+                },
+                "volume": {
+                    "description": "成交量",
+                    "type": "integer"
+                }
+            }
+        },
+        "apis.SymbolDataResp": {
+            "type": "object",
+            "properties": {
+                "list": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/apis.SymbolData"
+                    }
                 }
             }
         },
