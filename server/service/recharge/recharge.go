@@ -27,7 +27,7 @@ func (rgService *RechargeService) CreateRecharge(rg *recharge.Recharge) (err err
 			if err = global.GVA_DB.Save(&u).Error; err != nil {
 				global.GVA_LOG.Error("CreateRecharge.SaveUser err", zap.Error(err))
 			}
-			utils.AddAmountLog(int(u.ID), *rg.Amount, u.Amount, 1)
+			utils.AddAmountLog(int(u.ID), *rg.Amount, u.AvailableAmount, 1)
 		}
 	}
 	return err

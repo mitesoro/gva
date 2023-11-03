@@ -7949,6 +7949,10 @@ const docTemplate = `{
         },
         "apis.ReqOrders": {
             "type": "object",
+            "required": [
+                "symbol",
+                "volume"
+            ],
             "properties": {
                 "direction": {
                     "description": "类型 1止赢 2止损",

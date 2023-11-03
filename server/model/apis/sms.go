@@ -43,16 +43,16 @@ type ReqUpdatePassword struct {
 }
 
 type ReqOrders struct {
-	Volume    int64  `json:"volume" form:"volume" `       // 几手
-	Price     int64  `json:"price" form:"price" `         // 价格(分)
-	Direction int64  `json:"direction" form:"direction" ` // 类型 1止赢 2止损
-	Symbol    string `json:"symbol"`                      // 品种
+	Volume    int64  `json:"volume" form:"volume" binding:"required" ` // 几手
+	Price     int64  `json:"price" form:"price" form:"symbol"`         // 价格(分)
+	Direction int64  `json:"direction" form:"direction" form:"symbol"` // 类型 1止赢 2止损
+	Symbol    string `json:"symbol" form:"symbol" binding:"required" ` // 品种
 }
 
 type KData struct {
-	Period int64  `json:"period" form:"period"`                    // 周期
-	Rows   int64  `json:"rows" form:"rows" binding:"required" `    // 返回条数
-	Symbol string `json:"symbol" form:"symbol" binding:"required"` // 品种
+	Period int64  `json:"period" form:"period"`                     // 周期
+	Rows   int64  `json:"rows" form:"rows" binding:"required" `     // 返回条数
+	Symbol string `json:"symbol" form:"symbol" binding:"required" ` // 品种
 }
 
 type KDataResp struct {

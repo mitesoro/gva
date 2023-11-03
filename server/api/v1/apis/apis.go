@@ -345,22 +345,37 @@ func (uApi *ApisApi) OrdersCreate(c *gin.Context) {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
-	verify := utils.Rules{
-		"volume":    {utils.NotEmpty()},
-		"price":     {utils.NotEmpty()},
-		"direction": {utils.NotEmpty()},
-	}
-	if err = utils.Verify(req, verify); err != nil {
-		response.FailWithMessage(err.Error(), c)
+	ss, err := utils.GetSymbol(req.Symbol)
+	if err != nil {
+		response.FailWithMessageWithCode(10002, "下单失败", c)
 		return
 	}
-
 	id, _ := c.Get("uid")
 	userID := cast.ToInt(id)
 	price := int(req.Price)
 	volume := int(req.Volume)
 	direction := int(req.Direction)
 	accountID := 1
+	u, err := utils.GetUser(int64(userID))
+	if err != nil {
+		response.FailWithMessageWithCode(10002, "下单失败", c)
+		return
+	}
+	allPrice := *ss.Multiple * price
+	needPrice := float64(allPrice) * (float64(*ss.Bond) / 100)
+	decrAmount := int(needPrice)
+	if decrAmount > u.AvailableAmount {
+		response.FailWithMessageWithCode(10002, "下单失败，金额不足", c)
+		return
+	}
+	u.AvailableAmount = u.AvailableAmount - decrAmount
+	u.FreezeAmount = u.FreezeAmount + decrAmount
+	if err = global.GVA_DB.Where("id = ?", u.ID).Save(u).Error; err != nil {
+		global.GVA_LOG.Error("update user err", zap.Error(err))
+		response.FailWithMessageWithCode(10002, "下单失败", c)
+		return
+	}
+	utils.AddAmountLog(int(u.ID), decrAmount, u.AvailableAmount, 2)
 	order := &orders.Orders{
 		User_id:    &userID,
 		Account_id: &accountID,
@@ -374,6 +389,7 @@ func (uApi *ApisApi) OrdersCreate(c *gin.Context) {
 		response.FailWithMessageWithCode(10002, "下单失败", c)
 		return
 	}
+	// grpc 调用下单接口
 
 	response.OkWithMessage("success", c)
 	return
