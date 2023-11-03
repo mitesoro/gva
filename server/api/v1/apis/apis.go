@@ -6,6 +6,7 @@ import (
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/apis"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/common/response"
+	"github.com/flipped-aurora/gin-vue-admin/server/model/data"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/orders"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/users"
 	"github.com/flipped-aurora/gin-vue-admin/server/service"
@@ -14,7 +15,6 @@ import (
 	"github.com/spf13/cast"
 	"github.com/tencentyun/cos-go-sdk-v5"
 	"go.uber.org/zap"
-	"math/rand"
 	"net/http"
 	"net/url"
 	"time"
@@ -395,21 +395,204 @@ func (uApi *ApisApi) PriceData(c *gin.Context) {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
-	var yData []apis.YdData
-	tm := time.Now().Unix()
-	for i := 0; i < int(req.Rows); i++ {
-		yData = append(yData, apis.YdData{
-			Uptime: tm - int64(i),
-			Open:   rand.Float64() * 10000,
-			High:   rand.Float64() * 10000,
-			Low:    rand.Float64() * 10000,
-			Close:  rand.Float64() * 10000,
-			Vol:    rand.Float64() * 10000,
-			Cjl:    rand.Float64() * 10000,
-		})
+	if req.Rows == 0 {
+		req.Rows = 10
 	}
+	var yData []apis.YdData
+	var dates interface{}
+	dates = []data.Data{}
+	if req.Period == 5 {
+		dates = []data.Data5{}
+	}
+	if req.Period == 15 {
+		dates = []data.Data15{}
+	}
+	if req.Period == 30 {
+		dates = []data.Data30{}
+	}
+	if req.Period == 60 {
+		dates = []data.Data60{}
+	}
+	if req.Period == 120 {
+		dates = []data.Data120{}
+	}
+	if req.Period == 240 {
+		dates = []data.Data240{}
+	}
+	if req.Period == 360 {
+		dates = []data.Data360{}
+	}
+	if req.Period == 480 {
+		dates = []data.Data480{}
+	}
+	if req.Period == 1440 {
+		dates = []data.Data1440{}
+	}
+	err = global.GVA_DB.Where("symbol_id = ?", req.Symbol).Order("id DESC").Limit(int(req.Rows)).Find(&dates).Error
+	if err != nil {
+		global.GVA_LOG.Error("PriceData err", zap.Error(err))
+		response.FailWithMessageWithCode(10002, "获取失败", c)
+		return
+	}
+	var price float64
+	switch v := dates.(type) {
+	case []data.Data:
+		for k, d := range v {
+			if k == 0 {
+				price = d.PreClosePrice
+			}
+			yData = append(yData, apis.YdData{
+				Uptime: d.InsertAt,
+				Cjl:    d.OpenInterest, // 持仓量
+				Close:  d.PreClosePrice,
+				Vol:    float64(d.Volume),
+				Open:   d.OpenInterest,
+				High:   d.AveragePrice,
+				Low:    d.LowerLimitPrice,
+			})
+		}
+	case []data.Data5:
+		for k, d := range v {
+			if k == 0 {
+				price = d.PreClosePrice
+			}
+			yData = append(yData, apis.YdData{
+				Uptime: d.InsertAt,
+				Cjl:    d.OpenInterest, // 持仓量
+				Close:  d.PreClosePrice,
+				Vol:    float64(d.Volume),
+				Open:   d.OpenInterest,
+				High:   d.AveragePrice,
+				Low:    d.LowerLimitPrice,
+			})
+		}
+	case []data.Data15:
+		for k, d := range v {
+			if k == 0 {
+				price = d.PreClosePrice
+			}
+			yData = append(yData, apis.YdData{
+				Uptime: d.InsertAt,
+				Cjl:    d.OpenInterest, // 持仓量
+				Close:  d.PreClosePrice,
+				Vol:    float64(d.Volume),
+				Open:   d.OpenInterest,
+				High:   d.AveragePrice,
+				Low:    d.LowerLimitPrice,
+			})
+		}
+	case []data.Data30:
+		for k, d := range v {
+			if k == 0 {
+				price = d.PreClosePrice
+			}
+			yData = append(yData, apis.YdData{
+				Uptime: d.InsertAt,
+				Cjl:    d.OpenInterest, // 持仓量
+				Close:  d.PreClosePrice,
+				Vol:    float64(d.Volume),
+				Open:   d.OpenInterest,
+				High:   d.AveragePrice,
+				Low:    d.LowerLimitPrice,
+			})
+		}
+	case []data.Data60:
+		for k, d := range v {
+			if k == 0 {
+				price = d.PreClosePrice
+			}
+			yData = append(yData, apis.YdData{
+				Uptime: d.InsertAt,
+				Cjl:    d.OpenInterest, // 持仓量
+				Close:  d.PreClosePrice,
+				Vol:    float64(d.Volume),
+				Open:   d.OpenInterest,
+				High:   d.AveragePrice,
+				Low:    d.LowerLimitPrice,
+			})
+		}
+	case []data.Data120:
+		for k, d := range v {
+			if k == 0 {
+				price = d.PreClosePrice
+			}
+			yData = append(yData, apis.YdData{
+				Uptime: d.InsertAt,
+				Cjl:    d.OpenInterest, // 持仓量
+				Close:  d.PreClosePrice,
+				Vol:    float64(d.Volume),
+				Open:   d.OpenInterest,
+				High:   d.AveragePrice,
+				Low:    d.LowerLimitPrice,
+			})
+		}
+	case []data.Data240:
+		for k, d := range v {
+			if k == 0 {
+				price = d.PreClosePrice
+			}
+			yData = append(yData, apis.YdData{
+				Uptime: d.InsertAt,
+				Cjl:    d.OpenInterest, // 持仓量
+				Close:  d.PreClosePrice,
+				Vol:    float64(d.Volume),
+				Open:   d.OpenInterest,
+				High:   d.AveragePrice,
+				Low:    d.LowerLimitPrice,
+			})
+		}
+	case []data.Data360:
+		for k, d := range v {
+			if k == 0 {
+				price = d.PreClosePrice
+			}
+			yData = append(yData, apis.YdData{
+				Uptime: d.InsertAt,
+				Cjl:    d.OpenInterest, // 持仓量
+				Close:  d.PreClosePrice,
+				Vol:    float64(d.Volume),
+				Open:   d.OpenInterest,
+				High:   d.AveragePrice,
+				Low:    d.LowerLimitPrice,
+			})
+		}
+	case []data.Data480:
+		for k, d := range v {
+			if k == 0 {
+				price = d.PreClosePrice
+			}
+			yData = append(yData, apis.YdData{
+				Uptime: d.InsertAt,
+				Cjl:    d.OpenInterest, // 持仓量
+				Close:  d.PreClosePrice,
+				Vol:    float64(d.Volume),
+				Open:   d.OpenInterest,
+				High:   d.AveragePrice,
+				Low:    d.LowerLimitPrice,
+			})
+		}
+	case []data.Data1440:
+		for k, d := range v {
+			if k == 0 {
+				price = d.PreClosePrice
+			}
+			yData = append(yData, apis.YdData{
+				Uptime: d.InsertAt,
+				Cjl:    d.OpenInterest, // 持仓量
+				Close:  d.PreClosePrice,
+				Vol:    float64(d.Volume),
+				Open:   d.OpenInterest,
+				High:   d.AveragePrice,
+				Low:    d.LowerLimitPrice,
+			})
+		}
+	default:
+		response.FailWithMessageWithCode(10002, "获取失败", c)
+		return
+	}
+
 	response.OkWithData(apis.KDataResp{
-		YdClosePrice: rand.Float64() * 10000,
+		YdClosePrice: price,
 		Results:      yData,
 	}, c)
 	return

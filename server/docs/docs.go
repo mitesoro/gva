@@ -7915,6 +7915,10 @@ const docTemplate = `{
         },
         "apis.KData": {
             "type": "object",
+            "required": [
+                "rows",
+                "symbol"
+            ],
             "properties": {
                 "period": {
                     "description": "周期",

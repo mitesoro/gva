@@ -34,6 +34,9 @@ definitions:
       symbol:
         description: 品种
         type: string
+    required:
+    - rows
+    - symbol
     type: object
   apis.ReqLogin:
     properties:
