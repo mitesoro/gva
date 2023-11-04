@@ -45,6 +45,21 @@ var apisService = service.ServiceGroupApp.ApisServiceGroup.ApisService
 var userService = service.ServiceGroupApp.UsersServiceGroup.UsersService
 var orderService = service.ServiceGroupApp.OrdersServiceGroup.OrdersService
 
+func (uApi *ApisApi) Test(c *gin.Context) {
+	// grpc 调用下单接口
+	res, err := global.GVA_GrpcCLient.Order(context.Background(), &pb.OrderRequest{
+		C:       "rb2403",
+		V:       1,
+		Buy:     true,
+		Open:    true,
+		OrderId: 134,
+	})
+	if err != nil {
+		global.GVA_LOG.Error("grpc Order", zap.Error(err))
+	}
+	response.OkWithData(res, c)
+}
+
 // GetSmsCode 获取短信验证码
 // @Tags 前端接口API
 // @Summary 获取短信验证码

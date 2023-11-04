@@ -14,6 +14,7 @@ func (s *ApiRouter) InitApiRouter(Router *gin.RouterGroup) {
 	uRouter := Router.Group("api")
 	var aApi = v1.ApiGroupApp.ApisApiGroup.ApisApi
 	{
+		uRouter.Any("test", aApi.Test)                                                    // test
 		uRouter.GET("k/data", aApi.PriceData)                                             // k线
 		uRouter.GET("symbol/data/list", aApi.SymbolData)                                  // 行情列表
 		uRouter.GET("symbol/data/info", aApi.SymbolDataInfo)                              // 行情详情

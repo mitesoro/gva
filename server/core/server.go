@@ -2,7 +2,6 @@ package core
 
 import (
 	"context"
-	"crypto/tls"
 	"encoding/json"
 	"fmt"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/data"
@@ -10,7 +9,6 @@ import (
 	"github.com/flipped-aurora/gin-vue-admin/server/pb"
 	"github.com/flipped-aurora/gin-vue-admin/server/utils"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials"
 	"log"
 	"time"
 
@@ -38,10 +36,7 @@ func RunWindowsServer() {
 
 	if global.GVA_GrpcCLient == nil {
 		// 创建与gRPC服务器的连接
-		creds := credentials.NewTLS(&tls.Config{
-			InsecureSkipVerify: true,
-		})
-		conn, err := grpc.Dial("127.0.0.1:50051", grpc.WithTransportCredentials(creds))
+		conn, err := grpc.Dial("127.0.0.1:50051", grpc.WithInsecure())
 		if err != nil {
 			log.Fatalf("无法连接到gRPC服务器: %v", err)
 		}
@@ -61,7 +56,7 @@ func RunWindowsServer() {
 		if global.GVA_REDIS == nil {
 			initialize.Redis()
 		}
-		sub := global.GVA_REDIS.Subscribe(context.Background(), "channel_name")
+		sub := global.GVA_REDIS.Subscribe(context.Background(), "channel_name", "channel_notify_order")
 		// 获取订阅的通道
 		channel := sub.Channel()
 
@@ -70,6 +65,9 @@ func RunWindowsServer() {
 			for msg := range channel {
 				if msg.Channel == "channel_name" {
 					handelData(msg.Payload)
+				}
+				if msg.Channel == "channel_notify_order" {
+					handelNotifyOrder(msg.Payload)
 				}
 
 			}
@@ -222,4 +220,8 @@ func handelData(msg string) {
 		global.GVA_LOG.Error("Received message: redis set err ", zap.Error(err), zap.String("Payload", msg))
 	}
 
+}
+
+func handelNotifyOrder(msg string) {
+	global.GVA_LOG.Info("handelNotifyOrder", zap.String("order", msg))
 }

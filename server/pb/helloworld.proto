@@ -27,7 +27,7 @@ service Greeter {
   // Sends a greeting
   rpc SayHello (HelloRequest) returns (HelloReply) {}
 
-  rpc SayHelloStreamReply (HelloRequest) returns (stream HelloReply) {}
+  rpc Order (OrderRequest) returns (OrderReply) {}
 }
 
 // The request message containing the user's name.
@@ -38,4 +38,29 @@ message HelloRequest {
 // The response message containing the greetings
 message HelloReply {
   string message = 1;
+}
+
+message OrderRequest {
+  string c = 1; // 合约
+  float p = 2; // 价格
+  int32 v = 3; // 数量
+  bool buy = 4; //买
+  bool open = 5; //开仓
+  bool sell = 6;  //卖
+  bool close = 7;  //平仓
+  bool closetoday = 8;  //平今
+  bool closeyes = 9;  //平老
+  bool forceclose = 10;  //强平
+  bool hedge = 11;  //套保
+  bool spec = 12;  //投机
+  bool arbi = 13;  //套利
+  bool fak = 14;  //fak
+  bool fok = 15;  //fok
+  int32 order_id = 16;
+}
+
+message OrderReply {
+  bool success = 1;
+  int32 orderRef = 2;
+  int32 errorNo = 3;
 }
