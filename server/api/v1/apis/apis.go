@@ -387,6 +387,8 @@ func (uApi *ApisApi) OrdersCreate(c *gin.Context) {
 		Volume:     &volume,
 		Direction:  &direction,
 		Order_no:   utils.MD5(fmt.Sprintf("%d", time.Now().UnixNano())),
+		SymbolID:   req.Symbol,
+		SymbolName: ss.Name,
 	}
 	err = orderService.CreateOrders(order)
 	if err != nil {

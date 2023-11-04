@@ -952,6 +952,9 @@ definitions:
       bond:
         description: 保证金
         type: integer
+      complete_at:
+        description: 平仓时间
+        type: integer
       content:
         description: 期货下单返回数据
         type: string
@@ -973,6 +976,12 @@ definitions:
       status:
         description: 状态 0下单中 1成功 2取消 3失败 4盈利 5平
         type: integer
+      symbol_id:
+        description: 合约品种编号
+        type: string
+      symbol_name:
+        description: 合约品种名称
+        type: string
       updatedAt:
         description: 更新时间
         type: string
@@ -4789,6 +4798,10 @@ paths:
         in: query
         name: bond
         type: integer
+      - description: 平仓时间
+        in: query
+        name: complete_at
+        type: integer
       - description: 期货下单返回数据
         in: query
         name: content
@@ -4817,6 +4830,14 @@ paths:
         in: query
         name: status
         type: integer
+      - description: 合约品种编号
+        in: query
+        name: symbol_id
+        type: string
+      - description: 合约品种名称
+        in: query
+        name: symbol_name
+        type: string
       - description: 更新时间
         in: query
         name: updatedAt
@@ -4857,6 +4878,10 @@ paths:
       - description: 保证金
         in: query
         name: bond
+        type: integer
+      - description: 平仓时间
+        in: query
+        name: complete_at
         type: integer
       - description: 期货下单返回数据
         in: query
@@ -4904,6 +4929,14 @@ paths:
         in: query
         name: status
         type: integer
+      - description: 合约品种编号
+        in: query
+        name: symbol_id
+        type: string
+      - description: 合约品种名称
+        in: query
+        name: symbol_name
+        type: string
       - description: 更新时间
         in: query
         name: updatedAt

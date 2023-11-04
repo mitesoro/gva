@@ -4896,6 +4896,12 @@ const docTemplate = `{
                         "in": "query"
                     },
                     {
+                        "type": "integer",
+                        "description": "平仓时间",
+                        "name": "complete_at",
+                        "in": "query"
+                    },
+                    {
                         "type": "string",
                         "description": "期货下单返回数据",
                         "name": "content",
@@ -4935,6 +4941,18 @@ const docTemplate = `{
                         "type": "integer",
                         "description": "状态 0下单中 1成功 2取消 3失败 4盈利 5平",
                         "name": "status",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "合约品种编号",
+                        "name": "symbol_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "合约品种名称",
+                        "name": "symbol_name",
                         "in": "query"
                     },
                     {
@@ -5000,6 +5018,12 @@ const docTemplate = `{
                         "type": "integer",
                         "description": "保证金",
                         "name": "bond",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "平仓时间",
+                        "name": "complete_at",
                         "in": "query"
                     },
                     {
@@ -5070,6 +5094,18 @@ const docTemplate = `{
                         "type": "integer",
                         "description": "状态 0下单中 1成功 2取消 3失败 4盈利 5平",
                         "name": "status",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "合约品种编号",
+                        "name": "symbol_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "合约品种名称",
+                        "name": "symbol_name",
                         "in": "query"
                     },
                     {
@@ -9359,6 +9395,10 @@ const docTemplate = `{
                     "description": "保证金",
                     "type": "integer"
                 },
+                "complete_at": {
+                    "description": "平仓时间",
+                    "type": "integer"
+                },
                 "content": {
                     "description": "期货下单返回数据",
                     "type": "string"
@@ -9386,6 +9426,14 @@ const docTemplate = `{
                 "status": {
                     "description": "状态 0下单中 1成功 2取消 3失败 4盈利 5平",
                     "type": "integer"
+                },
+                "symbol_id": {
+                    "description": "合约品种编号",
+                    "type": "string"
+                },
+                "symbol_name": {
+                    "description": "合约品种名称",
+                    "type": "string"
                 },
                 "updatedAt": {
                     "description": "更新时间",
