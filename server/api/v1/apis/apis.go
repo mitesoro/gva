@@ -630,7 +630,7 @@ func (uApi *ApisApi) PriceData(c *gin.Context) {
 // @accept application/json
 // @Produce application/json
 // @Success 200 {object} apis.SymbolDataResp "{"code":0,"data":{},"msg":"success"}"
-// @Router /api/symbol/data [get]
+// @Router /api/symbol/data/list [get]
 func (uApi *ApisApi) SymbolData(c *gin.Context) {
 	var sb []*symbols.Symbol
 	if err := global.GVA_DB.Find(&sb).Error; err != nil {

@@ -21,12 +21,12 @@ func (s *ApiRouter) InitApiRouter(Router *gin.RouterGroup) {
 		uRouter.POST("register", aApi.Register)                                           // 注册
 		uRouter.POST("login", aApi.Login)                                                 // 登录
 		uRouter.POST("file/upload", aApi.UploadFile)                                      // 上传文件
-		uRouter.POST("user/update", aApi.UpdateUser).Use(middleware.Token())              // 修改用户信息
-		uRouter.POST("user/update-phone", aApi.UpdatePhone).Use(middleware.Token())       // 修改手机号
-		uRouter.POST("user/update-password", aApi.UpdatePassword).Use(middleware.Token()) // 修改密码
-		uRouter.POST("orders/create", aApi.OrdersCreate).Use(middleware.Token())          // 下单
-		uRouter.GET("user/info", aApi.GetUserInfo).Use(middleware.Token())                // 下单
-		uRouter.GET("orders/list", aApi.OrdersList).Use(middleware.Token())               // 交易记录
+		uRouter.Use(middleware.Token()).POST("user/update", aApi.UpdateUser)              // 修改用户信息
+		uRouter.Use(middleware.Token()).POST("user/update-phone", aApi.UpdatePhone)       // 修改手机号
+		uRouter.Use(middleware.Token()).POST("user/update-password", aApi.UpdatePassword) // 修改密码
+		uRouter.Use(middleware.Token()).POST("orders/create", aApi.OrdersCreate)          // 下单
+		uRouter.Use(middleware.Token()).GET("user/info", aApi.GetUserInfo)                // 下单
+		uRouter.Use(middleware.Token()).GET("orders/list", aApi.OrdersList)               // 交易记录
 	}
 
 }

@@ -1571,33 +1571,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/symbol/data": {
-            "get": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "前端接口API"
-                ],
-                "summary": "行情列表",
-                "responses": {
-                    "200": {
-                        "description": "{\"code\":0,\"data\":{},\"msg\":\"success\"}",
-                        "schema": {
-                            "$ref": "#/definitions/apis.SymbolDataResp"
-                        }
-                    }
-                }
-            }
-        },
         "/api/symbol/data/info": {
             "get": {
                 "security": [
@@ -1629,6 +1602,33 @@ const docTemplate = `{
                         "description": "{\"code\":0,\"data\":{},\"msg\":\"success\"}",
                         "schema": {
                             "$ref": "#/definitions/apis.SymbolData"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/symbol/data/list": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "前端接口API"
+                ],
+                "summary": "行情列表",
+                "responses": {
+                    "200": {
+                        "description": "{\"code\":0,\"data\":{},\"msg\":\"success\"}",
+                        "schema": {
+                            "$ref": "#/definitions/apis.SymbolDataResp"
                         }
                     }
                 }

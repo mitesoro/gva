@@ -2880,22 +2880,6 @@ paths:
       summary: 获取短信验证码
       tags:
       - 前端接口API
-  /api/symbol/data:
-    get:
-      consumes:
-      - application/json
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: '{"code":0,"data":{},"msg":"success"}'
-          schema:
-            $ref: '#/definitions/apis.SymbolDataResp'
-      security:
-      - ApiKeyAuth: []
-      summary: 行情列表
-      tags:
-      - 前端接口API
   /api/symbol/data/info:
     get:
       consumes:
@@ -2916,6 +2900,22 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: 行情详情
+      tags:
+      - 前端接口API
+  /api/symbol/data/list:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"code":0,"data":{},"msg":"success"}'
+          schema:
+            $ref: '#/definitions/apis.SymbolDataResp'
+      security:
+      - ApiKeyAuth: []
+      summary: 行情列表
       tags:
       - 前端接口API
   /api/updateApi:

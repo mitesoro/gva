@@ -68,109 +68,10 @@ func RunWindowsServer() {
 		// 在单独的goroutine中处理接收到的消息
 		utils.SafeGO(func() {
 			for msg := range channel {
-				now := time.Now()
-				var d data.Data
-				err := json.Unmarshal([]byte(msg.Payload), &d)
-				if err != nil {
-					global.GVA_LOG.Error("Received message:", zap.Error(err), zap.String("Payload", msg.Payload))
-					continue
+				if msg.Channel == "channel_name" {
+					handelData(msg.Payload)
 				}
 
-				d.InsertAt = now.Unix()
-				d.PreSettlementPrice = utils.Decimal(d.PreSettlementPrice)
-				d.PreClosePrice = utils.Decimal(d.PreClosePrice)
-				d.PreOpenInterest = utils.Decimal(d.PreOpenInterest)
-				d.UpperLimitPrice = utils.Decimal(d.UpperLimitPrice)
-				d.LowerLimitPrice = utils.Decimal(d.LowerLimitPrice)
-				d.LastPrice = utils.Decimal(d.LastPrice)
-				d.BidPrice = utils.Decimal(d.BidPrice)
-				d.AskPrice = utils.Decimal(d.AskPrice)
-				d.Turnover = utils.Decimal(d.Turnover)
-				d.OpenInterest = utils.Decimal(d.OpenInterest)
-				d.AveragePrice = utils.Decimal(d.AveragePrice)
-
-				err = global.GVA_DB.Create(&d).Error
-				if err != nil {
-					global.GVA_LOG.Error("Received message:", zap.Error(err), zap.String("Payload", msg.Payload))
-					continue
-				}
-				if now.Minute()%5 == 0 && now.Second() == 0 {
-					dd := data.Data5(d)
-					err = global.GVA_DB.Create(&dd).Error
-					if err != nil {
-						global.GVA_LOG.Error("Received message:", zap.Error(err), zap.String("Payload", msg.Payload))
-						continue
-					}
-				}
-				if now.Minute()%15 == 0 && now.Second() == 0 {
-					dd := data.Data15(d)
-					err = global.GVA_DB.Create(&dd).Error
-					if err != nil {
-						global.GVA_LOG.Error("Received message:", zap.Error(err), zap.String("Payload", msg.Payload))
-						continue
-					}
-				}
-				if now.Minute()%30 == 0 && now.Second() == 0 {
-					dd := data.Data30(d)
-					err = global.GVA_DB.Create(&dd).Error
-					if err != nil {
-						global.GVA_LOG.Error("Received message:", zap.Error(err), zap.String("Payload", msg.Payload))
-						continue
-					}
-				}
-				if now.Minute() == 0 && now.Second() == 0 {
-					dd := data.Data60(d)
-					err = global.GVA_DB.Create(&dd).Error
-					if err != nil {
-						global.GVA_LOG.Error("Received message:", zap.Error(err), zap.String("Payload", msg.Payload))
-						continue
-					}
-				}
-				if now.Minute() == 0 && now.Second() == 0 && now.Hour()%2 == 0 {
-					dd := data.Data120(d)
-					err = global.GVA_DB.Create(&dd).Error
-					if err != nil {
-						global.GVA_LOG.Error("Received message:", zap.Error(err), zap.String("Payload", msg.Payload))
-						continue
-					}
-				}
-				if now.Minute() == 0 && now.Second() == 0 && now.Hour()%4 == 0 {
-					dd := data.Data240(d)
-					err = global.GVA_DB.Create(&dd).Error
-					if err != nil {
-						global.GVA_LOG.Error("Received message:", zap.Error(err), zap.String("Payload", msg.Payload))
-						continue
-					}
-				}
-				if now.Minute() == 0 && now.Second() == 0 && now.Hour()%6 == 0 {
-					dd := data.Data360(d)
-					err = global.GVA_DB.Create(&dd).Error
-					if err != nil {
-						global.GVA_LOG.Error("Received message:", zap.Error(err), zap.String("Payload", msg.Payload))
-						continue
-					}
-				}
-				if now.Minute() == 0 && now.Second() == 0 && now.Hour()%8 == 0 {
-					dd := data.Data480(d)
-					err = global.GVA_DB.Create(&dd).Error
-					if err != nil {
-						global.GVA_LOG.Error("Received message:", zap.Error(err), zap.String("Payload", msg.Payload))
-						continue
-					}
-				}
-				if now.Minute() == 0 && now.Second() == 0 && now.Hour() == 0 {
-					dd := data.Data1440(d)
-					err = global.GVA_DB.Create(&dd).Error
-					if err != nil {
-						global.GVA_LOG.Error("Received message:", zap.Error(err), zap.String("Payload", msg.Payload))
-						continue
-					}
-				}
-				// 缓存最新的数据
-				key := fmt.Sprintf("s:info:%s", d.SymbolId)
-				if err = global.GVA_REDIS.Set(context.Background(), key, msg.Payload, 0).Err(); err != nil {
-					global.GVA_LOG.Error("Received message: redis set err ", zap.Error(err), zap.String("Payload", msg.Payload))
-				}
 			}
 		})
 	})
@@ -213,4 +114,112 @@ func RunWindowsServer() {
 	//	如果项目让您获得了收益，希望您能请团队喝杯可乐:https://www.gin-vue-admin.com/coffee/index.html
 	// `, address)
 	global.GVA_LOG.Error(s.ListenAndServe().Error())
+}
+
+// handelData 处理行情数据
+func handelData(msg string) {
+	now := time.Now()
+	var d data.Data
+	err := json.Unmarshal([]byte(msg), &d)
+	if err != nil {
+		global.GVA_LOG.Error("Received message:", zap.Error(err), zap.String("Payload", msg))
+		return
+	}
+
+	d.InsertAt = now.Unix()
+	d.PreSettlementPrice = utils.Decimal(d.PreSettlementPrice)
+	d.PreClosePrice = utils.Decimal(d.PreClosePrice)
+	d.PreOpenInterest = utils.Decimal(d.PreOpenInterest)
+	d.UpperLimitPrice = utils.Decimal(d.UpperLimitPrice)
+	d.LowerLimitPrice = utils.Decimal(d.LowerLimitPrice)
+	d.LastPrice = utils.Decimal(d.LastPrice)
+	d.BidPrice = utils.Decimal(d.BidPrice)
+	d.AskPrice = utils.Decimal(d.AskPrice)
+	d.Turnover = utils.Decimal(d.Turnover)
+	d.OpenInterest = utils.Decimal(d.OpenInterest)
+	d.AveragePrice = utils.Decimal(d.AveragePrice)
+
+	err = global.GVA_DB.Create(&d).Error
+	if err != nil {
+		global.GVA_LOG.Error("Received message:", zap.Error(err), zap.String("Payload", msg))
+		return
+	}
+	if now.Minute()%5 == 0 && now.Second() == 0 {
+		dd := data.Data5(d)
+		err = global.GVA_DB.Create(&dd).Error
+		if err != nil {
+			global.GVA_LOG.Error("Received message:", zap.Error(err), zap.String("Payload", msg))
+			return
+		}
+	}
+	if now.Minute()%15 == 0 && now.Second() == 0 {
+		dd := data.Data15(d)
+		err = global.GVA_DB.Create(&dd).Error
+		if err != nil {
+			global.GVA_LOG.Error("Received message:", zap.Error(err), zap.String("Payload", msg))
+			return
+		}
+	}
+	if now.Minute()%30 == 0 && now.Second() == 0 {
+		dd := data.Data30(d)
+		err = global.GVA_DB.Create(&dd).Error
+		if err != nil {
+			global.GVA_LOG.Error("Received message:", zap.Error(err), zap.String("Payload", msg))
+			return
+		}
+	}
+	if now.Minute() == 0 && now.Second() == 0 {
+		dd := data.Data60(d)
+		err = global.GVA_DB.Create(&dd).Error
+		if err != nil {
+			global.GVA_LOG.Error("Received message:", zap.Error(err), zap.String("Payload", msg))
+			return
+		}
+	}
+	if now.Minute() == 0 && now.Second() == 0 && now.Hour()%2 == 0 {
+		dd := data.Data120(d)
+		err = global.GVA_DB.Create(&dd).Error
+		if err != nil {
+			global.GVA_LOG.Error("Received message:", zap.Error(err), zap.String("Payload", msg))
+			return
+		}
+	}
+	if now.Minute() == 0 && now.Second() == 0 && now.Hour()%4 == 0 {
+		dd := data.Data240(d)
+		err = global.GVA_DB.Create(&dd).Error
+		if err != nil {
+			global.GVA_LOG.Error("Received message:", zap.Error(err), zap.String("Payload", msg))
+			return
+		}
+	}
+	if now.Minute() == 0 && now.Second() == 0 && now.Hour()%6 == 0 {
+		dd := data.Data360(d)
+		err = global.GVA_DB.Create(&dd).Error
+		if err != nil {
+			global.GVA_LOG.Error("Received message:", zap.Error(err), zap.String("Payload", msg))
+			return
+		}
+	}
+	if now.Minute() == 0 && now.Second() == 0 && now.Hour()%8 == 0 {
+		dd := data.Data480(d)
+		err = global.GVA_DB.Create(&dd).Error
+		if err != nil {
+			global.GVA_LOG.Error("Received message:", zap.Error(err), zap.String("Payload", msg))
+			return
+		}
+	}
+	if now.Minute() == 0 && now.Second() == 0 && now.Hour() == 0 {
+		dd := data.Data1440(d)
+		err = global.GVA_DB.Create(&dd).Error
+		if err != nil {
+			global.GVA_LOG.Error("Received message:", zap.Error(err), zap.String("Payload", msg))
+			return
+		}
+	}
+	// 缓存最新的数据
+	key := fmt.Sprintf("s:info:%s", d.SymbolId)
+	if err = global.GVA_REDIS.Set(context.Background(), key, msg, 0).Err(); err != nil {
+		global.GVA_LOG.Error("Received message: redis set err ", zap.Error(err), zap.String("Payload", msg))
+	}
+
 }
