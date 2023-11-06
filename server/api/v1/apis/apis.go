@@ -21,6 +21,7 @@ import (
 	"go.uber.org/zap"
 	"net/http"
 	"net/url"
+	"strings"
 	"time"
 )
 
@@ -369,6 +370,19 @@ func (uApi *ApisApi) OrdersCreate(c *gin.Context) {
 		response.FailWithMessageWithCode(10002, "下单失败", c)
 		return
 	}
+	if !utils.IsWithinBusinessHours(time.Now(), ss.StartAt, ss.EndAt) {
+		if ss.Days != "" {
+			arr := strings.Split(ss.Days, "~")
+			if !utils.IsWithinRange(time.Now(), arr[0], arr[1]) {
+				response.FailWithMessageWithCode(10002, "下单失败，已经休市", c)
+				return
+			}
+		} else {
+			response.FailWithMessageWithCode(10002, "下单失败，已经休市", c)
+			return
+		}
+	}
+
 	id, _ := c.Get("uid")
 	userID := cast.ToInt(id)
 	price := int(req.Price)

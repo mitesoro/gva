@@ -14,9 +14,30 @@
         <el-form-item label="保证金:" prop="bond">
           <el-input v-model.number="formData.bond" :clearable="true" placeholder="请输入" />
        </el-form-item>
+        <el-form-item label="止赢点位:" prop="point_success">
+          <el-input v-model.number="formData.point_success" :clearable="true" placeholder="请输入" />
+        </el-form-item>
+        <el-form-item label="止赢价格:" prop="point_success_price">
+          <el-input v-model.number="formData.point_success_price" :clearable="true" placeholder="请输入" />
+        </el-form-item>
+        <el-form-item label="止损点位:" prop="point_fail">
+          <el-input v-model.number="formData.point_fail" :clearable="true" placeholder="请输入" />
+        </el-form-item>
+        <el-form-item label="止损价格:" prop="point_fail_price">
+          <el-input v-model.number="formData.point_fail_price" :clearable="true" placeholder="请输入" />
+        </el-form-item>
         <el-form-item label="状态:" prop="status">
           <el-switch v-model="formData.status" active-color="#13ce66" inactive-color="#ff4949" active-text="是" inactive-text="否" clearable ></el-switch>
        </el-form-item>
+        <el-form-item label="开始时间:"  prop="start_at" >
+          <el-time-select v-model="formData.start_at" :picker-options="{ start: '07:30', step: '00:15', end: '20:30' }" placeholder="选择时间"></el-time-select>
+        </el-form-item>
+        <el-form-item label="结束时间:"  prop="end_at" >
+          <el-time-select v-model="formData.end_at" :picker-options="{ start: '07:30', step: '00:15', end: '20:30' }" placeholder="选择时间"></el-time-select>
+        </el-form-item>
+        <el-form-item label="特殊时间:"  prop="days" >
+          <el-input type="textarea" v-model="formData.days" rows="3"></el-input>
+        </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="save">保存</el-button>
           <el-button type="primary" @click="back">返回</el-button>
@@ -53,6 +74,9 @@ const formData = ref({
             multiple: 0,
             bond: 0,
             status: false,
+            start_at: '',
+            end_at: '',
+            days: '',
         })
 // 验证规则
 const rule = reactive({

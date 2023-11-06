@@ -138,6 +138,18 @@
             <el-form-item label="状态:"  prop="status" >
               <el-switch v-model="formData.status" active-color="#13ce66" inactive-color="#ff4949" active-text="是" inactive-text="否" clearable ></el-switch>
             </el-form-item>
+            <el-form-item label="开始时间:"  prop="start_at" >
+              <el-time-select v-model="formData.start_at" :picker-options="{ start: '07:30', step: '00:15', end: '20:30' }" placeholder="选择时间"></el-time-select>
+            </el-form-item>
+            <el-form-item label="结束时间:"  prop="end_at" >
+              <el-time-select v-model="formData.end_at" :picker-options="{ start: '07:30', step: '00:15', end: '20:30' }" placeholder="选择时间"></el-time-select>
+            </el-form-item>
+            <el-form-item label="特殊时间:"  prop="days" >
+              <el-input type="textarea" v-model="formData.days" rows="3"></el-input>
+              <el-alert title="格式为【2023-12-09 09:30:00~2023-12-10 18:30:00】，多个换行" type=info :closable="true"  :show-icon="false"
+                        effect="light">
+              </el-alert>
+            </el-form-item>
           </el-form>
       </el-scrollbar>
       <template #footer>
@@ -178,6 +190,15 @@
                 <el-descriptions-item label="状态">
                     {{ formatBoolean(formData.status) }}
                 </el-descriptions-item>
+          <el-descriptions-item label="下单开始时间">
+            <el-time-select v-model="formData.start_at" disabled :picker-options="{ start: '07:30', step: '00:15', end: '20:30' }" placeholder="选择时间"></el-time-select>
+          </el-descriptions-item>
+          <el-descriptions-item label="下单结束时间">
+            <el-time-select v-model="formData.end_at" disabled :picker-options="{ start: '07:30', step: '00:15', end: '20:30' }" placeholder="选择时间"></el-time-select>
+          </el-descriptions-item>
+          <el-descriptions-item label="特殊时间">
+            <el-input type="textarea" v-model="formData.days" disabled rows="3"></el-input>
+          </el-descriptions-item>
         </el-descriptions>
       </el-scrollbar>
     </el-dialog>

@@ -8,6 +8,7 @@ import (
 	"github.com/flipped-aurora/gin-vue-admin/server/model/users"
 	"go.uber.org/zap"
 	"strconv"
+	"time"
 )
 
 func Decimal(value float64) float64 {
@@ -48,4 +49,37 @@ func GetSymbol(code string) (*symbols.Symbol, error) {
 	}
 
 	return s, nil
+}
+
+func IsWithinBusinessHours(t time.Time, start string, end string) bool {
+	// Parse the start and end times
+	layout := "15:04"
+	parsedStartTime, _ := time.Parse(layout, start)
+	parsedEndTime, _ := time.Parse(layout, end)
+
+	// Combine the current date with the parsed start and end times
+	startTime := time.Date(t.Year(), t.Month(), t.Day(), parsedStartTime.Hour(), parsedStartTime.Minute(), 0, 0, t.Location())
+	endTime := time.Date(t.Year(), t.Month(), t.Day(), parsedEndTime.Hour(), parsedEndTime.Minute(), 0, 0, t.Location())
+
+	// Check if the time is between start and end
+	isBetween := t.After(startTime) && t.Before(endTime)
+
+	// Check if the day of the week is between Monday and Friday
+	isWeekday := t.Weekday() >= time.Monday && t.Weekday() <= time.Friday
+
+	return isBetween && isWeekday
+}
+
+func IsWithinRange(t time.Time, start string, end string) bool {
+	// Define the layout string for parsing the start and end times
+	layout := "2006-01-02 15:04:05"
+
+	// Parse the start and end times
+	startTime, _ := time.Parse(layout, start)
+	endTime, _ := time.Parse(layout, end)
+
+	// Check if the current time is between start and end
+	isBetween := t.After(startTime) && t.Before(endTime)
+
+	return isBetween
 }

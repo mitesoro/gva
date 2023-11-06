@@ -1,6 +1,7 @@
 package system
 
 import (
+	"fmt"
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/common/response"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/system"
@@ -117,7 +118,7 @@ func (s *DictionaryApi) FindSysDictionary(c *gin.Context) {
 			for _, user := range us {
 				details = append(details, system.SysDictionaryDetail{
 					Value:           int(user.ID),
-					Label:           user.Nickname,
+					Label:           fmt.Sprintf("%s(%s)", user.Nickname, user.Phone),
 					SysDictionaryID: 999,
 				})
 			}

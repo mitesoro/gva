@@ -5624,6 +5624,18 @@ const docTemplate = `{
                         "in": "query"
                     },
                     {
+                        "type": "string",
+                        "description": "开盘特殊时间",
+                        "name": "days",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "结束时间",
+                        "name": "end_at",
+                        "in": "query"
+                    },
+                    {
                         "type": "integer",
                         "description": "主键ID",
                         "name": "id",
@@ -5663,6 +5675,12 @@ const docTemplate = `{
                         "type": "integer",
                         "description": "止赢点位价格",
                         "name": "point_success_price",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "开始时间",
+                        "name": "start_at",
                         "in": "query"
                     },
                     {
@@ -5726,7 +5744,19 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
+                        "description": "开盘特殊时间",
+                        "name": "days",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
                         "name": "endCreatedAt",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "结束时间",
+                        "name": "end_at",
                         "in": "query"
                     },
                     {
@@ -5792,6 +5822,12 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "name": "startCreatedAt",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "开始时间",
+                        "name": "start_at",
                         "in": "query"
                     },
                     {
@@ -10030,6 +10066,14 @@ const docTemplate = `{
                     "description": "创建时间",
                     "type": "string"
                 },
+                "days": {
+                    "description": "开盘特殊时间",
+                    "type": "string"
+                },
+                "end_at": {
+                    "description": "结束时间",
+                    "type": "string"
+                },
                 "id": {
                     "description": "主键ID",
                     "type": "integer"
@@ -10057,6 +10101,10 @@ const docTemplate = `{
                 "point_success_price": {
                     "description": "止赢点位价格",
                     "type": "integer"
+                },
+                "start_at": {
+                    "description": "开始时间",
+                    "type": "string"
                 },
                 "status": {
                     "description": "状态",

@@ -1388,6 +1388,12 @@ definitions:
       createdAt:
         description: 创建时间
         type: string
+      days:
+        description: 开盘特殊时间
+        type: string
+      end_at:
+        description: 结束时间
+        type: string
       id:
         description: 主键ID
         type: integer
@@ -1409,6 +1415,9 @@ definitions:
       point_success_price:
         description: 止赢点位价格
         type: integer
+      start_at:
+        description: 开始时间
+        type: string
       status:
         description: 状态
         type: boolean
@@ -5254,6 +5263,14 @@ paths:
         in: query
         name: createdAt
         type: string
+      - description: 开盘特殊时间
+        in: query
+        name: days
+        type: string
+      - description: 结束时间
+        in: query
+        name: end_at
+        type: string
       - description: 主键ID
         in: query
         name: id
@@ -5282,6 +5299,10 @@ paths:
         in: query
         name: point_success_price
         type: integer
+      - description: 开始时间
+        in: query
+        name: start_at
+        type: string
       - description: 状态
         in: query
         name: status
@@ -5319,8 +5340,16 @@ paths:
         in: query
         name: createdAt
         type: string
+      - description: 开盘特殊时间
+        in: query
+        name: days
+        type: string
       - in: query
         name: endCreatedAt
+        type: string
+      - description: 结束时间
+        in: query
+        name: end_at
         type: string
       - description: 主键ID
         in: query
@@ -5364,6 +5393,10 @@ paths:
         type: integer
       - in: query
         name: startCreatedAt
+        type: string
+      - description: 开始时间
+        in: query
+        name: start_at
         type: string
       - description: 状态
         in: query
