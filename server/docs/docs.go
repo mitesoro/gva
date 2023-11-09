@@ -179,6 +179,12 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
+                        "description": "合约",
+                        "name": "symbol",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
                         "description": "标题",
                         "name": "title",
                         "in": "query"
@@ -274,6 +280,12 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "name": "startCreatedAt",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "合约",
+                        "name": "symbol",
                         "in": "query"
                     },
                     {
@@ -940,6 +952,123 @@ const docTemplate = `{
                         "description": "{\"success\":true,\"data\":{},\"msg\":\"更新成功\"}",
                         "schema": {
                             "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/article/category": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "前端接口API"
+                ],
+                "summary": "获取文章分类",
+                "responses": {
+                    "200": {
+                        "description": "{\"success\":true,\"data\":{},\"msg\":\"创建成功\"}",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/article_category.ArticleCategory"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/article/info": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "前端接口API"
+                ],
+                "summary": "获取文章详情",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "文章id",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"success\":true,\"data\":{},\"msg\":\"创建成功\"}",
+                        "schema": {
+                            "$ref": "#/definitions/article.Article"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/article/list": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "前端接口API"
+                ],
+                "summary": "获取文章列表",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "分类id",
+                        "name": "article_category_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "分页",
+                        "name": "page",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "合约",
+                        "name": "symbol",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"success\":true,\"data\":{},\"msg\":\"创建成功\"}",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/article.Article"
+                            }
                         }
                     }
                 }
@@ -5630,12 +5759,6 @@ const docTemplate = `{
                         "in": "query"
                     },
                     {
-                        "type": "string",
-                        "description": "结束时间",
-                        "name": "end_at",
-                        "in": "query"
-                    },
-                    {
                         "type": "integer",
                         "description": "主键ID",
                         "name": "id",
@@ -5678,15 +5801,15 @@ const docTemplate = `{
                         "in": "query"
                     },
                     {
-                        "type": "string",
-                        "description": "开始时间",
-                        "name": "start_at",
-                        "in": "query"
-                    },
-                    {
                         "type": "boolean",
                         "description": "状态",
                         "name": "status",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "时间限制",
+                        "name": "times",
                         "in": "query"
                     },
                     {
@@ -5751,12 +5874,6 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "name": "endCreatedAt",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "结束时间",
-                        "name": "end_at",
                         "in": "query"
                     },
                     {
@@ -5825,15 +5942,15 @@ const docTemplate = `{
                         "in": "query"
                     },
                     {
-                        "type": "string",
-                        "description": "开始时间",
-                        "name": "start_at",
-                        "in": "query"
-                    },
-                    {
                         "type": "boolean",
                         "description": "状态",
                         "name": "status",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "时间限制",
+                        "name": "times",
                         "in": "query"
                     },
                     {
@@ -8353,6 +8470,10 @@ const docTemplate = `{
                     "description": "主键ID",
                     "type": "integer"
                 },
+                "symbol": {
+                    "description": "合约",
+                    "type": "string"
+                },
                 "title": {
                     "description": "标题",
                     "type": "string"
@@ -10086,10 +10207,6 @@ const docTemplate = `{
                     "description": "开盘特殊时间",
                     "type": "string"
                 },
-                "end_at": {
-                    "description": "结束时间",
-                    "type": "string"
-                },
                 "id": {
                     "description": "主键ID",
                     "type": "integer"
@@ -10118,13 +10235,13 @@ const docTemplate = `{
                     "description": "止赢点位价格",
                     "type": "integer"
                 },
-                "start_at": {
-                    "description": "开始时间",
-                    "type": "string"
-                },
                 "status": {
                     "description": "状态",
                     "type": "boolean"
+                },
+                "times": {
+                    "description": "时间限制",
+                    "type": "string"
                 },
                 "updatedAt": {
                     "description": "更新时间",

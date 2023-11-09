@@ -193,6 +193,9 @@ definitions:
       id:
         description: 主键ID
         type: integer
+      symbol:
+        description: 合约
+        type: string
       title:
         description: 标题
         type: string
@@ -1394,9 +1397,6 @@ definitions:
       days:
         description: 开盘特殊时间
         type: string
-      end_at:
-        description: 结束时间
-        type: string
       id:
         description: 主键ID
         type: integer
@@ -1418,12 +1418,12 @@ definitions:
       point_success_price:
         description: 止赢点位价格
         type: integer
-      start_at:
-        description: 开始时间
-        type: string
       status:
         description: 状态
         type: boolean
+      times:
+        description: 时间限制
+        type: string
       updatedAt:
         description: 更新时间
         type: string
@@ -2061,6 +2061,10 @@ paths:
         in: query
         name: id
         type: integer
+      - description: 合约
+        in: query
+        name: symbol
+        type: string
       - description: 标题
         in: query
         name: title
@@ -2123,6 +2127,10 @@ paths:
         type: integer
       - in: query
         name: startCreatedAt
+        type: string
+      - description: 合约
+        in: query
+        name: symbol
         type: string
       - description: 标题
         in: query
@@ -2543,6 +2551,78 @@ paths:
       summary: 更新金额纪录
       tags:
       - Alog
+  /api/article/category:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"创建成功"}'
+          schema:
+            items:
+              $ref: '#/definitions/article_category.ArticleCategory'
+            type: array
+      security:
+      - ApiKeyAuth: []
+      summary: 获取文章分类
+      tags:
+      - 前端接口API
+  /api/article/info:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: 文章id
+        in: query
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"创建成功"}'
+          schema:
+            $ref: '#/definitions/article.Article'
+      security:
+      - ApiKeyAuth: []
+      summary: 获取文章详情
+      tags:
+      - 前端接口API
+  /api/article/list:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: 分类id
+        in: query
+        name: article_category_id
+        type: integer
+      - description: 分页
+        in: query
+        name: page
+        required: true
+        type: integer
+      - description: 合约
+        in: query
+        name: symbol
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"success":true,"data":{},"msg":"创建成功"}'
+          schema:
+            items:
+              $ref: '#/definitions/article.Article'
+            type: array
+      security:
+      - ApiKeyAuth: []
+      summary: 获取文章列表
+      tags:
+      - 前端接口API
   /api/createApi:
     post:
       consumes:
@@ -5276,10 +5356,6 @@ paths:
         in: query
         name: days
         type: string
-      - description: 结束时间
-        in: query
-        name: end_at
-        type: string
       - description: 主键ID
         in: query
         name: id
@@ -5308,14 +5384,14 @@ paths:
         in: query
         name: point_success_price
         type: integer
-      - description: 开始时间
-        in: query
-        name: start_at
-        type: string
       - description: 状态
         in: query
         name: status
         type: boolean
+      - description: 时间限制
+        in: query
+        name: times
+        type: string
       - description: 更新时间
         in: query
         name: updatedAt
@@ -5355,10 +5431,6 @@ paths:
         type: string
       - in: query
         name: endCreatedAt
-        type: string
-      - description: 结束时间
-        in: query
-        name: end_at
         type: string
       - description: 主键ID
         in: query
@@ -5403,14 +5475,14 @@ paths:
       - in: query
         name: startCreatedAt
         type: string
-      - description: 开始时间
-        in: query
-        name: start_at
-        type: string
       - description: 状态
         in: query
         name: status
         type: boolean
+      - description: 时间限制
+        in: query
+        name: times
+        type: string
       - description: 更新时间
         in: query
         name: updatedAt

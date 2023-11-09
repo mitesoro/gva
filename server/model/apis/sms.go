@@ -58,6 +58,16 @@ type KData struct {
 	Symbol string `json:"symbol" form:"symbol" binding:"required" ` // 品种
 }
 
+type ArticleReq struct {
+	ID int64 `json:"id" form:"id" binding:"required" ` // 文章id
+}
+
+type ArticleListReq struct {
+	ArticleCategoryID int64  `json:"article_category_id"  form:"article_category_id" ` // 分类id
+	Page              int64  `json:"page"  form:"page" binding:"required" `            // 分页
+	Symbol            string `json:"symbol" form:"symbol"`                             //合约
+}
+
 type KDataResp struct {
 	YdClosePrice float64  `json:"yd_close_price"`
 	Results      []YdData `json:"results"`

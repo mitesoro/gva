@@ -18,8 +18,7 @@ type Symbol struct {
 	PointFail         *int   `json:"point_fail" form:"point_fail" gorm:"column:point_fail;comment:止损点位;"`                              // 止损点位
 	PointFailPrice    *int   `json:"point_fail_price" form:"point_fail_price" gorm:"column:point_fail_price;comment:止损点位价格;"`          // 止损点位价格
 	Days              string `json:"days" form:"days" gorm:"column:days;comment:开盘也是时间;"`                                              // 开盘特殊时间
-	StartAt           string `json:"start_at" form:"start_at" gorm:"column:start_at;comment:开始时间;"`                                    // 开始时间
-	EndAt             string `json:"end_at" form:"end_at" gorm:"column:end_at;comment:结束时间;"`                                          // 结束时间
+	Times             string `json:"times" form:"times" gorm:"column:times;comment:时间限制;"`                                             // 时间限制
 }
 
 // TableName 合约品种 Symbol自定义表名 symbol

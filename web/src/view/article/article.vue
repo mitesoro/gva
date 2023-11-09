@@ -67,6 +67,7 @@
             {{ filterDict(scope.row.article_category,genderOptions) }}
             </template>
         </el-table-column>
+          <el-table-column align="left" label="合约" prop="symbol" width="120" />
         <el-table-column align="left" label="操作">
             <template #default="scope">
             <el-button type="primary" link class="table-button" @click="getDetails(scope.row)">
@@ -107,6 +108,9 @@
                 <el-option v-for="(item,key) in genderOptions" :key="key" :label="item.label" :value="item.value" />
               </el-select>
             </el-form-item>
+            <el-form-item label="合约:"  prop="symbol" >
+              <el-input v-model="formData.symbol" :clearable="true"  placeholder="请输入合约" />
+            </el-form-item>
           </el-form>
       </el-scrollbar>
       <template #footer>
@@ -132,6 +136,9 @@
                 <el-descriptions-item label="文章分类">
                         {{ filterDict(formData.article_category,genderOptions) }}
                 </el-descriptions-item>
+          <el-descriptions-item label="合约">
+            {{ formData.symbol }}
+          </el-descriptions-item>
         </el-descriptions>
       </el-scrollbar>
     </el-dialog>
@@ -166,6 +173,7 @@ const formData = ref({
         content: '',
         author: '',
         article_category: undefined,
+  symbol: '',
         })
 
 

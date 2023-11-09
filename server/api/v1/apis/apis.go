@@ -7,6 +7,8 @@ import (
 	"fmt"
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/apis"
+	"github.com/flipped-aurora/gin-vue-admin/server/model/article"
+	"github.com/flipped-aurora/gin-vue-admin/server/model/article_category"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/common/response"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/data"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/orders"
@@ -60,6 +62,85 @@ func (uApi *ApisApi) Test(c *gin.Context) {
 		global.GVA_LOG.Error("grpc Order", zap.Error(err))
 	}
 	response.OkWithData(res, c)
+}
+
+// GetArticleCategory 获取文章分类
+// @Tags 前端接口API
+// @Summary 获取文章分类
+// @Security ApiKeyAuth
+// @accept application/json
+// @Produce application/json
+// @Success 200 {array} article_category.ArticleCategory "{"success":true,"data":{},"msg":"创建成功"}"
+// @Router /api/article/category [get]
+func (uApi *ApisApi) GetArticleCategory(c *gin.Context) {
+	var list []article_category.ArticleCategory
+	if global.GVA_DB.Order("id desc").Find(&list).Error != nil {
+		response.FailWithMessageWithCode(10001, "获取失败", c)
+		return
+	}
+	response.OkWithData(list, c)
+}
+
+// GetArticleList 获取文章列表
+// @Tags 前端接口API
+// @Summary 获取文章列表
+// @Security ApiKeyAuth
+// @accept application/json
+// @Produce application/json
+// @Param data query apis.ArticleListReq true "参数"
+// @Success 200 {array} article.Article "{"success":true,"data":{},"msg":"创建成功"}"
+// @Router /api/article/list [get]
+func (uApi *ApisApi) GetArticleList(c *gin.Context) {
+	var req apis.ArticleListReq
+	err := c.ShouldBindQuery(&req)
+	if err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	page := 1
+	if req.Page > 1 {
+		page = int(req.Page)
+	}
+	limit := 20
+	offset := (page - 1) * limit
+	var a []article.Article
+	db := global.GVA_DB
+	if req.ArticleCategoryID > 0 {
+		db = db.Where("article_category = ? ", req.ArticleCategoryID)
+	}
+	if req.Symbol != "" {
+		db = db.Where("symbol = ? ", req.Symbol)
+	}
+
+	if db.Offset(offset).Limit(limit).Order("id desc").Find(&a).Error != nil {
+		response.FailWithMessageWithCode(10001, "获取失败", c)
+		return
+	}
+	response.OkWithData(a, c)
+}
+
+// GetArticleInfo 获取文章详情
+// @Tags 前端接口API
+// @Summary 获取文章详情
+// @Security ApiKeyAuth
+// @accept application/json
+// @Produce application/json
+// @Param data query apis.ArticleReq true "参数"
+// @Success 200 {object} article.Article "{"success":true,"data":{},"msg":"创建成功"}"
+// @Router /api/article/info [get]
+func (uApi *ApisApi) GetArticleInfo(c *gin.Context) {
+	var req apis.ArticleReq
+	err := c.ShouldBindQuery(&req)
+	if err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	var a article.Article
+	if global.GVA_DB.Where("id = ? ", req.ID).Find(&a).Error != nil {
+		response.FailWithMessageWithCode(10001, "获取失败", c)
+		return
+	}
+	response.OkWithData(a, c)
 }
 
 // GetSmsCode 获取短信验证码
@@ -377,17 +458,34 @@ func (uApi *ApisApi) OrdersCreate(c *gin.Context) {
 		response.FailWithMessageWithCode(10002, "下单失败", c)
 		return
 	}
-	if !utils.IsWithinBusinessHours(time.Now(), ss.StartAt, ss.EndAt) {
-		if ss.Days != "" {
-			arr := strings.Split(ss.Days, "~")
-			if !utils.IsWithinRange(time.Now(), arr[0], arr[1]) {
-				response.FailWithMessageWithCode(10002, "下单失败，已经休市", c)
-				return
-			}
-		} else {
-			response.FailWithMessageWithCode(10002, "下单失败，已经休市", c)
-			return
+	arrTimes := strings.Split(ss.Times, "\n")
+	var flag bool
+	fmt.Println(arrTimes)
+	for _, arrTime := range arrTimes {
+		times := strings.Split(arrTime, "~")
+		if len(times) != 2 {
+			continue
 		}
+		if utils.IsWithinBusinessHours(time.Now(), times[0], times[1]) {
+			flag = true
+		}
+	}
+	if !flag {
+		days := strings.Split(ss.Days, "\n")
+		fmt.Println(days)
+		for _, day := range days {
+			arr := strings.Split(day, "~")
+			if len(arr) != 2 {
+				continue
+			}
+			if utils.IsWithinRange(time.Now(), arr[0], arr[1]) {
+				flag = true
+			}
+		}
+	}
+	if !flag {
+		response.FailWithMessageWithCode(10002, "下单失败，已经休市", c)
+		return
 	}
 
 	id, _ := c.Get("uid")

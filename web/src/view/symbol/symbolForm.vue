@@ -29,11 +29,8 @@
         <el-form-item label="状态:" prop="status">
           <el-switch v-model="formData.status" active-color="#13ce66" inactive-color="#ff4949" active-text="是" inactive-text="否" clearable ></el-switch>
        </el-form-item>
-        <el-form-item label="开始时间:"  prop="start_at" >
-          <el-time-picker v-model="formData.start_at"  format="HH:mm:ss" value-format="HH:mm:ss" clearable  placeholder="选择时间"></el-time-picker>
-        </el-form-item>
-        <el-form-item label="结束时间:"  prop="end_at" >
-          <el-time-select v-model="formData.end_at" :picker-options="{ start: '07:30', step: '00:15', end: '20:30' }" placeholder="选择时间"></el-time-select>
+        <el-form-item label="时间段:"  prop="times" >
+          <el-input type="textarea" v-model="formData.times" rows="3"></el-input>
         </el-form-item>
         <el-form-item label="特殊时间:"  prop="days" >
           <el-input type="textarea" v-model="formData.days" rows="3"></el-input>
