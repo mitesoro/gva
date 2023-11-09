@@ -11,6 +11,7 @@ import (
 	"github.com/flipped-aurora/gin-vue-admin/server/model/data"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/orders"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/symbols"
+	"github.com/flipped-aurora/gin-vue-admin/server/model/system"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/users"
 	"github.com/flipped-aurora/gin-vue-admin/server/pb"
 	"github.com/flipped-aurora/gin-vue-admin/server/service"
@@ -141,6 +142,12 @@ func (uApi *ApisApi) Register(c *gin.Context) {
 		Password: req.Password,
 		Nickname: fmt.Sprintf("zd_%s", utils.GenerateRandomCode(6)),
 		Avatar:   "",
+	}
+	if req.InviteCode != "" {
+		var admin system.SysUser
+		if err = global.GVA_DB.Where("invite_code = ?", req.InviteCode).First(&admin).Error; err == nil {
+			s.AdminID = int(admin.ID)
+		}
 	}
 	if err := userService.CreateUsers(&s); err != nil {
 		global.GVA_LOG.Error("创建失败!", zap.Error(err))

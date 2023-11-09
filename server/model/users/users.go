@@ -18,6 +18,7 @@ type Users struct {
 	Amount          int    `json:"amount" form:"amount" gorm:"column:amount;comment:金额;"`                                 // 总金额
 	AvailableAmount int    `json:"available_amount" form:"available_amount" gorm:"column:available_amount;comment:可用金额;"` // 可用金额
 	FreezeAmount    int    `json:"freeze_amount" form:"freeze_amount" gorm:"column:freeze_amount;comment:冻结金额;"`          // 冻结金额
+	AdminID         int    `json:"admin_id" form:"admin_id" gorm:"column:admin_id;comment:上级;"`                           // 上级编号
 }
 
 // TableName 用户 Users自定义表名 users

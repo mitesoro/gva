@@ -108,9 +108,14 @@
             <el-form-item label="昵称:"  prop="nickname" >
               <el-input v-model="formData.nickname" :clearable="true"  placeholder="请输入昵称" />
             </el-form-item>
-            <el-form-item label="订单正反手:"  prop="article_category" >
+            <el-form-item label="订单正反:"  prop="order_type" >
               <el-select v-model="formData.order_type" placeholder="请选择订单正反手" style="width:100%" :clearable="true" >
                 <el-option v-for="(item,key) in genderOptions" :key="key" :label="item.label" :value="item.value" />
+              </el-select>
+            </el-form-item>
+            <el-form-item label="上级:"  prop="admin_id" >
+              <el-select v-model="formData.admin_id" placeholder="请选择上级" style="width:100%" :clearable="true" >
+                <el-option v-for="(item,key) in adminOptions" :key="key" :label="item.label" :value="item.value" />
               </el-select>
             </el-form-item>
 <!--            <el-form-item label="头像:"  prop="avatar" >-->
@@ -144,11 +149,14 @@
 <!--                <el-descriptions-item label="头像">-->
 <!--                        <el-image style="width: 50px; height: 50px" :preview-src-list="ReturnArrImg(formData.avatar)" :src="getUrl(formData.avatar)" fit="cover" />-->
 <!--                </el-descriptions-item>-->
-                <el-descriptions-item label="订单正反手">
+                <el-descriptions-item label="订单正反">
                   {{ filterDict(formData.order_type,genderOptions) }}
                 </el-descriptions-item>
           <el-descriptions-item label="手">
             {{ formData.volume }}
+          </el-descriptions-item>
+          <el-descriptions-item label="上级">
+            {{ filterDict(formData.admin_id,adminOptions) }}
           </el-descriptions-item>
         </el-descriptions>
       </el-scrollbar>
@@ -179,6 +187,7 @@ defineOptions({
 })
 
 const genderOptions = ref([])
+const adminOptions = ref([])
 // 自动化生成的字典（可能为空）以及字段
 const formData = ref({
         phone: '',
@@ -188,6 +197,7 @@ const formData = ref({
         order_type: "",
         amount: 0,
         volume: 0,
+        admin_id: 0,
         })
 
 
@@ -226,12 +236,7 @@ const rule = reactive({
                    trigger: ['input', 'blur'],
               }
               ],
-               avatar : [{
-                   required: true,
-                   message: '',
-                   trigger: ['input','blur'],
-               },
-              ],
+
 })
 
 const searchRule = reactive({
@@ -312,6 +317,7 @@ getTableData()
 // 获取需要的字典 可能为空 按需保留
 const setOptions = async () =>{
   genderOptions.value = await getDictFunc('order_type')
+  adminOptions.value = await getDictFunc('admin')
 }
 
 // 获取需要的字典 可能为空 按需保留

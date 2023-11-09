@@ -7,6 +7,7 @@ import (
 	"github.com/flipped-aurora/gin-vue-admin/server/model/symbols"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/users"
 	"go.uber.org/zap"
+	"math/rand"
 	"strconv"
 	"time"
 )
@@ -82,4 +83,17 @@ func IsWithinRange(t time.Time, start string, end string) bool {
 	isBetween := t.After(startTime) && t.Before(endTime)
 
 	return isBetween
+}
+
+func RandStr(length int) string {
+	src := rand.NewSource(time.Now().UnixNano())
+	r := rand.New(src)
+	chars := []rune("ABCDEFGHIJKLMNOPQRSTUVWXYZ" +
+		"abcdefghijklmnopqrstuvwxyz" +
+		"0123456789")
+	var b []rune
+	for i := 0; i < length; i++ {
+		b = append(b, chars[r.Intn(len(chars))])
+	}
+	return string(b)
 }

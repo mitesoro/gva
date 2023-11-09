@@ -10,9 +10,10 @@ type ReqSms struct {
 }
 
 type ReqRegister struct {
-	Phone    string `json:"phone" form:"phone" gorm:"column:phone;comment:手机号;size:129;"` // 手机号
-	Code     string `json:"code" form:"code" `                                            // 验证码
-	Password string `json:"password" form:"password" `                                    // 密码
+	Phone      string `json:"phone" form:"phone" gorm:"column:phone;comment:手机号;size:129;"` // 手机号
+	Code       string `json:"code" form:"code" `                                            // 验证码
+	Password   string `json:"password" form:"password" `                                    // 密码
+	InviteCode string `json:"invite_code" form:"password"`                                  // 邀请码
 }
 
 type ReqLogin struct {

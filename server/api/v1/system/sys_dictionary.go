@@ -127,6 +127,28 @@ func (s *DictionaryApi) FindSysDictionary(c *gin.Context) {
 		response.OkWithDetailed(gin.H{"resysDictionary": sysDictionary}, "查询成功", c)
 		return
 	}
+	if dictionary.Type == "admin" { // 查询后台用户
+		t := true
+		sysDictionary := system.SysDictionary{
+			Name:   dictionary.Type,
+			Status: &t,
+			Type:   dictionary.Type,
+		}
+		var us []system.SysUser
+		if err = global.GVA_DB.Find(&us).Error; err == nil {
+			var details []system.SysDictionaryDetail
+			for _, user := range us {
+				details = append(details, system.SysDictionaryDetail{
+					Value:           int(user.ID),
+					Label:           fmt.Sprintf("%s", user.NickName),
+					SysDictionaryID: 999,
+				})
+			}
+			sysDictionary.SysDictionaryDetails = details
+		}
+		response.OkWithDetailed(gin.H{"resysDictionary": sysDictionary}, "查询成功", c)
+		return
+	}
 
 	sysDictionary, err := dictionaryService.GetSysDictionary(dictionary.Type, dictionary.ID, dictionary.Status)
 	if err != nil {

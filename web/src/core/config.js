@@ -3,7 +3,7 @@
  */
 
 const config = {
-  appName: '中鼎',
+  appName: 'WIN_APP',
   appLogo: 'https://www.gin-vue-admin.com/img/logo.png',
   showViteLogo: false
 }

@@ -49,43 +49,16 @@
             <div class="w-full h-full text-left" >
               <ul class="inline-block h-full w-full">
                 <li class="info-list">
-                  <el-icon>
-                    <user />
-                  </el-icon>
-                  {{ userStore.userInfo.nickName }}
+                  昵称：<span class="el-text" style="color: #00afff; font-weight: bold">{{ userStore.userInfo.nickName }}</span>
                 </li>
-<!--                <el-tooltip-->
-<!--                  class="item"-->
-<!--                  effect="light"-->
-<!--                  content="北京反转极光科技有限公司-技术部-前端事业群"-->
-<!--                  placement="top"-->
-<!--                >-->
-<!--                  <li class="info-list">-->
-<!--                    <el-icon>-->
-<!--                      <data-analysis />-->
-<!--                    </el-icon>-->
-<!--                    北京反转极光科技有限公司-技术部-前端事业群-->
-<!--                  </li>-->
-<!--                </el-tooltip>-->
-<!--                <li class="info-list">-->
-<!--                  <el-icon>-->
-<!--                    <video-camera />-->
-<!--                  </el-icon>-->
-<!--                  中国·北京市·朝阳区-->
-<!--                </li>-->
-<!--                <el-tooltip-->
-<!--                  class="item"-->
-<!--                  effect="light"-->
-<!--                  content="GoLang/JavaScript/Vue/Gorm"-->
-<!--                  placement="top"-->
-<!--                >-->
-<!--                  <li class="info-list">-->
-<!--                    <el-icon>-->
-<!--                      <medal />-->
-<!--                    </el-icon>-->
-<!--                    GoLang/JavaScript/Vue/Gorm-->
-<!--                  </li>-->
-<!--                </el-tooltip>-->
+                <li class="info-list">
+                  邀请码：<span class="el-text" id="code" style="color: #00afff; font-weight: bold">{{ userStore.userInfo.invite_code }}</span>
+                  <span style="margin-left: 10px; color: #3a8ee6">
+                    <a @click="copyToClipboard" style="cursor: pointer;"><el-icon>
+                        <document-copy />
+                      </el-icon></a>
+                  </span>
+                </li>
               </ul>
             </div>
           </div>
@@ -489,6 +462,18 @@ const changeEmail = async() => {
     closeChangeEmail()
   }
 }
+
+const copyToClipboard = async () => {
+  try {
+    const textToCopy = document.getElementById("code").textContent;
+    await navigator.clipboard.writeText(textToCopy);
+    ElMessage.success('复制成功');
+  } catch (err) {
+    console.log(err)
+    ElMessage.error('复制失败');
+  }
+}
+
 
 </script>
 

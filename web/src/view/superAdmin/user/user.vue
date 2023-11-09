@@ -43,18 +43,18 @@
           min-width="150"
           prop="nickName"
         />
-        <el-table-column
-          align="left"
-          label="手机号"
-          min-width="180"
-          prop="phone"
-        />
-        <el-table-column
-          align="left"
-          label="邮箱"
-          min-width="180"
-          prop="email"
-        />
+<!--        <el-table-column-->
+<!--          align="left"-->
+<!--          label="手机号"-->
+<!--          min-width="180"-->
+<!--          prop="phone"-->
+<!--        />-->
+<!--        <el-table-column-->
+<!--          align="left"-->
+<!--          label="邮箱"-->
+<!--          min-width="180"-->
+<!--          prop="email"-->
+<!--        />-->
         <el-table-column
           align="left"
           label="用户角色"
@@ -182,18 +182,18 @@
           >
             <el-input v-model="userInfo.nickName" />
           </el-form-item>
-          <el-form-item
-            label="手机号"
-            prop="phone"
-          >
-            <el-input v-model="userInfo.phone" />
-          </el-form-item>
-          <el-form-item
-            label="邮箱"
-            prop="email"
-          >
-            <el-input v-model="userInfo.email" />
-          </el-form-item>
+<!--          <el-form-item-->
+<!--            label="手机号"-->
+<!--            prop="phone"-->
+<!--          >-->
+<!--            <el-input v-model="userInfo.phone" />-->
+<!--          </el-form-item>-->
+<!--          <el-form-item-->
+<!--            label="邮箱1"-->
+<!--            prop="email"-->
+<!--          >-->
+<!--            <el-input v-model="userInfo.email" />-->
+<!--          </el-form-item>-->
           <el-form-item
             label="用户角色"
             prop="authorityId"

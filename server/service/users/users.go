@@ -1,6 +1,7 @@
 package users
 
 import (
+	"errors"
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/common/request"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/users"
@@ -13,6 +14,9 @@ type UsersService struct {
 // CreateUsers 创建用户记录
 // Author [piexlmax](https://github.com/piexlmax)
 func (uService *UsersService) CreateUsers(u *users.Users) (err error) {
+	if global.GVA_DB.Where("phone = ?", u.Phone).First(&u).Error == nil {
+		return errors.New(u.Phone + "手机号已注册")
+	}
 	err = global.GVA_DB.Create(u).Error
 	return err
 }

@@ -68,11 +68,6 @@ const rule = reactive({
                    message: '',
                    trigger: ['input','blur'],
                }],
-               avatar : [{
-                   required: true,
-                   message: '',
-                   trigger: ['input','blur'],
-               }],
 })
 
 const elFormRef = ref()

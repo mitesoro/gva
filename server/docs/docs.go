@@ -7306,6 +7306,12 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "integer",
+                        "description": "上级编号",
+                        "name": "admin_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
                         "description": "总金额",
                         "name": "amount",
                         "in": "query"
@@ -7411,6 +7417,12 @@ const docTemplate = `{
                 ],
                 "summary": "分页获取用户列表",
                 "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "上级编号",
+                        "name": "admin_id",
+                        "in": "query"
+                    },
                     {
                         "type": "integer",
                         "description": "总金额",
@@ -8147,6 +8159,10 @@ const docTemplate = `{
             "properties": {
                 "code": {
                     "description": "验证码",
+                    "type": "string"
+                },
+                "invite_code": {
+                    "description": "邀请码",
                     "type": "string"
                 },
                 "password": {
@@ -10764,6 +10780,10 @@ const docTemplate = `{
                     "description": "主键ID",
                     "type": "integer"
                 },
+                "invite_code": {
+                    "description": "邀请码",
+                    "type": "string"
+                },
                 "nickName": {
                     "description": "用户昵称",
                     "type": "string"
@@ -10801,6 +10821,10 @@ const docTemplate = `{
         "users.Users": {
             "type": "object",
             "properties": {
+                "admin_id": {
+                    "description": "上级编号",
+                    "type": "integer"
+                },
                 "amount": {
                     "description": "总金额",
                     "type": "integer"
@@ -10871,7 +10895,7 @@ var SwaggerInfo = &swag.Spec{
 	Host:             "",
 	BasePath:         "",
 	Schemes:          []string{},
-	Title:            "中鼎接口API",
+	Title:            "WIN_APP 接口API",
 	Description:      "接口文档",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
