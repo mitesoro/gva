@@ -896,7 +896,11 @@ func (uApi *ApisApi) OrdersList(c *gin.Context) {
 	id, _ := c.Get("uid")
 	userID := cast.ToInt(id)
 	var os []*orders.Orders
-	err = global.GVA_DB.Where("user_id = ?", userID).Order("id DESC").Offset(offset).Limit(limit).Find(&os).Error
+	db := global.GVA_DB
+	if req.Status > 0 {
+		db = db.Where("status = ? ", req.Status)
+	}
+	err = db.Where("user_id = ?", userID).Order("id DESC").Offset(offset).Limit(limit).Find(&os).Error
 	if err != nil {
 		global.GVA_LOG.Error("PriceData err", zap.Error(err))
 		response.FailWithMessageWithCode(10002, "获取失败", c)

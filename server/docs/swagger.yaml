@@ -35,7 +35,7 @@ definitions:
   apis.ReqOrders:
     properties:
       direction:
-        description: 类型 1止赢 2止损
+        description: 类型 1买 2卖
         type: integer
       price:
         description: 价格(分)
@@ -189,6 +189,9 @@ definitions:
         type: string
       createdAt:
         description: 创建时间
+        type: string
+      desc:
+        description: 简介
         type: string
       id:
         description: 主键ID
@@ -960,18 +963,27 @@ definitions:
         type: integer
       complete_at:
         description: 平仓时间
-        type: integer
+        type: string
       content:
         description: 期货下单返回数据
         type: string
       createdAt:
         description: 创建时间
         type: string
+      decr_amount:
+        description: 扣除金钱
+        type: integer
       direction:
-        description: 类型
+        description: 类型 1买2卖
+        type: integer
+      fee:
+        description: 手续费
         type: integer
       id:
         description: 主键ID
+        type: integer
+      is_win:
+        description: 平仓盈亏 1赢2亏
         type: integer
       order_no:
         description: 订单号
@@ -986,7 +998,13 @@ definitions:
         description: 价格
         type: integer
       status:
-        description: 状态 0下单中 1成功 2取消 3失败 4盈利 5平
+        description: 状态 0下单中 1成功 2取消 3失败 4平仓
+        type: integer
+      success_at:
+        description: 成交时间
+        type: string
+      success_price:
+        description: 成交价
         type: integer
       symbol_id:
         description: 合约品种编号
@@ -1002,6 +1020,9 @@ definitions:
         type: integer
       volume:
         description: 手
+        type: integer
+      win_amount:
+        description: 平仓盈亏金额
         type: integer
     type: object
   recharge.Recharge:
@@ -2063,6 +2084,10 @@ paths:
         in: query
         name: createdAt
         type: string
+      - description: 简介
+        in: query
+        name: desc
+        type: string
       - description: 主键ID
         in: query
         name: id
@@ -2111,6 +2136,10 @@ paths:
       - description: 创建时间
         in: query
         name: createdAt
+        type: string
+      - description: 简介
+        in: query
+        name: desc
         type: string
       - in: query
         name: endCreatedAt
@@ -2929,7 +2958,7 @@ paths:
         name: page
         required: true
         type: integer
-      - description: 状态 0下单中 1成功 2取消 3失败 4盈利 5平
+      - description: 状态 0下单中 1成交 2取消 3失败 4平
         in: query
         name: status
         type: integer
@@ -4905,7 +4934,7 @@ paths:
       - description: 平仓时间
         in: query
         name: complete_at
-        type: integer
+        type: string
       - description: 期货下单返回数据
         in: query
         name: content
@@ -4914,13 +4943,25 @@ paths:
         in: query
         name: createdAt
         type: string
-      - description: 类型
+      - description: 扣除金钱
+        in: query
+        name: decr_amount
+        type: integer
+      - description: 类型 1买2卖
         in: query
         name: direction
+        type: integer
+      - description: 手续费
+        in: query
+        name: fee
         type: integer
       - description: 主键ID
         in: query
         name: id
+        type: integer
+      - description: 平仓盈亏 1赢2亏
+        in: query
+        name: is_win
         type: integer
       - description: 订单号
         in: query
@@ -4938,9 +4979,17 @@ paths:
         in: query
         name: price
         type: integer
-      - description: 状态 0下单中 1成功 2取消 3失败 4盈利 5平
+      - description: 状态 0下单中 1成功 2取消 3失败 4平仓
         in: query
         name: status
+        type: integer
+      - description: 成交时间
+        in: query
+        name: success_at
+        type: string
+      - description: 成交价
+        in: query
+        name: success_price
         type: integer
       - description: 合约品种编号
         in: query
@@ -4961,6 +5010,10 @@ paths:
       - description: 手
         in: query
         name: volume
+        type: integer
+      - description: 平仓盈亏金额
+        in: query
+        name: win_amount
         type: integer
       produces:
       - application/json
@@ -4994,7 +5047,7 @@ paths:
       - description: 平仓时间
         in: query
         name: complete_at
-        type: integer
+        type: string
       - description: 期货下单返回数据
         in: query
         name: content
@@ -5003,16 +5056,28 @@ paths:
         in: query
         name: createdAt
         type: string
-      - description: 类型
+      - description: 扣除金钱
+        in: query
+        name: decr_amount
+        type: integer
+      - description: 类型 1买2卖
         in: query
         name: direction
         type: integer
       - in: query
         name: endCreatedAt
         type: string
+      - description: 手续费
+        in: query
+        name: fee
+        type: integer
       - description: 主键ID
         in: query
         name: id
+        type: integer
+      - description: 平仓盈亏 1赢2亏
+        in: query
+        name: is_win
         type: integer
       - description: 关键字
         in: query
@@ -5045,9 +5110,17 @@ paths:
       - in: query
         name: startCreatedAt
         type: string
-      - description: 状态 0下单中 1成功 2取消 3失败 4盈利 5平
+      - description: 状态 0下单中 1成功 2取消 3失败 4平仓
         in: query
         name: status
+        type: integer
+      - description: 成交时间
+        in: query
+        name: success_at
+        type: string
+      - description: 成交价
+        in: query
+        name: success_price
         type: integer
       - description: 合约品种编号
         in: query
@@ -5068,6 +5141,10 @@ paths:
       - description: 手
         in: query
         name: volume
+        type: integer
+      - description: 平仓盈亏金额
+        in: query
+        name: win_amount
         type: integer
       produces:
       - application/json

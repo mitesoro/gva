@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/flipped-aurora/gin-vue-admin/server/model"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/data"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/orders"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/symbols"
@@ -259,7 +260,7 @@ func handelNotifyOrder(msg string) {
 	global.GVA_LOG.Info("QueryOrder", zap.Any("res", res))
 	// 成交
 	status := 0
-	o.SuccessAt = time.Now().Unix()
+	o.SuccessAt = model.LocalTime(time.Now())
 	if res.Os == 3 {
 		status = 1
 	} else {

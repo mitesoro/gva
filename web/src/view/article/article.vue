@@ -97,6 +97,9 @@
             <el-form-item label="标题:"  prop="title" >
               <el-input v-model="formData.title" :clearable="true"  placeholder="请输入标题" />
             </el-form-item>
+            <el-form-item label="简介:"  prop="desc" >
+              <el-input v-model="formData.desc" :clearable="true"  placeholder="请输入" />
+            </el-form-item>
             <el-form-item label="内容:"  prop="content" >
               <RichEdit v-model="formData.content"/>
             </el-form-item>
@@ -127,6 +130,9 @@
                 <el-descriptions-item label="标题">
                         {{ formData.title }}
                 </el-descriptions-item>
+          <el-descriptions-item label="简介">
+            {{ formData.desc }}
+          </el-descriptions-item>
                 <el-descriptions-item label="内容">
                         [富文本内容]
                 </el-descriptions-item>

@@ -172,6 +172,12 @@ const docTemplate = `{
                         "in": "query"
                     },
                     {
+                        "type": "string",
+                        "description": "简介",
+                        "name": "desc",
+                        "in": "query"
+                    },
+                    {
                         "type": "integer",
                         "description": "主键ID",
                         "name": "id",
@@ -246,6 +252,12 @@ const docTemplate = `{
                         "type": "string",
                         "description": "创建时间",
                         "name": "createdAt",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "简介",
+                        "name": "desc",
                         "in": "query"
                     },
                     {
@@ -1606,7 +1618,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "integer",
-                        "description": "状态 0下单中 1成功 2取消 3失败 4盈利 5平",
+                        "description": "状态 0下单中 1成交 2取消 3失败 4平",
                         "name": "status",
                         "in": "query"
                     }
@@ -5025,7 +5037,7 @@ const docTemplate = `{
                         "in": "query"
                     },
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "平仓时间",
                         "name": "complete_at",
                         "in": "query"
@@ -5044,14 +5056,32 @@ const docTemplate = `{
                     },
                     {
                         "type": "integer",
-                        "description": "类型",
+                        "description": "扣除金钱",
+                        "name": "decr_amount",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "类型 1买2卖",
                         "name": "direction",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "手续费",
+                        "name": "fee",
                         "in": "query"
                     },
                     {
                         "type": "integer",
                         "description": "主键ID",
                         "name": "id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "平仓盈亏 1赢2亏",
+                        "name": "is_win",
                         "in": "query"
                     },
                     {
@@ -5080,8 +5110,20 @@ const docTemplate = `{
                     },
                     {
                         "type": "integer",
-                        "description": "状态 0下单中 1成功 2取消 3失败 4盈利 5平",
+                        "description": "状态 0下单中 1成功 2取消 3失败 4平仓",
                         "name": "status",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "成交时间",
+                        "name": "success_at",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "成交价",
+                        "name": "success_price",
                         "in": "query"
                     },
                     {
@@ -5112,6 +5154,12 @@ const docTemplate = `{
                         "type": "integer",
                         "description": "手",
                         "name": "volume",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "平仓盈亏金额",
+                        "name": "win_amount",
                         "in": "query"
                     }
                 ],
@@ -5162,7 +5210,7 @@ const docTemplate = `{
                         "in": "query"
                     },
                     {
-                        "type": "integer",
+                        "type": "string",
                         "description": "平仓时间",
                         "name": "complete_at",
                         "in": "query"
@@ -5181,7 +5229,13 @@ const docTemplate = `{
                     },
                     {
                         "type": "integer",
-                        "description": "类型",
+                        "description": "扣除金钱",
+                        "name": "decr_amount",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "类型 1买2卖",
                         "name": "direction",
                         "in": "query"
                     },
@@ -5192,8 +5246,20 @@ const docTemplate = `{
                     },
                     {
                         "type": "integer",
+                        "description": "手续费",
+                        "name": "fee",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
                         "description": "主键ID",
                         "name": "id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "平仓盈亏 1赢2亏",
+                        "name": "is_win",
                         "in": "query"
                     },
                     {
@@ -5245,8 +5311,20 @@ const docTemplate = `{
                     },
                     {
                         "type": "integer",
-                        "description": "状态 0下单中 1成功 2取消 3失败 4盈利 5平",
+                        "description": "状态 0下单中 1成功 2取消 3失败 4平仓",
                         "name": "status",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "成交时间",
+                        "name": "success_at",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "成交价",
+                        "name": "success_price",
                         "in": "query"
                     },
                     {
@@ -5277,6 +5355,12 @@ const docTemplate = `{
                         "type": "integer",
                         "description": "手",
                         "name": "volume",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "平仓盈亏金额",
+                        "name": "win_amount",
                         "in": "query"
                     }
                 ],
@@ -8278,7 +8362,7 @@ const docTemplate = `{
             ],
             "properties": {
                 "direction": {
-                    "description": "类型 1止赢 2止损",
+                    "description": "类型 1买 2卖",
                     "type": "integer"
                 },
                 "price": {
@@ -8488,6 +8572,10 @@ const docTemplate = `{
                 },
                 "createdAt": {
                     "description": "创建时间",
+                    "type": "string"
+                },
+                "desc": {
+                    "description": "简介",
                     "type": "string"
                 },
                 "id": {
@@ -9594,7 +9682,7 @@ const docTemplate = `{
                 },
                 "complete_at": {
                     "description": "平仓时间",
-                    "type": "integer"
+                    "type": "string"
                 },
                 "content": {
                     "description": "期货下单返回数据",
@@ -9604,12 +9692,24 @@ const docTemplate = `{
                     "description": "创建时间",
                     "type": "string"
                 },
+                "decr_amount": {
+                    "description": "扣除金钱",
+                    "type": "integer"
+                },
                 "direction": {
-                    "description": "类型",
+                    "description": "类型 1买2卖",
+                    "type": "integer"
+                },
+                "fee": {
+                    "description": "手续费",
                     "type": "integer"
                 },
                 "id": {
                     "description": "主键ID",
+                    "type": "integer"
+                },
+                "is_win": {
+                    "description": "平仓盈亏 1赢2亏",
                     "type": "integer"
                 },
                 "order_no": {
@@ -9629,7 +9729,15 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "status": {
-                    "description": "状态 0下单中 1成功 2取消 3失败 4盈利 5平",
+                    "description": "状态 0下单中 1成功 2取消 3失败 4平仓",
+                    "type": "integer"
+                },
+                "success_at": {
+                    "description": "成交时间",
+                    "type": "string"
+                },
+                "success_price": {
+                    "description": "成交价",
                     "type": "integer"
                 },
                 "symbol_id": {
@@ -9650,6 +9758,10 @@ const docTemplate = `{
                 },
                 "volume": {
                     "description": "手",
+                    "type": "integer"
+                },
+                "win_amount": {
+                    "description": "平仓盈亏金额",
                     "type": "integer"
                 }
             }

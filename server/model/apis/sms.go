@@ -48,7 +48,7 @@ type ReqUpdatePassword struct {
 type ReqOrders struct {
 	Volume    int64  `json:"volume" form:"volume" binding:"required" ` // 几手
 	Price     int64  `json:"price" form:"price" form:"symbol"`         // 价格(分)
-	Direction int64  `json:"direction" form:"direction" form:"symbol"` // 类型 1止赢 2止损
+	Direction int64  `json:"direction" form:"direction" form:"symbol"` // 类型 1买 2卖
 	Symbol    string `json:"symbol" form:"symbol" binding:"required" ` // 品种
 }
 
