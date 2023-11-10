@@ -976,6 +976,12 @@ definitions:
       order_no:
         description: 订单号
         type: string
+      order_ref:
+        description: 合约单
+        type: integer
+      order_sys_id:
+        description: 下单编号
+        type: integer
       price:
         description: 价格
         type: integer
@@ -4920,6 +4926,14 @@ paths:
         in: query
         name: order_no
         type: string
+      - description: 合约单
+        in: query
+        name: order_ref
+        type: integer
+      - description: 下单编号
+        in: query
+        name: order_sys_id
+        type: integer
       - description: 价格
         in: query
         name: price
@@ -5008,6 +5022,14 @@ paths:
         in: query
         name: order_no
         type: string
+      - description: 合约单
+        in: query
+        name: order_ref
+        type: integer
+      - description: 下单编号
+        in: query
+        name: order_sys_id
+        type: integer
       - description: 页码
         in: query
         name: page

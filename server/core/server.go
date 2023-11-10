@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/data"
+	"github.com/flipped-aurora/gin-vue-admin/server/model/orders"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/symbols"
 	"github.com/flipped-aurora/gin-vue-admin/server/pb"
 	"github.com/flipped-aurora/gin-vue-admin/server/utils"
@@ -224,4 +225,80 @@ func handelData(msg string) {
 
 func handelNotifyOrder(msg string) {
 	global.GVA_LOG.Info("handelNotifyOrder", zap.String("order", msg))
+	var mo MsgOrder
+	if err := json.Unmarshal([]byte(msg), &mo); err != nil {
+		global.GVA_LOG.Error("handelNotifyOrder Unmarshal", zap.Error(err))
+		return
+	}
+	global.GVA_LOG.Info("handelNotifyOrder struct", zap.Any("mo", mo))
+	var o orders.Orders
+	err := global.GVA_DB.Where("order_ref = ?", mo.OrderRef).First(&o).Error
+	if err != nil {
+		global.GVA_LOG.Error("get Order", zap.Error(err))
+		return
+	}
+	o.OrderSysID = mo.OrderSysID
+	err = global.GVA_DB.Save(&o).Error
+	if err != nil {
+		global.GVA_LOG.Error("save Order", zap.Error(err))
+		return
+	}
+	// if *o.Status != 0 {
+	// 	return
+	// }
+	// 查询并取消
+
+	// 绑定OrderRef 和 OrderSysID
+	res, err1 := global.GVA_GrpcCLient.QueryOrder(context.Background(), &pb.QueryOrderRequest{
+		Or: 1,
+	})
+	if err1 != nil {
+		global.GVA_LOG.Error("QueryOrder", zap.Error(err))
+		return
+	}
+	global.GVA_LOG.Info("QueryOrder", zap.Any("res", res))
+	// 成交
+	status := 0
+	o.SuccessAt = time.Now().Unix()
+	if res.Os == 3 {
+		status = 1
+	} else {
+		status = 2
+	}
+	o.Status = &status
+	err = global.GVA_DB.Save(&o).Error
+	if err != nil {
+		global.GVA_LOG.Error("save Order", zap.Error(err))
+		return
+	}
+
+	if status == 2 {
+		// 去掉订单
+		_, err1 = global.GVA_GrpcCLient.CancelOrder(context.Background(), &pb.QueryOrderRequest{
+			Or: int32(mo.OrderSysID),
+		})
+		if err1 != nil {
+			global.GVA_LOG.Error("CancelOrder", zap.Error(err))
+		}
+		// 返还金钱
+		u, _ := utils.GetUser(int64(*o.User_id))
+		utils.AddAmountLog(int(u.ID), int(o.DecrAmount), u.AvailableAmount, 3)
+		u.AvailableAmount = u.AvailableAmount + int(o.DecrAmount)
+		u.FreezeAmount = u.FreezeAmount - int(o.DecrAmount)
+		err = global.GVA_DB.Save(&u).Error
+		if err != nil {
+			global.GVA_LOG.Error("save user", zap.Error(err))
+			return
+		}
+	}
+}
+
+type MsgOrder struct {
+	ErrorNo        int `json:"error_no"`
+	LongOrderSysID int `json:"long_order_sys_id"`
+	OrderLocalID   int `json:"order_local_id"`
+	OrderRef       int `json:"order_ref"`
+	OrderStatus    int `json:"order_status"`
+	OrderSysID     int `json:"order_sys_id"`
+	TradeVolume    int `json:"trade_volume"`
 }

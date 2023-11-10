@@ -5062,6 +5062,18 @@ const docTemplate = `{
                     },
                     {
                         "type": "integer",
+                        "description": "合约单",
+                        "name": "order_ref",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "下单编号",
+                        "name": "order_sys_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
                         "description": "价格",
                         "name": "price",
                         "in": "query"
@@ -5194,6 +5206,18 @@ const docTemplate = `{
                         "type": "string",
                         "description": "订单号",
                         "name": "order_no",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "合约单",
+                        "name": "order_ref",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "下单编号",
+                        "name": "order_sys_id",
                         "in": "query"
                     },
                     {
@@ -9591,6 +9615,14 @@ const docTemplate = `{
                 "order_no": {
                     "description": "订单号",
                     "type": "string"
+                },
+                "order_ref": {
+                    "description": "合约单",
+                    "type": "integer"
+                },
+                "order_sys_id": {
+                    "description": "下单编号",
+                    "type": "integer"
                 },
                 "price": {
                     "description": "价格",

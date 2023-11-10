@@ -51,12 +51,8 @@ var orderService = service.ServiceGroupApp.OrdersServiceGroup.OrdersService
 
 func (uApi *ApisApi) Test(c *gin.Context) {
 	// grpc 调用下单接口
-	res, err := global.GVA_GrpcCLient.Order(context.Background(), &pb.OrderRequest{
-		C:       "rb2403",
-		V:       1,
-		Buy:     true,
-		Open:    true,
-		OrderId: 134,
+	res, err := global.GVA_GrpcCLient.CancelOrder(context.Background(), &pb.QueryOrderRequest{
+		Or: 15190,
 	})
 	if err != nil {
 		global.GVA_LOG.Error("grpc Order", zap.Error(err))
@@ -514,6 +510,7 @@ func (uApi *ApisApi) OrdersCreate(c *gin.Context) {
 		return
 	}
 	utils.AddAmountLog(int(u.ID), decrAmount, u.AvailableAmount, 2)
+	status := 0
 	order := &orders.Orders{
 		User_id:    &userID,
 		Account_id: &accountID,
@@ -523,6 +520,8 @@ func (uApi *ApisApi) OrdersCreate(c *gin.Context) {
 		Order_no:   utils.MD5(fmt.Sprintf("%d", time.Now().UnixNano())),
 		SymbolID:   req.Symbol,
 		SymbolName: ss.Name,
+		Status:     &status,
+		DecrAmount: int64(decrAmount),
 	}
 	err = orderService.CreateOrders(order)
 	if err != nil {
@@ -536,10 +535,17 @@ func (uApi *ApisApi) OrdersCreate(c *gin.Context) {
 		Buy:     true,
 		Open:    true,
 		OrderId: int32(order.ID),
+		P:       float32(price),
 	})
 	if err != nil {
 		global.GVA_LOG.Error("grpc Order", zap.Error(err))
 	}
+
+	order.OrderRef = int(res.GetOrderRef())
+	if err = global.GVA_DB.Save(&order).Error; err != nil {
+		global.GVA_LOG.Error("update order GetOrderRef", zap.Error(err))
+	}
+
 	global.GVA_LOG.Info("CreateOrders", zap.Any("res", res))
 	response.OkWithMessage("success", c)
 	return

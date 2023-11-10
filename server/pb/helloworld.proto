@@ -28,6 +28,18 @@ service Greeter {
   rpc SayHello (HelloRequest) returns (HelloReply) {}
 
   rpc Order (OrderRequest) returns (OrderReply) {}
+
+  rpc QueryOrder (QueryOrderRequest) returns (QueryOrderReply) {}
+
+  rpc CancelOrder (QueryOrderRequest) returns (QueryOrderReply) {}
+}
+
+message QueryOrderRequest {
+  int32 or = 1; // 数量
+}
+
+message QueryOrderReply {
+  int32 os = 2;
 }
 
 // The request message containing the user's name.
