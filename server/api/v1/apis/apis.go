@@ -70,7 +70,7 @@ func (uApi *ApisApi) Test(c *gin.Context) {
 // @Router /api/article/category [get]
 func (uApi *ApisApi) GetArticleCategory(c *gin.Context) {
 	var list []article_category.ArticleCategory
-	if global.GVA_DB.Order("id desc").Find(&list).Error != nil {
+	if global.GVA_DB.Where("id != 7").Order("id desc").Find(&list).Error != nil {
 		response.FailWithMessageWithCode(10001, "获取失败", c)
 		return
 	}
