@@ -530,12 +530,17 @@ func (uApi *ApisApi) OrdersCreate(c *gin.Context) {
 		return
 	}
 	// grpc 调用下单接口
-	res, err := global.GVA_GrpcCLient.SayHello(context.Background(), &pb.HelloRequest{Name: "name"})
+	res, err := global.GVA_GrpcCLient.Order(context.Background(), &pb.OrderRequest{
+		C:       req.Symbol,
+		V:       1,
+		Buy:     true,
+		Open:    true,
+		OrderId: int32(order.ID),
+	})
 	if err != nil {
-		global.GVA_LOG.Error("SayHello", zap.Error(err))
+		global.GVA_LOG.Error("grpc Order", zap.Error(err))
 	}
-	global.GVA_LOG.Error("SayHello", zap.String("message", res.GetMessage()))
-
+	global.GVA_LOG.Info("CreateOrders", zap.Any("res", res))
 	response.OkWithMessage("success", c)
 	return
 }
