@@ -46,6 +46,11 @@
           <el-button icon="refresh" @click="onReset">重置</el-button>
         </el-form-item>
       </el-form>
+      <el-divider></el-divider> <!-- 添加分割线 -->
+      <el-tag type="danger" style="margin-top: 10px;font-size: large;font-weight: bold;"> <!-- 用 el-tag 创建有背景的方块 -->
+        盈亏比：{{success}}：{{fail}}
+      </el-tag>
+      <el-divider></el-divider> <!-- 添加分割线 -->
     </div>
     <div class="gva-table-box">
 <!--        <div class="gva-btn-list">-->
@@ -283,6 +288,8 @@ const total = ref(0)
 const pageSize = ref(10)
 const tableData = ref([])
 const searchInfo = ref({})
+const success = ref(0)
+const fail = ref(0)
 
 // 重置
 const onReset = () => {
@@ -316,12 +323,13 @@ const handleCurrentChange = (val) => {
 const getTableData = async() => {
   const table = await getOrdersList({ page: page.value, pageSize: pageSize.value, ...searchInfo.value })
   if (table.code === 0) {
-    tableData.value = table.data.list
+    tableData.value = table.data.list.List
     total.value = table.data.total
     page.value = table.data.page
     pageSize.value = table.data.pageSize
+    success.value =  table.data.list.Success
+    fail.value =  table.data.list.Fail
   }
-  console.log(searchInfo.value)
 }
 
 onMounted(() => {

@@ -6,6 +6,7 @@ import (
 	"github.com/flipped-aurora/gin-vue-admin/server/model/orders"
 	ordersReq "github.com/flipped-aurora/gin-vue-admin/server/model/orders/request"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/users"
+	"gorm.io/gorm"
 )
 
 type OrdersService struct {
@@ -48,7 +49,14 @@ func (osService *OrdersService) GetOrders(id uint) (os orders.Orders, err error)
 
 // GetOrdersInfoList 分页获取订单记录
 // Author [piexlmax](https://github.com/piexlmax)
-func (osService *OrdersService) GetOrdersInfoList(info ordersReq.OrdersSearch) (list []*orders.Orders, total int64, err error) {
+type OrderList struct {
+	Success int64
+	Fail    int64
+	List    []*orders.Orders
+}
+
+func (osService *OrdersService) GetOrdersInfoList(info ordersReq.OrdersSearch) (ol *OrderList, total int64, err error) {
+	ol = new(OrderList)
 	limit := info.PageSize
 	offset := info.PageSize * (info.Page - 1)
 	// 创建db
@@ -91,5 +99,10 @@ func (osService *OrdersService) GetOrdersInfoList(info ordersReq.OrdersSearch) (
 		global.GVA_DB.Where("id = ?", *al.User_id).First(&u)
 		al.User = u
 	}
-	return oss, total, err
+	ol.List = oss
+	db1 := db.Session(&gorm.Session{})
+	db2 := db.Session(&gorm.Session{})
+	db1.Where("is_win = 1").Count(&ol.Success)
+	db2.Where("is_win = 2").Count(&ol.Fail)
+	return ol, total, err
 }
