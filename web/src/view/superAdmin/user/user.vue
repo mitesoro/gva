@@ -88,6 +88,7 @@
             />
           </template>
         </el-table-column>
+        <el-table-column align="left" label="邀请码" prop="invite_code" width="120" />
 
         <el-table-column
           label="操作"
@@ -132,6 +133,7 @@
               icon="magic-stick"
               @click="resetPasswordFunc(scope.row)"
             >重置密码</el-button>
+            <el-button type="primary" link icon="user" @click="user(scope.row)">用户列表</el-button>
           </template>
         </el-table-column>
 
@@ -279,6 +281,7 @@ import { setUserInfo, resetPassword } from '@/api/user.js'
 
 import { nextTick, ref, watch } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import router from "@/router";
 
 defineOptions({
   name: 'User',
@@ -336,6 +339,10 @@ const getTableData = async() => {
 watch(() => tableData.value, () => {
   setAuthorityIds()
 })
+
+const user = (row) => {
+  router.push({ name: 'users', replace: true, query: { id: row.ID }})
+}
 
 const initPage = async() => {
   getTableData()

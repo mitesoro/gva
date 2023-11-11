@@ -74,6 +74,9 @@ func (uService *UsersService) GetUsersInfoList(info usersReq.UsersSearch) (list 
 	if info.StartCreatedAt != nil && info.EndCreatedAt != nil {
 		db = db.Where("created_at BETWEEN ? AND ?", info.StartCreatedAt, info.EndCreatedAt)
 	}
+	if info.AdminID != 0 {
+		db = db.Where("admin_id = ?", info.AdminID)
+	}
 	if info.Phone != "" {
 		db = db.Where("phone LIKE ?", "%"+info.Phone+"%")
 	}

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="gva-search-box">
+    <div class="gva-search-box" v-if="success !== 1">
       <el-form ref="elSearchFormRef" :inline="true" :model="searchInfo" class="demo-form-inline" :rules="searchRule" @keyup.enter="onSubmit">
       <el-form-item label="创建日期" prop="createdAt">
       <template #label>
@@ -23,14 +23,19 @@
          <el-input v-model="searchInfo.nickname" placeholder="搜索条件" />
 
         </el-form-item>
+        <el-form-item label="上级" prop="admin_id">
+          <el-select v-model="searchInfo.admin_id" clearable placeholder="请选择" @clear="()=>{searchInfo.user_id=undefined}">
+            <el-option v-for="(item,key) in adminOptions" :key="key" :label="item.label" :value="item.value" />
+          </el-select>
+        </el-form-item>
         <el-form-item>
           <el-button type="primary" icon="search" @click="onSubmit">查询</el-button>
           <el-button icon="refresh" @click="onReset">重置</el-button>
         </el-form-item>
       </el-form>
     </div>
-    <div class="gva-table-box">
-        <div class="gva-btn-list">
+    <div class="gva-table-box" >
+        <div class="gva-btn-list" v-if="success !== 1">
             <el-button type="primary" icon="plus" @click="openDialog">新增</el-button>
             <el-popover v-model:visible="deleteVisible" :disabled="!multipleSelection.length" placement="top" width="160">
             <p>确定要删除吗？</p>
@@ -58,17 +63,17 @@
         </el-table-column>
         <el-table-column sortable align="left" label="手机号" prop="phone" width="120" />
         <el-table-column align="left" label="昵称" prop="nickname" width="120" />
-        <el-table-column align="left" label="盈亏比" prop="rate" width="120" >
+        <el-table-column align="left" label="盈亏比" prop="rate" width="120" v-if="success !== 1" >
           <template #default="scope">
             {{ scope.row.success }}:{{ scope.row.fail }}
           </template>
         </el-table-column>
-        <el-table-column align="left" label="订单正反手" prop="order_type" width="120" >
+        <el-table-column align="left" label="订单正反手" prop="order_type" width="120" v-if="success !== 1">
           <template #default="scope">
             {{ filterDict(scope.row.order_type,genderOptions) }}
           </template>
         </el-table-column>
-          <el-table-column align="left" label="手" prop="volume" width="120" />
+          <el-table-column align="left" label="手" prop="volume" width="120" v-if="success !== 1" />
         <el-table-column align="left" label="总金额" :formatter="row => formatCurrency(row.amount)" width="120" />
         <el-table-column align="left" label="可用金额" :formatter="row => formatCurrency(row.available_amount)" width="120" />
         <el-table-column align="left" label="冻结金额" :formatter="row => formatCurrency(row.freeze_amount)" width="120" />
@@ -190,12 +195,37 @@ import SelectImage from '@/components/selectImage/selectImage.vue'
 // 全量引入格式化工具 请按需保留
 import { getDictFunc, formatDate, formatBoolean, filterDict, ReturnArrImg, onDownloadFile } from '@/utils/format'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { ref, reactive } from 'vue'
+import { ref, reactive, onMounted } from 'vue'
 import router from "@/router";
+import {useRoute} from "vue-router";
+import { useUserStore } from '@/pinia/modules/user'
+
+
+const userStore = useUserStore()
 
 defineOptions({
     name: 'Users'
 })
+
+const success = ref(0)
+
+onMounted(() => {
+  // 获取路由参数
+  const route = useRoute();
+  const userIdFromRoute = route.query.id;
+
+  // 判断id是否存在且不为空
+  if (userIdFromRoute) {
+    searchInfo.value.admin_id = parseInt(userIdFromRoute, 10);
+    // 在这里可以使用 searchInfo.value.user_id 进行进一步的操作
+  }
+  if (userStore.userInfo.authority.authorityName === "合伙人") {
+    searchInfo.value.admin_id = userStore.userInfo.ID;
+    success.value = 1;
+  }
+  getTableData();
+
+});
 
 const genderOptions = ref([])
 const adminOptions = ref([])
@@ -321,7 +351,7 @@ const getTableData = async() => {
   }
 }
 
-getTableData()
+// getTableData()
 
 // ============== 表格控制部分结束 ===============
 
