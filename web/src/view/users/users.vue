@@ -58,7 +58,11 @@
         </el-table-column>
         <el-table-column sortable align="left" label="手机号" prop="phone" width="120" />
         <el-table-column align="left" label="昵称" prop="nickname" width="120" />
-        <el-table-column align="left" label="盈亏比(%)" prop="rate" width="120" />
+        <el-table-column align="left" label="盈亏比" prop="rate" width="120" >
+          <template #default="scope">
+            {{ scope.row.success }}:{{ scope.row.fail }}
+          </template>
+        </el-table-column>
         <el-table-column align="left" label="订单正反手" prop="order_type" width="120" >
           <template #default="scope">
             {{ filterDict(scope.row.order_type,genderOptions) }}
@@ -73,6 +77,11 @@
 <!--                <el-image style="width: 100px; height: 100px" :src="getUrl(scope.row.avatar)" fit="cover"/>-->
 <!--              </template>-->
 <!--          </el-table-column>-->
+          <el-table-column align="left" label="合伙人" prop="rate" width="120" >
+            <template #default="scope">
+              {{ scope.row.Admin.nickName }}
+            </template>
+          </el-table-column>
         <el-table-column align="left" label="操作">
             <template #default="scope">
             <el-button type="primary" link class="table-button" @click="getDetails(scope.row)">
@@ -80,6 +89,7 @@
                 查看详情
             </el-button>
             <el-button type="primary" link icon="edit" class="table-button" @click="updateUsersFunc(scope.row)">变更</el-button>
+            <el-button type="primary" link icon="list" @click="order(scope.row)">订单列表</el-button>
             <el-button type="primary" link icon="delete" @click="deleteRow(scope.row)">删除</el-button>
             </template>
         </el-table-column>
@@ -181,6 +191,7 @@ import SelectImage from '@/components/selectImage/selectImage.vue'
 import { getDictFunc, formatDate, formatBoolean, filterDict, ReturnArrImg, onDownloadFile } from '@/utils/format'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { ref, reactive } from 'vue'
+import router from "@/router";
 
 defineOptions({
     name: 'Users'
@@ -342,6 +353,10 @@ const deleteRow = (row) => {
         })
     }
 
+// 删除行
+const order = (row) => {
+  router.push({ name: 'orders', replace: true, query: { id: row.ID }})
+}
 
 // 批量删除控制标记
 const deleteVisible = ref(false)

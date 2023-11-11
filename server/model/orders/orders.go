@@ -4,6 +4,7 @@ package orders
 import (
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
 	"github.com/flipped-aurora/gin-vue-admin/server/model"
+	"github.com/flipped-aurora/gin-vue-admin/server/model/users"
 )
 
 // 订单 结构体  Orders
@@ -30,6 +31,7 @@ type Orders struct {
 	Fee          int64           `json:"fee" form:"fee" gorm:"column:fee;comment:手续费;"`                               // 手续费
 	IsWin        int64           `json:"is_win" form:"is_win" gorm:"column:is_win;comment:平仓盈亏;"`                     // 平仓盈亏 1赢2亏
 	WinAmount    int64           `json:"win_amount" form:"win_amount" gorm:"column:win_amount;comment:平仓盈亏金额;"`       // 平仓盈亏金额
+	User         users.Users
 }
 
 // TableName 订单 Orders自定义表名 orders

@@ -57,11 +57,17 @@
         <el-table-column align="left" label="日期" width="180">
             <template #default="scope">{{ formatDate(scope.row.CreatedAt) }}</template>
         </el-table-column>
-        <el-table-column align="left" label="用户编号" prop="user_id" width="120">
+          <el-table-column align="left" label="用户昵称" prop="user_id" width="120">
             <template #default="scope">
-            {{ filterDict(scope.row.user_id,userOptions) }}
+              {{ scope.row.User.nickname }}
             </template>
-        </el-table-column>
+          </el-table-column>
+
+          <el-table-column align="left" label="手机号" prop="user_id" width="120">
+            <template #default="scope">
+              {{ scope.row.User.phone }}
+            </template>
+          </el-table-column>
         <el-table-column align="left" label="金额类型" prop="amount_type" width="120">
             <template #default="scope">
             {{ filterDict(scope.row.amount_type,amount_logOptions) }}

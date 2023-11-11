@@ -24,6 +24,11 @@
          <el-input v-model="searchInfo.order_no" placeholder="搜索条件" />
 
         </el-form-item>
+        <el-form-item label="用户编号" prop="user_id">
+          <el-select v-model="searchInfo.user_id" clearable placeholder="请选择" @clear="()=>{searchInfo.user_id=undefined}">
+            <el-option v-for="(item,key) in userOptions" :key="key" :label="item.label" :value="item.value" />
+          </el-select>
+        </el-form-item>
         <el-form-item label="类型" prop="direction">
           <el-select v-model="searchInfo.direction" placeholder="搜索条件">
             <el-option label="止赢" value="1"></el-option>
@@ -31,11 +36,6 @@
           </el-select>
         </el-form-item>
 
-        <el-form-item label="手" prop="volume">
-            
-             <el-input v-model.number="searchInfo.volume" placeholder="搜索条件" />
-
-        </el-form-item>
         <el-form-item label="价格" prop="price">
             
              <el-input v-model.number="searchInfo.price" placeholder="搜索条件" />
@@ -73,11 +73,17 @@
         <el-table-column align="left" label="日期" width="180">
             <template #default="scope">{{ formatDate(scope.row.CreatedAt) }}</template>
         </el-table-column>
-        <el-table-column align="left" label="用户编号" prop="user_id" width="120">
+          <el-table-column align="left" label="用户昵称" prop="user_id" width="120">
             <template #default="scope">
-            {{ filterDict(scope.row.user_id,intOptions) }}
+              {{ scope.row.User.nickname }}
             </template>
-        </el-table-column>
+          </el-table-column>
+
+          <el-table-column align="left" label="手机号" prop="user_id" width="120">
+            <template #default="scope">
+              {{ scope.row.User.phone }}
+            </template>
+          </el-table-column>
         <el-table-column align="left" label="账户" prop="account_id" width="120" />
         <el-table-column align="left" label="订单号" prop="order_no" width="120" />
         <el-table-column align="left" label="类型"  width="120" >
@@ -185,11 +191,15 @@ import {
 // 全量引入格式化工具 请按需保留
 import { getDictFunc, formatDate, formatBoolean, filterDict, ReturnArrImg, onDownloadFile } from '@/utils/format'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { ref, reactive } from 'vue'
+import { ref, reactive, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
 
+
+const userOptions = ref([])
 defineOptions({
     name: 'Orders'
 })
+
 
 // 自动化生成的字典（可能为空）以及字段
 const intOptions = ref([])
@@ -311,15 +321,31 @@ const getTableData = async() => {
     page.value = table.data.page
     pageSize.value = table.data.pageSize
   }
+  console.log(searchInfo.value)
 }
 
-getTableData()
+onMounted(() => {
+  // 获取路由参数
+  const route = useRoute();
+  const userIdFromRoute = route.query.id;
+
+  // 判断id是否存在且不为空
+  if (userIdFromRoute) {
+    searchInfo.value.user_id = parseInt(userIdFromRoute, 10);
+    // 在这里可以使用 searchInfo.value.user_id 进行进一步的操作
+  }
+  getTableData();
+});
+
+
+
 
 // ============== 表格控制部分结束 ===============
 
 // 获取需要的字典 可能为空 按需保留
 const setOptions = async () =>{
     intOptions.value = await getDictFunc('user')
+  userOptions.value = await getDictFunc('user')
 }
 
 // 获取需要的字典 可能为空 按需保留
@@ -498,6 +524,8 @@ const formatDirection = (direction) => {
 const formatTagType = (direction) => {
   return direction === 1 ? 'success' : 'danger';
 }
+
+
 
 </script>
 

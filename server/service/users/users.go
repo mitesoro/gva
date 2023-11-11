@@ -4,6 +4,7 @@ import (
 	"errors"
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/common/request"
+	"github.com/flipped-aurora/gin-vue-admin/server/model/system"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/users"
 	usersReq "github.com/flipped-aurora/gin-vue-admin/server/model/users/request"
 )
@@ -63,12 +64,12 @@ func (uService *UsersService) GetUsersByPhoneAndPassword(phone, password string)
 
 // GetUsersInfoList 分页获取用户记录
 // Author [piexlmax](https://github.com/piexlmax)
-func (uService *UsersService) GetUsersInfoList(info usersReq.UsersSearch) (list []users.Users, total int64, err error) {
+func (uService *UsersService) GetUsersInfoList(info usersReq.UsersSearch) (list []*users.Users, total int64, err error) {
 	limit := info.PageSize
 	offset := info.PageSize * (info.Page - 1)
 	// 创建db
 	db := global.GVA_DB.Model(&users.Users{})
-	var us []users.Users
+	var us []*users.Users
 	// 如果有条件搜索 下方会自动创建搜索语句
 	if info.StartCreatedAt != nil && info.EndCreatedAt != nil {
 		db = db.Where("created_at BETWEEN ? AND ?", info.StartCreatedAt, info.EndCreatedAt)
@@ -99,5 +100,11 @@ func (uService *UsersService) GetUsersInfoList(info usersReq.UsersSearch) (list 
 	}
 
 	err = db.Order("id DESC").Find(&us).Error
+	for _, u := range us {
+		var admin system.SysUser
+		global.GVA_DB.Where("id = ?", u.AdminID).First(&admin)
+		u.Admin = admin
+	}
+
 	return us, total, err
 }

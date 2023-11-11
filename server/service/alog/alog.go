@@ -5,6 +5,7 @@ import (
 	"github.com/flipped-aurora/gin-vue-admin/server/model/alog"
 	alogReq "github.com/flipped-aurora/gin-vue-admin/server/model/alog/request"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/common/request"
+	"github.com/flipped-aurora/gin-vue-admin/server/model/users"
 )
 
 type AlogService struct {
@@ -47,12 +48,12 @@ func (alService *AlogService) GetAlog(id uint) (al alog.Alog, err error) {
 
 // GetAlogInfoList 分页获取金额纪录记录
 // Author [piexlmax](https://github.com/piexlmax)
-func (alService *AlogService) GetAlogInfoList(info alogReq.AlogSearch) (list []alog.Alog, total int64, err error) {
+func (alService *AlogService) GetAlogInfoList(info alogReq.AlogSearch) (list []*alog.Alog, total int64, err error) {
 	limit := info.PageSize
 	offset := info.PageSize * (info.Page - 1)
 	// 创建db
 	db := global.GVA_DB.Model(&alog.Alog{})
-	var als []alog.Alog
+	var als []*alog.Alog
 	// 如果有条件搜索 下方会自动创建搜索语句
 	if info.StartCreatedAt != nil && info.EndCreatedAt != nil {
 		db = db.Where("created_at BETWEEN ? AND ?", info.StartCreatedAt, info.EndCreatedAt)
@@ -73,5 +74,11 @@ func (alService *AlogService) GetAlogInfoList(info alogReq.AlogSearch) (list []a
 	}
 
 	err = db.Order("id DESC").Find(&als).Error
+
+	for _, al := range als {
+		var u users.Users
+		global.GVA_DB.Where("id = ?", *al.User_id).First(&u)
+		al.User = u
+	}
 	return als, total, err
 }

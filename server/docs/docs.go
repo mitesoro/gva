@@ -7561,6 +7561,12 @@ const docTemplate = `{
                     },
                     {
                         "type": "integer",
+                        "description": "亏损单数",
+                        "name": "fail",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
                         "description": "冻结金额",
                         "name": "freeze_amount",
                         "in": "query"
@@ -7597,8 +7603,8 @@ const docTemplate = `{
                     },
                     {
                         "type": "integer",
-                        "description": "盈亏比",
-                        "name": "rate",
+                        "description": "盈利单数",
+                        "name": "success",
                         "in": "query"
                     },
                     {
@@ -7679,6 +7685,12 @@ const docTemplate = `{
                     },
                     {
                         "type": "integer",
+                        "description": "亏损单数",
+                        "name": "fail",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
                         "description": "冻结金额",
                         "name": "freeze_amount",
                         "in": "query"
@@ -7737,12 +7749,6 @@ const docTemplate = `{
                         "in": "query"
                     },
                     {
-                        "type": "integer",
-                        "description": "盈亏比",
-                        "name": "rate",
-                        "in": "query"
-                    },
-                    {
                         "type": "string",
                         "name": "sort",
                         "in": "query"
@@ -7750,6 +7756,12 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "name": "startCreatedAt",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "盈利单数",
+                        "name": "success",
                         "in": "query"
                     },
                     {
@@ -8334,6 +8346,9 @@ const docTemplate = `{
                 "updatedAt": {
                     "description": "更新时间",
                     "type": "string"
+                },
+                "user": {
+                    "$ref": "#/definitions/users.Users"
                 },
                 "user_id": {
                     "description": "用户编号",
@@ -9752,6 +9767,9 @@ const docTemplate = `{
                     "description": "更新时间",
                     "type": "string"
                 },
+                "user": {
+                    "$ref": "#/definitions/users.Users"
+                },
                 "user_id": {
                     "description": "用户编号",
                     "type": "integer"
@@ -11082,6 +11100,9 @@ const docTemplate = `{
         "users.Users": {
             "type": "object",
             "properties": {
+                "admin": {
+                    "$ref": "#/definitions/system.SysUser"
+                },
                 "admin_id": {
                     "description": "上级编号",
                     "type": "integer"
@@ -11101,6 +11122,10 @@ const docTemplate = `{
                 "createdAt": {
                     "description": "创建时间",
                     "type": "string"
+                },
+                "fail": {
+                    "description": "亏损单数",
+                    "type": "integer"
                 },
                 "freeze_amount": {
                     "description": "冻结金额",
@@ -11126,8 +11151,8 @@ const docTemplate = `{
                     "description": "手机号",
                     "type": "string"
                 },
-                "rate": {
-                    "description": "盈亏比",
+                "success": {
+                    "description": "盈利单数",
                     "type": "integer"
                 },
                 "updatedAt": {

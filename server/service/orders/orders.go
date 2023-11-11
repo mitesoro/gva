@@ -5,6 +5,7 @@ import (
 	"github.com/flipped-aurora/gin-vue-admin/server/model/common/request"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/orders"
 	ordersReq "github.com/flipped-aurora/gin-vue-admin/server/model/orders/request"
+	"github.com/flipped-aurora/gin-vue-admin/server/model/users"
 )
 
 type OrdersService struct {
@@ -47,12 +48,12 @@ func (osService *OrdersService) GetOrders(id uint) (os orders.Orders, err error)
 
 // GetOrdersInfoList 分页获取订单记录
 // Author [piexlmax](https://github.com/piexlmax)
-func (osService *OrdersService) GetOrdersInfoList(info ordersReq.OrdersSearch) (list []orders.Orders, total int64, err error) {
+func (osService *OrdersService) GetOrdersInfoList(info ordersReq.OrdersSearch) (list []*orders.Orders, total int64, err error) {
 	limit := info.PageSize
 	offset := info.PageSize * (info.Page - 1)
 	// 创建db
 	db := global.GVA_DB.Model(&orders.Orders{})
-	var oss []orders.Orders
+	var oss []*orders.Orders
 	// 如果有条件搜索 下方会自动创建搜索语句
 	if info.StartCreatedAt != nil && info.EndCreatedAt != nil {
 		db = db.Where("created_at BETWEEN ? AND ?", info.StartCreatedAt, info.EndCreatedAt)
@@ -72,6 +73,9 @@ func (osService *OrdersService) GetOrdersInfoList(info ordersReq.OrdersSearch) (
 	if info.Price != nil {
 		db = db.Where("price = ?", info.Price)
 	}
+	if info.User_id != nil {
+		db = db.Where("user_id = ?", info.User_id)
+	}
 	err = db.Count(&total).Error
 	if err != nil {
 		return
@@ -82,5 +86,10 @@ func (osService *OrdersService) GetOrdersInfoList(info ordersReq.OrdersSearch) (
 	}
 
 	err = db.Order("id DESC").Find(&oss).Error
+	for _, al := range oss {
+		var u users.Users
+		global.GVA_DB.Where("id = ?", *al.User_id).First(&u)
+		al.User = u
+	}
 	return oss, total, err
 }

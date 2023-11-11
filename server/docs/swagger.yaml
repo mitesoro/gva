@@ -19,6 +19,8 @@ definitions:
       updatedAt:
         description: 更新时间
         type: string
+      user:
+        $ref: '#/definitions/users.Users'
       user_id:
         description: 用户编号
         type: integer
@@ -1015,6 +1017,8 @@ definitions:
       updatedAt:
         description: 更新时间
         type: string
+      user:
+        $ref: '#/definitions/users.Users'
       user_id:
         description: 用户编号
         type: integer
@@ -1945,6 +1949,8 @@ definitions:
     type: object
   users.Users:
     properties:
+      admin:
+        $ref: '#/definitions/system.SysUser'
       admin_id:
         description: 上级编号
         type: integer
@@ -1960,6 +1966,9 @@ definitions:
       createdAt:
         description: 创建时间
         type: string
+      fail:
+        description: 亏损单数
+        type: integer
       freeze_amount:
         description: 冻结金额
         type: integer
@@ -1978,8 +1987,8 @@ definitions:
       phone:
         description: 手机号
         type: string
-      rate:
-        description: 盈亏比
+      success:
+        description: 盈利单数
         type: integer
       updatedAt:
         description: 更新时间
@@ -6470,6 +6479,10 @@ paths:
         in: query
         name: createdAt
         type: string
+      - description: 亏损单数
+        in: query
+        name: fail
+        type: integer
       - description: 冻结金额
         in: query
         name: freeze_amount
@@ -6494,9 +6507,9 @@ paths:
         in: query
         name: phone
         type: string
-      - description: 盈亏比
+      - description: 盈利单数
         in: query
-        name: rate
+        name: success
         type: integer
       - description: 更新时间
         in: query
@@ -6546,6 +6559,10 @@ paths:
       - in: query
         name: endCreatedAt
         type: string
+      - description: 亏损单数
+        in: query
+        name: fail
+        type: integer
       - description: 冻结金额
         in: query
         name: freeze_amount
@@ -6585,16 +6602,16 @@ paths:
         in: query
         name: phone
         type: string
-      - description: 盈亏比
-        in: query
-        name: rate
-        type: integer
       - in: query
         name: sort
         type: string
       - in: query
         name: startCreatedAt
         type: string
+      - description: 盈利单数
+        in: query
+        name: success
+        type: integer
       - description: 更新时间
         in: query
         name: updatedAt
