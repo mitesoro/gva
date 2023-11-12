@@ -66,6 +66,11 @@ definitions:
       phone:
         description: 手机号
         type: string
+    required:
+    - code
+    - invite_code
+    - password
+    - phone
     type: object
   apis.ReqSms:
     properties:

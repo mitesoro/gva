@@ -8396,6 +8396,12 @@ const docTemplate = `{
         },
         "apis.ReqRegister": {
             "type": "object",
+            "required": [
+                "code",
+                "invite_code",
+                "password",
+                "phone"
+            ],
             "properties": {
                 "code": {
                     "description": "验证码",
