@@ -511,6 +511,7 @@ func (uApi *ApisApi) OrdersCreate(c *gin.Context) {
 	}
 	utils.AddAmountLog(int(u.ID), decrAmount, u.AvailableAmount, 2)
 	status := 0
+	price = price / 100
 	order := &orders.Orders{
 		User_id:    &userID,
 		Account_id: &accountID,
