@@ -13,13 +13,13 @@ func Token() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		token := c.Request.Header.Get("auth-token")
 		if token == "" {
-			response.FailWithDetailed(gin.H{"reload": true}, "未登录或非法访问 token", c)
+			response.FailWithDetailed(gin.H{"reload": true}, "未登录，请去登录", c)
 			c.Abort()
 			return
 		}
 		tokenBase, err := base64.StdEncoding.DecodeString(token)
 		if err != nil {
-			response.FailWithDetailed(gin.H{"reload": true}, "未登录或非法访问 token", c)
+			response.FailWithDetailed(gin.H{"reload": true}, "未登录，请去登录", c)
 			c.Abort()
 			return
 		}
