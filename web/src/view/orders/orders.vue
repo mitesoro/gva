@@ -31,8 +31,8 @@
         </el-form-item>
         <el-form-item label="类型" prop="direction">
           <el-select v-model="searchInfo.direction" placeholder="搜索条件">
-            <el-option label="止赢" value="1"></el-option>
-            <el-option label="止损" value="2"></el-option>
+            <el-option label="买多" value="1"></el-option>
+            <el-option label="卖空" value="2"></el-option>
           </el-select>
         </el-form-item>
 
@@ -524,9 +524,9 @@ const enterDialog = async () => {
 }
 const formatDirection = (direction) => {
   if (direction === 2) {
-    return "止损";
+    return "卖空";
   }
-  return "止赢" ;
+  return "买多" ;
 }
 
 const formatTagType = (direction) => {

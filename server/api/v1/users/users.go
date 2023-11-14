@@ -116,9 +116,9 @@ func (uApi *UsersApi) UpdateUsers(c *gin.Context) {
 		return
 	}
 	verify := utils.Rules{
-		"Phone":    {utils.NotEmpty()},
-		"Password": {utils.NotEmpty()},
-		"Nickname": {utils.NotEmpty()},
+		"Phone": {utils.NotEmpty()},
+		// "Password": {utils.NotEmpty()},
+		// "Nickname": {utils.NotEmpty()},
 		// "Avatar":{utils.NotEmpty()},
 	}
 	if err := utils.Verify(u, verify); err != nil {
