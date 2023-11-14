@@ -73,8 +73,8 @@
             {{ filterDict(scope.row.amount_type,amount_logOptions) }}
             </template>
         </el-table-column>
-        <el-table-column align="left" label="金额" prop="amount" width="120" />
-        <el-table-column align="left" label="当前金额" prop="cur_amount" width="120" />
+        <el-table-column align="left" label="金额" prop="amount" :formatter="row => formatCurrency(row.amount)" width="120" />
+        <el-table-column align="left" label="当前金额" prop="cur_amount" :formatter="row => formatCurrency(row.cur_amount)" width="120" />
         <el-table-column align="left" label="操作">
             <template #default="scope">
             <el-button type="primary" link class="table-button" @click="getDetails(scope.row)">
@@ -442,6 +442,10 @@ const enterDialog = async () => {
                 getTableData()
               }
       })
+}
+
+const formatCurrency = (amount) => {
+  return (amount / 100).toFixed(2);
 }
 
 </script>

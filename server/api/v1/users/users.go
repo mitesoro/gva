@@ -115,16 +115,16 @@ func (uApi *UsersApi) UpdateUsers(c *gin.Context) {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
-	verify := utils.Rules{
-		"Phone": {utils.NotEmpty()},
-		// "Password": {utils.NotEmpty()},
-		// "Nickname": {utils.NotEmpty()},
-		// "Avatar":{utils.NotEmpty()},
-	}
-	if err := utils.Verify(u, verify); err != nil {
-		response.FailWithMessage(err.Error(), c)
-		return
-	}
+	// verify := utils.Rules{
+	// 	"Phone": {utils.NotEmpty()},
+	// 	// "Password": {utils.NotEmpty()},
+	// 	// "Nickname": {utils.NotEmpty()},
+	// 	// "Avatar":{utils.NotEmpty()},
+	// }
+	// if err := utils.Verify(u, verify); err != nil {
+	// 	response.FailWithMessage(err.Error(), c)
+	// 	return
+	// }
 	if err := uService.UpdateUsers(u); err != nil {
 		global.GVA_LOG.Error("更新失败!", zap.Error(err))
 		response.FailWithMessage("更新失败", c)
