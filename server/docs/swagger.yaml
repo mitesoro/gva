@@ -1421,6 +1421,9 @@ definitions:
     type: object
   symbols.Symbol:
     properties:
+      amount:
+        description: 固定值
+        type: integer
       bond:
         description: 保证金
         type: integer
@@ -1460,6 +1463,9 @@ definitions:
       times:
         description: 时间限制
         type: string
+      type:
+        description: 类型 0 固定值 1 百分比
+        type: integer
       updatedAt:
         description: 更新时间
         type: string
@@ -5453,6 +5459,10 @@ paths:
       consumes:
       - application/json
       parameters:
+      - description: 固定值
+        in: query
+        name: amount
+        type: integer
       - description: 保证金
         in: query
         name: bond
@@ -5505,6 +5515,10 @@ paths:
         in: query
         name: times
         type: string
+      - description: 类型 0 固定值 1 百分比
+        in: query
+        name: type
+        type: integer
       - description: 更新时间
         in: query
         name: updatedAt
@@ -5526,6 +5540,10 @@ paths:
       consumes:
       - application/json
       parameters:
+      - description: 固定值
+        in: query
+        name: amount
+        type: integer
       - description: 保证金
         in: query
         name: bond
@@ -5596,6 +5614,10 @@ paths:
         in: query
         name: times
         type: string
+      - description: 类型 0 固定值 1 百分比
+        in: query
+        name: type
+        type: integer
       - description: 更新时间
         in: query
         name: updatedAt

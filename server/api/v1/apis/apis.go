@@ -456,7 +456,6 @@ func (uApi *ApisApi) OrdersCreate(c *gin.Context) {
 	}
 	arrTimes := strings.Split(ss.Times, "\n")
 	var flag bool
-	fmt.Println(arrTimes)
 	for _, arrTime := range arrTimes {
 		times := strings.Split(arrTime, "~")
 		if len(times) != 2 {
@@ -468,7 +467,6 @@ func (uApi *ApisApi) OrdersCreate(c *gin.Context) {
 	}
 	if !flag {
 		days := strings.Split(ss.Days, "\n")
-		fmt.Println(days)
 		for _, day := range days {
 			arr := strings.Split(day, "~")
 			if len(arr) != 2 {
@@ -496,10 +494,19 @@ func (uApi *ApisApi) OrdersCreate(c *gin.Context) {
 		return
 	}
 	allPrice := *ss.Multiple * price
-	needPrice := float64(allPrice) * (float64(*ss.Bond) / 100)
+	needPrice := float64(ss.Amount)
+	if ss.Type == 1 { // 百分比
+		needPrice = float64(allPrice) * (float64(*ss.Bond) / 100)
+	}
 	decrAmount := int(needPrice)
 	if decrAmount > u.AvailableAmount {
 		response.FailWithMessageWithCode(10002, "下单失败，金额不足", c)
+		return
+	}
+	var count int64
+	global.GVA_DB.Model(&orders.Orders{}).Where("user_id = ? and status = 1", userID).Count(&count)
+	if count > 0 {
+		response.FailWithMessageWithCode(10002, "下单失败，已存在成交单", c)
 		return
 	}
 	u.AvailableAmount = u.AvailableAmount - decrAmount

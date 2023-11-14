@@ -13,6 +13,7 @@ type SymbolService struct {
 // CreateSymbol 创建合约品种记录
 // Author [piexlmax](https://github.com/piexlmax)
 func (sbService *SymbolService) CreateSymbol(sb *symbols.Symbol) (err error) {
+	sb.Amount = sb.Amount * 100
 	err = global.GVA_DB.Create(sb).Error
 	return err
 }
@@ -34,6 +35,7 @@ func (sbService *SymbolService) DeleteSymbolByIds(ids request.IdsReq) (err error
 // UpdateSymbol 更新合约品种记录
 // Author [piexlmax](https://github.com/piexlmax)
 func (sbService *SymbolService) UpdateSymbol(sb symbols.Symbol) (err error) {
+	sb.Amount = sb.Amount * 100
 	err = global.GVA_DB.Save(&sb).Error
 	return err
 }
@@ -42,6 +44,7 @@ func (sbService *SymbolService) UpdateSymbol(sb symbols.Symbol) (err error) {
 // Author [piexlmax](https://github.com/piexlmax)
 func (sbService *SymbolService) GetSymbol(id uint) (sb symbols.Symbol, err error) {
 	err = global.GVA_DB.Where("id = ?", id).First(&sb).Error
+	sb.Amount = sb.Amount / 100
 	return
 }
 

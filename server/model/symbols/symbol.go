@@ -12,6 +12,8 @@ type Symbol struct {
 	Code              string `json:"code" form:"code" gorm:"column:code;comment:代码;"`                                                  // 代码
 	Multiple          *int   `json:"multiple" form:"multiple" gorm:"column:multiple;comment:倍数;"`                                      // 倍数
 	Bond              *int   `json:"bond" form:"bond" gorm:"column:bond;comment:保证金;"`                                                 // 保证金
+	Type              int    `json:"type" form:"type" gorm:"column:type;comment:类型;"`                                                  // 类型 0 固定值 1 百分比
+	Amount            int    `json:"amount" form:"amount" gorm:"column:amount;comment:固定值;"`                                           // 固定值
 	Status            *bool  `json:"status" form:"status" gorm:"column:status;comment:状态;"`                                            // 状态
 	PointSuccess      *int   `json:"point_success" form:"point_success" gorm:"column:point_success;comment:止赢点位;"`                     // 止赢点位
 	PointSuccessPrice *int   `json:"point_success_price" form:"point_success_price" gorm:"column:point_success_price;comment:止赢点位价格;"` // 止赢点位价格

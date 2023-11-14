@@ -5844,6 +5844,12 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "integer",
+                        "description": "固定值",
+                        "name": "amount",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
                         "description": "保证金",
                         "name": "bond",
                         "in": "query"
@@ -5921,6 +5927,12 @@ const docTemplate = `{
                         "in": "query"
                     },
                     {
+                        "type": "integer",
+                        "description": "类型 0 固定值 1 百分比",
+                        "name": "type",
+                        "in": "query"
+                    },
+                    {
                         "type": "string",
                         "description": "更新时间",
                         "name": "updatedAt",
@@ -5955,6 +5967,12 @@ const docTemplate = `{
                 ],
                 "summary": "分页获取合约品种列表",
                 "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "固定值",
+                        "name": "amount",
+                        "in": "query"
+                    },
                     {
                         "type": "integer",
                         "description": "保证金",
@@ -6059,6 +6077,12 @@ const docTemplate = `{
                         "type": "string",
                         "description": "时间限制",
                         "name": "times",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "类型 0 固定值 1 百分比",
+                        "name": "type",
                         "in": "query"
                     },
                     {
@@ -10359,6 +10383,10 @@ const docTemplate = `{
         "symbols.Symbol": {
             "type": "object",
             "properties": {
+                "amount": {
+                    "description": "固定值",
+                    "type": "integer"
+                },
                 "bond": {
                     "description": "保证金",
                     "type": "integer"
@@ -10410,6 +10438,10 @@ const docTemplate = `{
                 "times": {
                     "description": "时间限制",
                     "type": "string"
+                },
+                "type": {
+                    "description": "类型 0 固定值 1 百分比",
+                    "type": "integer"
                 },
                 "updatedAt": {
                     "description": "更新时间",

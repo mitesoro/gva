@@ -77,7 +77,12 @@
         <el-table-column align="left" label="名称" prop="name" width="120" />
         <el-table-column align="left" label="代码" prop="code" width="120" />
         <el-table-column align="left" label="倍数" prop="multiple" width="120" />
-        <el-table-column align="left" label="保证金(%)" prop="bond" width="120" />
+        <el-table-column align="left" label="类型" prop="type" width="120">
+          <template #default="scope">{{ formatTagType(scope.row.type) }}</template>
+        </el-table-column>
+        <el-table-column align="left" label="费用" prop="type" width="120">
+          <template #default="scope">{{ formatTagTypeValue(scope.row.type,scope.row.bond,scope.row.amount) }}</template>
+        </el-table-column>
         <el-table-column align="left" label="止赢点位" prop="point_success" width="120" />
         <el-table-column align="left" label="止赢点位赔付价格" prop="point_success_price" width="120" />
         <el-table-column align="left" label="止损点位" prop="point_fail" width="120" />
@@ -120,8 +125,16 @@
             <el-form-item label="倍数:"  prop="multiple" >
               <el-input v-model.number="formData.multiple" :clearable="true" placeholder="请输入倍数" />
             </el-form-item>
+            <el-form-item label="类型:"  prop="type" >
+              <el-select v-model="formData.type" placeholder="类型" style="width:100%" :clearable="true" >
+                <el-option v-for="(item,key) in genderOptions" :key="key" :label="item.label" :value="item.value" />
+              </el-select>
+            </el-form-item>
             <el-form-item label="保证金(%):"  prop="bond" >
               <el-input v-model.number="formData.bond" :clearable="true" placeholder="请输入保证金(%)" />
+            </el-form-item>
+            <el-form-item label="固定值(元):"  prop="amount" >
+              <el-input v-model.number="formData.amount" :clearable="true" placeholder="请输入固定值(元)" />
             </el-form-item>
             <el-form-item label="止赢点位:"  prop="point_success" >
               <el-input v-model.number="formData.point_success" :clearable="true" placeholder="请输入止赢点位" />
@@ -172,8 +185,11 @@
                 <el-descriptions-item label="倍数">
                         {{ formData.multiple }}
                 </el-descriptions-item>
-                <el-descriptions-item label="保证金(%)">
-                        {{ formData.bond }}
+                <el-descriptions-item label="类型">
+                  {{ formatTagType(formData.type) }}
+                </el-descriptions-item>
+                <el-descriptions-item label="费用">
+                  {{ formatTagTypeValueDetail(formData.type,formData.bond,formData.amount) }}
                 </el-descriptions-item>
                 <el-descriptions-item label="止赢点位">
                         {{ formData.point_success }}
@@ -215,7 +231,9 @@ import {
 // 全量引入格式化工具 请按需保留
 import { getDictFunc, formatDate, formatBoolean, filterDict, ReturnArrImg, onDownloadFile } from '@/utils/format'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { ref, reactive } from 'vue'
+import { ref, reactive,computed } from 'vue'
+
+const genderOptions = ref([])
 
 defineOptions({
     name: 'Symbol'
@@ -227,6 +245,8 @@ const formData = ref({
         code: '',
         multiple: 0,
         bond: 0,
+        type: 0,
+        amount: 0,
         point_success: 0,
         point_success_price: 0,
         point_fail: 0,
@@ -353,6 +373,7 @@ getTableData()
 
 // 获取需要的字典 可能为空 按需保留
 const setOptions = async () =>{
+  genderOptions.value = await getDictFunc('symbol_type')
 }
 
 // 获取需要的字典 可能为空 按需保留
@@ -526,6 +547,19 @@ const enterDialog = async () => {
                 getTableData()
               }
       })
+}
+
+const formatTagType = (direction) => {
+  return direction === 1 ? '百分比' : '固定值';
+}
+
+const formatTagTypeValue = (direction, bond,amount) => {
+  return direction === 1 ? bond+"%" : (amount / 100).toFixed(2);
+}
+
+
+const formatTagTypeValueDetail = (direction, bond,amount) => {
+  return direction === 1 ? bond+"%" : amount;
 }
 
 </script>
