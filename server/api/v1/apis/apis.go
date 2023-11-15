@@ -51,8 +51,8 @@ var orderService = service.ServiceGroupApp.OrdersServiceGroup.OrdersService
 
 func (uApi *ApisApi) Test(c *gin.Context) {
 	// grpc 调用下单接口
-	res, err := global.GVA_GrpcCLient.CancelOrder(context.Background(), &pb.QueryOrderRequest{
-		Or: 15190,
+	res, err := global.GVA_GrpcCLient.QueryOrder(context.Background(), &pb.QueryOrderRequest{
+		Or: cast.ToInt32(c.Query("id")),
 	})
 	if err != nil {
 		global.GVA_LOG.Error("grpc Order", zap.Error(err))

@@ -235,7 +235,10 @@ func handelNotifyOrder(msg string) {
 	var o orders.Orders
 	err := global.GVA_DB.Where("order_ref = ?", mo.OrderRef).First(&o).Error
 	if err != nil {
-		global.GVA_LOG.Error("get Order", zap.Error(err))
+		global.GVA_LOG.Error("get Order", zap.Error(err), zap.Any("order_ref", mo.OrderRef))
+		return
+	}
+	if mo.OrderSysID <= 0 {
 		return
 	}
 	o.OrderSysID = mo.OrderSysID
@@ -251,16 +254,18 @@ func handelNotifyOrder(msg string) {
 
 	// 绑定OrderRef 和 OrderSysID
 	res, err1 := global.GVA_GrpcCLient.QueryOrder(context.Background(), &pb.QueryOrderRequest{
-		Or: 1,
+		Or: int32(o.OrderSysID),
 	})
 	if err1 != nil {
-		global.GVA_LOG.Error("QueryOrder", zap.Error(err))
+		global.GVA_LOG.Error("QueryOrder", zap.Error(err1), zap.Any("OrderSysID", o.OrderSysID))
 		return
 	}
 	global.GVA_LOG.Info("QueryOrder", zap.Any("res", res))
 	// 成交
 	status := 0
 	o.SuccessAt = model.LocalTime(time.Now())
+	a := *o.Price
+	o.SuccessPrice = int64(a)
 	if res.Os == 3 {
 		status = 1
 	} else {
