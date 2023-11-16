@@ -54,7 +54,7 @@ type ReqOrders struct {
 
 type KData struct {
 	Period int64  `json:"period" form:"period"`                     // 周期
-	Rows   int64  `json:"rows" form:"rows" binding:"required" `     // 返回条数
+	Rows   int64  `json:"rows" form:"rows" `                        // 返回条数
 	Symbol string `json:"symbol" form:"symbol" binding:"required" ` // 品种
 }
 

@@ -788,7 +788,8 @@ func (uApi *ApisApi) PriceData(c *gin.Context) {
 // @Router /api/symbol/data/list [get]
 func (uApi *ApisApi) SymbolData(c *gin.Context) {
 	var sb []*symbols.Symbol
-	if err := global.GVA_DB.Find(&sb).Error; err != nil {
+	if err := global.GVA_DB.Model(&symbols.Symbol{}).Where("").Find(&sb).Error; err != nil {
+		global.GVA_LOG.Error("SymbolData  err ", zap.Error(err))
 		response.FailWithMessageWithCode(10002, "获取失败", c)
 		return
 	}

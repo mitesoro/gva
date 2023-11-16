@@ -12,6 +12,7 @@ type ApiRouter struct {
 // InitApiRouter 初始化 api 路由信息
 func (s *ApiRouter) InitApiRouter(Router *gin.RouterGroup) {
 	uRouter := Router.Group("api")
+	uRouter.Use(middleware.DefaultLogger())
 	var aApi = v1.ApiGroupApp.ApisApiGroup.ApisApi
 	{
 		uRouter.Any("test", aApi.Test)                                                    // test

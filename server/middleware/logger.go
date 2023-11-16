@@ -2,9 +2,10 @@ package middleware
 
 import (
 	"bytes"
-	"encoding/json"
-	"fmt"
+	"github.com/flipped-aurora/gin-vue-admin/server/global"
+	"go.uber.org/zap"
 	"io"
+	"net/http"
 	"strings"
 	"time"
 
@@ -21,8 +22,9 @@ type LogLayout struct {
 	IP        string                 // ip地址
 	UserAgent string                 // 代理
 	Error     string                 // 错误
-	Cost      time.Duration          // 花费时间
-	Source    string                 // 来源
+	Cost      float64                // 花费时间
+	Method    string
+	Header    http.Header
 }
 
 type Logger struct {
@@ -44,13 +46,13 @@ func (l Logger) SetLoggerMiddleware() gin.HandlerFunc {
 		path := c.Request.URL.Path
 		query := c.Request.URL.RawQuery
 		var body []byte
-		if l.Filter != nil && !l.Filter(c) {
+		if c.Request.Method == http.MethodPost {
 			body, _ = c.GetRawData()
 			// 将原body塞回去
 			c.Request.Body = io.NopCloser(bytes.NewBuffer(body))
 		}
 		c.Next()
-		cost := time.Since(start)
+		cost := time.Since(start).Seconds()
 		layout := LogLayout{
 			Time:      time.Now(),
 			Path:      path,
@@ -59,9 +61,10 @@ func (l Logger) SetLoggerMiddleware() gin.HandlerFunc {
 			UserAgent: c.Request.UserAgent(),
 			Error:     strings.TrimRight(c.Errors.ByType(gin.ErrorTypePrivate).String(), "\n"),
 			Cost:      cost,
-			Source:    l.Source,
+			Method:    c.Request.Method,
+			Header:    c.Request.Header,
 		}
-		if l.Filter != nil && !l.Filter(c) {
+		if c.Request.Method == http.MethodPost {
 			layout.Body = string(body)
 		}
 		if l.AuthProcess != nil {
@@ -81,9 +84,11 @@ func DefaultLogger() gin.HandlerFunc {
 	return Logger{
 		Print: func(layout LogLayout) {
 			// 标准输出,k8s做收集
-			v, _ := json.Marshal(layout)
-			fmt.Println(string(v))
+			// v, _ := json.Marshal(layout)
+			global.GVA_LOG.Info("request", zap.Any("log", layout))
 		},
-		Source: "GVA",
+		Filter: func(c *gin.Context) bool {
+			return true
+		},
 	}.SetLoggerMiddleware()
 }
