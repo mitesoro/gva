@@ -537,14 +537,25 @@ func (uApi *ApisApi) OrdersCreate(c *gin.Context) {
 		return
 	}
 	// grpc 调用下单接口
-	res, err := global.GVA_GrpcCLient.Order(context.Background(), &pb.OrderRequest{
+	reqClient := &pb.OrderRequest{
 		C:       req.Symbol,
 		V:       1,
 		Buy:     true,
 		Open:    true,
 		OrderId: int32(order.ID),
 		P:       float32(price),
-	})
+	}
+	if req.Direction == 2 {
+		reqClient = &pb.OrderRequest{
+			C:       req.Symbol,
+			V:       1,
+			Sell:    true,
+			Open:    true,
+			OrderId: int32(order.ID),
+			P:       float32(price),
+		}
+	}
+	res, err := global.GVA_GrpcCLient.Order(context.Background(), reqClient)
 	if err != nil {
 		global.GVA_LOG.Error("grpc Order", zap.Error(err))
 	}
