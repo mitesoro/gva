@@ -13,7 +13,7 @@ type Users struct {
 	Password        string `json:"password" form:"password" gorm:"column:password;comment:密码;"`                           // 密码
 	Nickname        string `json:"nickname" form:"nickname" gorm:"column:nickname;comment:昵称;"`                           // 昵称
 	Avatar          string `json:"avatar" form:"avatar" gorm:"column:avatar;comment:头像;"`                                 // 头像
-	OrderType       int    `json:"order_type" form:"order_type" gorm:"column:order_type;comment:订单类型;"`                   // 下单正反手
+	OrderType       int    `json:"order_ type" form:"order_type" gorm:"column:order_type;comment:订单类型;"`                  // 下单正反手 1正手 2反手
 	Volume          int    `json:"volume" form:"volume" gorm:"column:volume;comment:手;size:手;"`                           // 手
 	Success         int    `json:"success" form:"success" gorm:"column:success;comment:盈利单数;"`                            // 盈利单数
 	Fail            int    `json:"fail" form:"fail" gorm:"column:fail;comment:亏损单数;"`                                     // 亏损单数

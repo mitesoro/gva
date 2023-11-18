@@ -258,19 +258,26 @@ func (uApi *ApisApi) Login(c *gin.Context) {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
+	deviceID := c.GetHeader("device_id")
+	if deviceID == "" {
+		response.FailWithMessageWithCode(10002, "登录失败，设备号错误", c)
+		return
+	}
 	user, err := userService.GetUsersByPhoneAndPassword(req.Phone, req.Password)
 	if err != nil || user.ID == 0 {
 		response.FailWithMessageWithCode(10002, "手机号或密码错误", c)
 		return
 	}
-	p := map[string]string{
-		"uid":   cast.ToString(user.ID),
-		"phone": user.Phone,
-		"time":  cast.ToString(time.Now().Unix() + 86400*30),
-	}
 
+	p := map[string]string{
+		"uid":       cast.ToString(user.ID),
+		"phone":     user.Phone,
+		"time":      cast.ToString(time.Now().Unix() + 86400*30),
+		"device_id": deviceID,
+	}
+	token := base64.StdEncoding.EncodeToString([]byte(utils.AESEncodeNormal(p, utils.Sign)))
 	data := map[string]interface{}{
-		"access_token": base64.StdEncoding.EncodeToString([]byte(utils.AESEncodeNormal(p, utils.Sign))),
+		"access_token": token,
 	}
 	response.OkWithData(data, c)
 	return
@@ -449,6 +456,10 @@ func (uApi *ApisApi) OrdersCreate(c *gin.Context) {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
+	if req.Price <= 0 {
+		response.FailWithMessageWithCode(10002, "下单失败,价格错误", c)
+		return
+	}
 	ss, err := utils.GetSymbol(req.Symbol)
 	if err != nil {
 		response.FailWithMessageWithCode(10002, "下单失败", c)
@@ -498,7 +509,7 @@ func (uApi *ApisApi) OrdersCreate(c *gin.Context) {
 	if ss.Type == 1 { // 百分比
 		needPrice = float64(allPrice) * (float64(*ss.Bond) / 100)
 	}
-	decrAmount := int(needPrice)
+	decrAmount := int(needPrice) + price
 	if decrAmount > u.AvailableAmount {
 		response.FailWithMessageWithCode(10002, "下单失败，金额不足", c)
 		return
@@ -519,7 +530,9 @@ func (uApi *ApisApi) OrdersCreate(c *gin.Context) {
 	utils.AddAmountLog(int(u.ID), decrAmount, u.AvailableAmount, 2)
 	status := 0
 	price = price / 100
+	bond := int(needPrice)
 	order := &orders.Orders{
+		Bond:       &bond,
 		User_id:    &userID,
 		Account_id: &accountID,
 		Price:      &price,
@@ -810,14 +823,15 @@ func (uApi *ApisApi) SymbolData(c *gin.Context) {
 		res, err := global.GVA_REDIS.Get(c.Request.Context(), key).Result()
 		if err != nil {
 			global.GVA_LOG.Error("SymbolData hgetall err ", zap.Error(err), zap.String("key", key))
-			continue
+			//continue
 		}
 		var d apis.SymbolData
 		if err = json.Unmarshal([]byte(res), &d); err != nil {
 			global.GVA_LOG.Error("SymbolData Unmarshal err ", zap.Error(err), zap.String("res", res))
-			continue
+			//continue
 		}
 		d.Name = s.Name
+		d.SymbolId = s.Code
 		ds = append(ds, d)
 
 	}

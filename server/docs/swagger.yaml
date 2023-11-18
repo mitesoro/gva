@@ -49,6 +49,8 @@ definitions:
         description: 几手
         type: integer
     required:
+    - direction
+    - price
     - symbol
     - volume
     type: object
@@ -1989,8 +1991,8 @@ definitions:
       nickname:
         description: 昵称
         type: string
-      order_type:
-        description: 下单正反手
+      order_ type:
+        description: 下单正反手 1正手 2反手
         type: integer
       password:
         description: 密码
@@ -2903,7 +2905,6 @@ paths:
       - description: 返回条数
         in: query
         name: rows
-        required: true
         type: integer
       - description: 品种
         in: query
@@ -6522,7 +6523,7 @@ paths:
         in: query
         name: nickname
         type: string
-      - description: 下单正反手
+      - description: 下单正反手 1正手 2反手
         in: query
         name: order_type
         type: integer
@@ -6609,7 +6610,7 @@ paths:
       - in: query
         name: order
         type: string
-      - description: 下单正反手
+      - description: 下单正反手 1正手 2反手
         in: query
         name: order_type
         type: integer

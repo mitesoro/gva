@@ -1494,8 +1494,7 @@ const docTemplate = `{
                         "type": "integer",
                         "description": "返回条数",
                         "name": "rows",
-                        "in": "query",
-                        "required": true
+                        "in": "query"
                     },
                     {
                         "type": "string",
@@ -7609,7 +7608,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "integer",
-                        "description": "下单正反手",
+                        "description": "下单正反手 1正手 2反手",
                         "name": "order_type",
                         "in": "query"
                     },
@@ -7744,7 +7743,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "integer",
-                        "description": "下单正反手",
+                        "description": "下单正反手 1正手 2反手",
                         "name": "order_type",
                         "in": "query"
                     },
@@ -8396,6 +8395,8 @@ const docTemplate = `{
         "apis.ReqOrders": {
             "type": "object",
             "required": [
+                "direction",
+                "price",
                 "symbol",
                 "volume"
             ],
@@ -11177,8 +11178,8 @@ const docTemplate = `{
                     "description": "昵称",
                     "type": "string"
                 },
-                "order_type": {
-                    "description": "下单正反手",
+                "order_ type": {
+                    "description": "下单正反手 1正手 2反手",
                     "type": "integer"
                 },
                 "password": {

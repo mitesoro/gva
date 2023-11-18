@@ -35,6 +35,17 @@ func Token() gin.HandlerFunc {
 			c.Abort()
 			return
 		}
+		deviceID := c.Request.Header.Get("device_id")
+		if deviceID == "" {
+			response.FailWithMessageWithCode(10002, "请求错误，设备号错误", c)
+			c.Abort()
+			return
+		}
+		if res["device_id"] != deviceID {
+			response.FailWithMessageWithCode(10002, "您的账号已在其他设备登录", c)
+			c.Abort()
+			return
+		}
 		c.Set("uid", cast.ToInt64(res["uid"]))
 		c.Set("phone", cast.ToInt64(res["phone"]))
 		c.Next()
