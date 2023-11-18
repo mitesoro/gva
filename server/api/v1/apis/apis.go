@@ -901,6 +901,7 @@ func (uApi *ApisApi) GetUserInfo(c *gin.Context) {
 		response.FailWithMessageWithCode(10002, "获取失败", c)
 		return
 	}
+	u.Password = "*********"
 	response.OkWithData(u, c)
 	return
 }
