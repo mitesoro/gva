@@ -258,7 +258,7 @@ func (uApi *ApisApi) Login(c *gin.Context) {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
-	deviceID := c.GetHeader("device_id")
+	deviceID := c.GetHeader("device-id")
 	if deviceID == "" {
 		response.FailWithMessageWithCode(10002, "登录失败，设备号错误", c)
 		return
@@ -273,7 +273,7 @@ func (uApi *ApisApi) Login(c *gin.Context) {
 		"uid":       cast.ToString(user.ID),
 		"phone":     user.Phone,
 		"time":      cast.ToString(time.Now().Unix() + 86400*30),
-		"device_id": deviceID,
+		"device-id": deviceID,
 	}
 	token := base64.StdEncoding.EncodeToString([]byte(utils.AESEncodeNormal(p, utils.Sign)))
 	data := map[string]interface{}{

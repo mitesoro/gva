@@ -38,13 +38,13 @@ func Token() gin.HandlerFunc {
 			c.Abort()
 			return
 		}
-		deviceID := c.Request.Header.Get("device_id")
+		deviceID := c.Request.Header.Get("device-id")
 		if deviceID == "" {
 			response.FailWithMessageWithCode(10002, "请求错误，设备号错误", c)
 			c.Abort()
 			return
 		}
-		if res["device_id"] != deviceID {
+		if res["device-id"] != deviceID {
 			response.FailWithMessageWithCode(10002, "您的账号已在其他设备登录", c)
 			c.Abort()
 			return
