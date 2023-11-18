@@ -1,7 +1,10 @@
 package middleware
 
 import (
+	"context"
 	"encoding/base64"
+	"fmt"
+	"github.com/flipped-aurora/gin-vue-admin/server/global"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/common/response"
 	"github.com/flipped-aurora/gin-vue-admin/server/utils"
 	"github.com/gin-gonic/gin"
@@ -46,6 +49,14 @@ func Token() gin.HandlerFunc {
 			c.Abort()
 			return
 		}
+		key := fmt.Sprintf("s:d:i:t:%d", cast.ToInt64(res["uid"]))
+		v, err := global.GVA_REDIS.Get(context.Background(), key).Result()
+		if err != nil || v != utils.MD5(token) {
+			response.FailWithMessageWithCode(10002, "您的账号已在其他设备登录", c)
+			c.Abort()
+			return
+		}
+
 		c.Set("uid", cast.ToInt64(res["uid"]))
 		c.Set("phone", cast.ToInt64(res["phone"]))
 		c.Next()

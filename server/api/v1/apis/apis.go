@@ -279,6 +279,8 @@ func (uApi *ApisApi) Login(c *gin.Context) {
 	data := map[string]interface{}{
 		"access_token": token,
 	}
+	key := fmt.Sprintf("s:d:i:t:%d", user.ID)
+	global.GVA_REDIS.Set(context.Background(), key, utils.MD5(token), time.Hour*24*30)
 	response.OkWithData(data, c)
 	return
 }
