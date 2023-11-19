@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/flipped-aurora/gin-vue-admin/server/handel"
 	"github.com/flipped-aurora/gin-vue-admin/server/model"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/data"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/orders"
@@ -125,7 +126,9 @@ func handelData(msg string) {
 		global.GVA_LOG.Error("Received message:", zap.Error(err), zap.String("Payload", msg))
 		return
 	}
-
+	utils.SafeGO(func() {
+		handel.HandelOrders(d)
+	})
 	d.InsertAt = now.Unix()
 	d.PreSettlementPrice = utils.Decimal(d.PreSettlementPrice)
 	d.PreClosePrice = utils.Decimal(d.PreClosePrice)

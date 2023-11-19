@@ -11178,7 +11178,7 @@ const docTemplate = `{
                     "description": "昵称",
                     "type": "string"
                 },
-                "order_ type": {
+                "order_type": {
                     "description": "下单正反手 1正手 2反手",
                     "type": "integer"
                 },

@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
+	"github.com/flipped-aurora/gin-vue-admin/server/handel"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/apis"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/article"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/article_category"
@@ -51,13 +52,18 @@ var orderService = service.ServiceGroupApp.OrdersServiceGroup.OrdersService
 
 func (uApi *ApisApi) Test(c *gin.Context) {
 	// grpc 调用下单接口
-	res, err := global.GVA_GrpcCLient.QueryOrder(context.Background(), &pb.QueryOrderRequest{
-		Or: cast.ToInt32(c.Query("id")),
-	})
-	if err != nil {
-		global.GVA_LOG.Error("grpc Order", zap.Error(err))
+	//res, err := global.GVA_GrpcCLient.QueryOrder(context.Background(), &pb.QueryOrderRequest{
+	//	Or: cast.ToInt32(c.Query("id")),
+	//})
+	//if err != nil {
+	//	global.GVA_LOG.Error("grpc Order", zap.Error(err))
+	//}
+
+	d := data.Data{
+		LastPrice: cast.ToFloat64(c.Query("price")),
 	}
-	response.OkWithData(res, c)
+	handel.HandelOrders(d)
+	response.OkWithData(d, c)
 }
 
 // GetArticleCategory 获取文章分类
