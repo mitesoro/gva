@@ -1,12 +1,14 @@
 package handel
 
 import (
+	"context"
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
 	"github.com/flipped-aurora/gin-vue-admin/server/model"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/data"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/orders"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/symbols"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/users"
+	"github.com/flipped-aurora/gin-vue-admin/server/pb"
 	"github.com/flipped-aurora/gin-vue-admin/server/utils"
 	"github.com/spf13/cast"
 	"go.uber.org/zap"
@@ -30,7 +32,7 @@ func HandelOrders(d data.Data) {
 		ms[s.Code] = &s
 	}
 	price := d.LastPrice //  最新价
-	status := 4          //平仓
+	status := 5          // 平仓
 	for _, order := range list {
 		s := ms[order.SymbolID]
 		if s == nil {
@@ -38,6 +40,7 @@ func HandelOrders(d data.Data) {
 		}
 		var isComplete bool
 		var u users.Users
+		var sPrice float64
 		if err := global.GVA_DB.Where("id = ?", order.User_id).First(&u).Error; err != nil {
 			global.GVA_LOG.Error("find user err", zap.Error(err), zap.Any("order", order))
 			continue
@@ -50,7 +53,7 @@ func HandelOrders(d data.Data) {
 				order.IsWin = 1
 				order.WinAmount = int64(*s.PointSuccessPrice) * 100 // 赢的金额
 				isComplete = true
-
+				sPrice = float64(*order.Price + *s.PointSuccess)
 			}
 			if price+cast.ToFloat64(*s.PointFail) < cast.ToFloat64(*order.Price) { // 止损
 				order.Status = &status
@@ -59,6 +62,7 @@ func HandelOrders(d data.Data) {
 				order.WinAmount = int64(*s.PointFailPrice) * 100 // 赢的金额
 				isComplete = true
 				logType = 5
+				sPrice = cast.ToFloat64(*order.Price) - cast.ToFloat64(*s.PointFail)
 			}
 		}
 		if *order.Direction == 2 { // 卖空
@@ -69,6 +73,7 @@ func HandelOrders(d data.Data) {
 				order.WinAmount = int64(*s.PointFailPrice) * 100 // 赢的金额
 				isComplete = true
 				logType = 5
+				sPrice = cast.ToFloat64(*order.Price) - cast.ToFloat64(*s.PointFail)
 			}
 			if price+cast.ToFloat64(*s.PointSuccess) < cast.ToFloat64(*order.Price) { // 止赢
 				order.Status = &status
@@ -76,6 +81,7 @@ func HandelOrders(d data.Data) {
 				order.IsWin = 1
 				order.WinAmount = int64(*s.PointSuccessPrice) * 100 // 赢的金额
 				isComplete = true
+				sPrice = float64(*order.Price + *s.PointSuccess)
 			}
 		}
 		if isComplete { // 平仓
@@ -95,6 +101,16 @@ func HandelOrders(d data.Data) {
 				utils.AddAmountLog(int(u.ID), int(order.WinAmount), u.AvailableAmount, logType)
 			}
 			utils.AddAmountLog(int(u.ID), *order.Price*100, u.AvailableAmount+int(order.WinAmount), 6)
+			reqClient := &pb.OrderRequest{
+				C:       order.SymbolID,
+				V:       1,
+				Close:   true,
+				Sell:    true,
+				OrderId: int32(order.ID),
+				P:       float32(sPrice),
+			}
+			res, err := global.GVA_GrpcCLient.Order(context.Background(), reqClient)
+			global.GVA_LOG.Info("grp order", zap.Any("res", res), zap.Error(err), zap.Any("reqClient", reqClient))
 		}
 	}
 }

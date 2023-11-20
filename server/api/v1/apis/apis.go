@@ -52,12 +52,12 @@ var orderService = service.ServiceGroupApp.OrdersServiceGroup.OrdersService
 
 func (uApi *ApisApi) Test(c *gin.Context) {
 	// grpc 调用下单接口
-	//res, err := global.GVA_GrpcCLient.QueryOrder(context.Background(), &pb.QueryOrderRequest{
+	// res, err := global.GVA_GrpcCLient.QueryOrder(context.Background(), &pb.QueryOrderRequest{
 	//	Or: cast.ToInt32(c.Query("id")),
-	//})
-	//if err != nil {
+	// })
+	// if err != nil {
 	//	global.GVA_LOG.Error("grpc Order", zap.Error(err))
-	//}
+	// }
 
 	d := data.Data{
 		LastPrice: cast.ToFloat64(c.Query("price")),
@@ -831,12 +831,12 @@ func (uApi *ApisApi) SymbolData(c *gin.Context) {
 		res, err := global.GVA_REDIS.Get(c.Request.Context(), key).Result()
 		if err != nil {
 			global.GVA_LOG.Error("SymbolData hgetall err ", zap.Error(err), zap.String("key", key))
-			//continue
+			// continue
 		}
 		var d apis.SymbolData
 		if err = json.Unmarshal([]byte(res), &d); err != nil {
 			global.GVA_LOG.Error("SymbolData Unmarshal err ", zap.Error(err), zap.String("res", res))
-			//continue
+			// continue
 		}
 		d.Name = s.Name
 		d.SymbolId = s.Code
@@ -941,7 +941,11 @@ func (uApi *ApisApi) OrdersList(c *gin.Context) {
 	var os []*orders.Orders
 	db := global.GVA_DB
 	if req.Status > 0 {
-		db = db.Where("status = ? ", req.Status)
+		if req.Status == 1 {
+			db = db.Where("status =? or status =? ", 1, 5)
+		} else {
+			db = db.Where("status =?", req.Status)
+		}
 	}
 	err = db.Where("user_id = ?", userID).Order("id DESC").Offset(offset).Limit(limit).Find(&os).Error
 	if err != nil {
