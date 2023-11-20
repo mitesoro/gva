@@ -2,6 +2,7 @@ package handel
 
 import (
 	"context"
+	"fmt"
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
 	"github.com/flipped-aurora/gin-vue-admin/server/model"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/data"
@@ -34,6 +35,17 @@ func HandelOrders(d data.Data) {
 	price := d.LastPrice //  最新价
 	status := 5          // 平仓
 	for _, order := range list {
+		key := fmt.Sprintf("lock_order_%d", order.ID)
+		firstLock := utils.NewRedisLock(global.GVA_REDIS, key)
+		firstLock.SetExpire(5)
+		againAcquire, err := firstLock.Acquire(context.Background())
+		if err != nil {
+			global.GVA_LOG.Error("NewRedisLock Acquire", zap.Error(err))
+			continue
+		}
+		if !againAcquire {
+			continue
+		}
 		s := ms[order.SymbolID]
 		if s == nil {
 			continue
@@ -94,7 +106,10 @@ func HandelOrders(d data.Data) {
 			u.Amount += amount
 			u.AvailableAmount += amount
 			u.FreezeAmount -= amount
-			if err := global.GVA_DB.Save(&u).Error; err != nil {
+			if u.FreezeAmount < 0 {
+				u.FreezeAmount = 0
+			}
+			if err = global.GVA_DB.Save(&u).Error; err != nil {
 				global.GVA_LOG.Error("save user err", zap.Error(err), zap.Any("order", order))
 				continue
 			}
@@ -113,5 +128,6 @@ func HandelOrders(d data.Data) {
 			res, err := global.GVA_GrpcCLient.Order(context.Background(), reqClient)
 			global.GVA_LOG.Info("grp order", zap.Any("res", res), zap.Error(err), zap.Any("reqClient", reqClient))
 		}
+		firstLock.Release(context.Background())
 	}
 }
