@@ -85,7 +85,7 @@ type YdData struct {
 
 type ReqTrade struct {
 	Page   int64 `json:"page" form:"page" binding:"required" ` // 分页
-	Status int64 `json:"status" form:"status" `                // 状态 0下单中 1成功 2取消 3失败 4盈利 5平
+	Status int64 `json:"status" form:"status" `                // 状态 0下单中 1成功(持仓) 2取消 3失败  5平仓 6成交
 }
 
 type SymbolDataResp struct {

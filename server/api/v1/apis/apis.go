@@ -517,7 +517,7 @@ func (uApi *ApisApi) OrdersCreate(c *gin.Context) {
 	if ss.Type == 1 { // 百分比
 		needPrice = float64(allPrice) * (float64(*ss.Bond) / 100)
 	}
-	decrAmount := int(needPrice) + price
+	decrAmount := int(needPrice)
 	if decrAmount > u.AvailableAmount {
 		response.FailWithMessageWithCode(10002, "下单失败，金额不足", c)
 		return
@@ -551,6 +551,7 @@ func (uApi *ApisApi) OrdersCreate(c *gin.Context) {
 		SymbolName: ss.Name,
 		Status:     &status,
 		DecrAmount: int64(decrAmount),
+		Fee:        int64(decrAmount),
 	}
 	err = orderService.CreateOrders(order)
 	if err != nil {
@@ -941,7 +942,7 @@ func (uApi *ApisApi) OrdersList(c *gin.Context) {
 	var os []*orders.Orders
 	db := global.GVA_DB
 	if req.Status > 0 {
-		if req.Status == 1 {
+		if req.Status == 6 {
 			db = db.Where("status =? or status =? ", 1, 5)
 		} else {
 			db = db.Where("status =?", req.Status)

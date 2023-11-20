@@ -1007,7 +1007,7 @@ definitions:
         description: 价格
         type: integer
       status:
-        description: 状态 0下单中 1成功 2取消 3失败 4平仓
+        description: 状态 0下单中 1成功 2取消 3失败 4盈亏 5平仓
         type: integer
       success_at:
         description: 成交时间
@@ -2979,7 +2979,7 @@ paths:
         name: page
         required: true
         type: integer
-      - description: 状态 0下单中 1成交 2取消 3失败 4平
+      - description: 状态 0下单中 1成功(持仓) 2取消 3失败  5平仓 6成交
         in: query
         name: status
         type: integer
@@ -5000,7 +5000,7 @@ paths:
         in: query
         name: price
         type: integer
-      - description: 状态 0下单中 1成功 2取消 3失败 4平仓
+      - description: 状态 0下单中 1成功 2取消 3失败 4盈亏 5平仓
         in: query
         name: status
         type: integer
@@ -5131,7 +5131,7 @@ paths:
       - in: query
         name: startCreatedAt
         type: string
-      - description: 状态 0下单中 1成功 2取消 3失败 4平仓
+      - description: 状态 0下单中 1成功 2取消 3失败 4盈亏 5平仓
         in: query
         name: status
         type: integer

@@ -1617,7 +1617,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "integer",
-                        "description": "状态 0下单中 1成交 2取消 3失败 4平",
+                        "description": "状态 0下单中 1成功(持仓) 2取消 3失败  5平仓 6成交",
                         "name": "status",
                         "in": "query"
                     }
@@ -5109,7 +5109,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "integer",
-                        "description": "状态 0下单中 1成功 2取消 3失败 4平仓",
+                        "description": "状态 0下单中 1成功 2取消 3失败 4盈亏 5平仓",
                         "name": "status",
                         "in": "query"
                     },
@@ -5310,7 +5310,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "integer",
-                        "description": "状态 0下单中 1成功 2取消 3失败 4平仓",
+                        "description": "状态 0下单中 1成功 2取消 3失败 4盈亏 5平仓",
                         "name": "status",
                         "in": "query"
                     },
@@ -9775,7 +9775,7 @@ const docTemplate = `{
                     "type": "integer"
                 },
                 "status": {
-                    "description": "状态 0下单中 1成功 2取消 3失败 4平仓",
+                    "description": "状态 0下单中 1成功 2取消 3失败 4盈亏 5平仓",
                     "type": "integer"
                 },
                 "success_at": {

@@ -47,7 +47,7 @@ func HandelOrders(d data.Data) {
 		}
 		logType := 4
 		if *order.Direction == 1 { // 买多
-			if float64(*order.Price+*s.PointSuccess) >= price { // 止赢
+			if float64(*order.Price+*s.PointSuccess) <= price { // 止赢
 				order.Status = &status
 				order.CompleteAt = model.LocalTime(time.Now())
 				order.IsWin = 1
@@ -55,7 +55,7 @@ func HandelOrders(d data.Data) {
 				isComplete = true
 				sPrice = float64(*order.Price + *s.PointSuccess)
 			}
-			if price+cast.ToFloat64(*s.PointFail) < cast.ToFloat64(*order.Price) { // 止损
+			if cast.ToFloat64(*order.Price)-cast.ToFloat64(*s.PointFail) > price { // 止损
 				order.Status = &status
 				order.CompleteAt = model.LocalTime(time.Now())
 				order.IsWin = 2
@@ -66,7 +66,7 @@ func HandelOrders(d data.Data) {
 			}
 		}
 		if *order.Direction == 2 { // 卖空
-			if float64(*order.Price+*s.PointFail) >= price { // 止损
+			if float64(*order.Price+*s.PointFail) < price { // 止损
 				order.Status = &status
 				order.CompleteAt = model.LocalTime(time.Now())
 				order.IsWin = 2
@@ -75,7 +75,7 @@ func HandelOrders(d data.Data) {
 				logType = 5
 				sPrice = cast.ToFloat64(*order.Price) - cast.ToFloat64(*s.PointFail)
 			}
-			if price+cast.ToFloat64(*s.PointSuccess) < cast.ToFloat64(*order.Price) { // 止赢
+			if cast.ToFloat64(*order.Price)-cast.ToFloat64(*s.PointSuccess) >= price { // 止赢
 				order.Status = &status
 				order.CompleteAt = model.LocalTime(time.Now())
 				order.IsWin = 1
@@ -90,9 +90,10 @@ func HandelOrders(d data.Data) {
 				continue
 			}
 			// 添加金币
-			amount := *order.Price*100 + int(order.WinAmount)
+			amount := int(order.DecrAmount) + int(order.WinAmount)
 			u.Amount += amount
 			u.AvailableAmount += amount
+			u.FreezeAmount -= amount
 			if err := global.GVA_DB.Save(&u).Error; err != nil {
 				global.GVA_LOG.Error("save user err", zap.Error(err), zap.Any("order", order))
 				continue
