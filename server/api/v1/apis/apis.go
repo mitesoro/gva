@@ -536,28 +536,44 @@ func (uApi *ApisApi) OrdersCreate(c *gin.Context) {
 		return
 	}
 	utils.AddAmountLog(int(u.ID), decrAmount, u.AvailableAmount, 2)
+	thirdDirection := req.Direction
 	status := 0
 	price = price / 100
 	bond := int(needPrice)
+	thirdPrice := price
+	if u.OrderType == 2 { // 反手
+		if direction == 1 {
+			req.Direction = 2
+			thirdDirection = 2
+		}
+		if direction == 2 {
+			req.Direction = 1
+			thirdDirection = 2
+		}
+		thirdPrice = int(req.BackPrice) / 100
+	}
 	order := &orders.Orders{
-		Bond:       &bond,
-		User_id:    &userID,
-		Account_id: &accountID,
-		Price:      &price,
-		Volume:     &volume,
-		Direction:  &direction,
-		Order_no:   utils.MD5(fmt.Sprintf("%d", time.Now().UnixNano())),
-		SymbolID:   req.Symbol,
-		SymbolName: ss.Name,
-		Status:     &status,
-		DecrAmount: int64(decrAmount),
-		Fee:        int64(decrAmount),
+		Bond:           &bond,
+		User_id:        &userID,
+		Account_id:     &accountID,
+		Price:          &price,
+		Volume:         &volume,
+		Direction:      &direction,
+		Order_no:       utils.MD5(fmt.Sprintf("%d", time.Now().UnixNano())),
+		SymbolID:       req.Symbol,
+		SymbolName:     ss.Name,
+		Status:         &status,
+		DecrAmount:     int64(decrAmount),
+		Fee:            int64(decrAmount),
+		ThirdDirection: int(thirdDirection),
+		ThirdPrice:     int(req.BackPrice),
 	}
 	err = orderService.CreateOrders(order)
 	if err != nil {
 		response.FailWithMessageWithCode(10002, "下单失败", c)
 		return
 	}
+
 	// grpc 调用下单接口
 	reqClient := &pb.OrderRequest{
 		C:       req.Symbol,
@@ -565,7 +581,7 @@ func (uApi *ApisApi) OrdersCreate(c *gin.Context) {
 		Buy:     true,
 		Open:    true,
 		OrderId: int32(order.ID),
-		P:       float32(price),
+		P:       float32(thirdPrice),
 	}
 	if req.Direction == 2 {
 		reqClient = &pb.OrderRequest{
@@ -574,7 +590,7 @@ func (uApi *ApisApi) OrdersCreate(c *gin.Context) {
 			Sell:    true,
 			Open:    true,
 			OrderId: int32(order.ID),
-			P:       float32(price),
+			P:       float32(thirdPrice),
 		}
 	}
 	res, err := global.GVA_GrpcCLient.Order(context.Background(), reqClient)
