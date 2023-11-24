@@ -28,9 +28,9 @@ func HandelOrders(d data.Data) {
 		global.GVA_LOG.Error("handelOrders err", zap.Error(err))
 		return
 	}
-	ms := make(map[string]*symbols.Symbol)
+	ms := make(map[string]symbols.Symbol)
 	for _, s := range ss {
-		ms[s.Code] = &s
+		ms[s.Code] = s
 	}
 	price := d.LastPrice //  最新价
 	status := 5          // 平仓
@@ -46,8 +46,11 @@ func HandelOrders(d data.Data) {
 		if !againAcquire {
 			continue
 		}
-		s := ms[order.SymbolID]
-		if s == nil {
+		s, ok := ms[order.SymbolID]
+		if !ok {
+			continue
+		}
+		if d.SymbolId != order.SymbolID {
 			continue
 		}
 		var isComplete bool
@@ -97,6 +100,9 @@ func HandelOrders(d data.Data) {
 			}
 		}
 		if isComplete { // 平仓
+			global.GVA_LOG.Error("平仓", zap.Any("price", price), zap.Any("d_price", d.LastPrice),
+				zap.Any("order", order), zap.Any("d", d))
+			global.GVA_LOG.Error("SymbolID", zap.Any("s", s), zap.Any("order.SymbolID", order.SymbolID), zap.Any("ms", ms))
 			if err := global.GVA_DB.Save(&order).Error; err != nil {
 				global.GVA_LOG.Error("save order err", zap.Error(err), zap.Any("order", order))
 				continue
