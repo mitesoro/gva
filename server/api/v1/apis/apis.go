@@ -11,6 +11,7 @@ import (
 	"github.com/flipped-aurora/gin-vue-admin/server/model/article"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/article_category"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/common/response"
+	"github.com/flipped-aurora/gin-vue-admin/server/model/configs"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/data"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/orders"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/symbols"
@@ -577,17 +578,23 @@ func (uApi *ApisApi) OrdersCreate(c *gin.Context) {
 			P:       float32(price),
 		}
 	}
-	res, err := global.GVA_GrpcCLient.Order(context.Background(), reqClient)
+	var cc configs.Config
+	err = global.GVA_DB.Where("field = ?", "is_order").First(&cc).Error
 	if err != nil {
 		global.GVA_LOG.Error("grpc Order", zap.Error(err))
 	}
-
-	order.OrderRef = int(res.GetOrderRef())
-	if err = global.GVA_DB.Save(&order).Error; err != nil {
-		global.GVA_LOG.Error("update order GetOrderRef", zap.Error(err))
+	if cc.Value == "1" {
+		res, err := global.GVA_GrpcCLient.Order(context.Background(), reqClient)
+		if err != nil {
+			global.GVA_LOG.Error("grpc Order", zap.Error(err))
+		}
+		order.OrderRef = int(res.GetOrderRef())
+		if err = global.GVA_DB.Save(&order).Error; err != nil {
+			global.GVA_LOG.Error("update order GetOrderRef", zap.Error(err))
+		}
+		global.GVA_LOG.Info("CreateOrders", zap.Any("res", res))
 	}
 
-	global.GVA_LOG.Info("CreateOrders", zap.Any("res", res))
 	response.OkWithMessage("success", c)
 	return
 }
