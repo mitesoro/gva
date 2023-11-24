@@ -122,7 +122,7 @@ func HandelOrders(d data.Data) {
 			if int(order.WinAmount) > 0 {
 				utils.AddAmountLog(int(u.ID), int(order.WinAmount), u.AvailableAmount, logType)
 			}
-			utils.AddAmountLog(int(u.ID), *order.Price*100, u.AvailableAmount+int(order.WinAmount), 6)
+			utils.AddAmountLog(int(u.ID), int(order.DecrAmount), u.AvailableAmount+int(order.WinAmount), 6)
 			reqClient := &pb.OrderRequest{
 				C:       order.SymbolID,
 				V:       1,
