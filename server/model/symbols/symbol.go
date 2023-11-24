@@ -21,6 +21,7 @@ type Symbol struct {
 	PointFailPrice    *int   `json:"point_fail_price" form:"point_fail_price" gorm:"column:point_fail_price;comment:止损点位价格;"`          // 止损点位价格
 	Days              string `json:"days" form:"days" gorm:"column:days;comment:开盘也是时间;"`                                              // 开盘特殊时间
 	Times             string `json:"times" form:"times" gorm:"column:times;comment:时间限制;"`                                             // 时间限制
+	Fee               int    `json:"fee" form:"fee" gorm:"column:fee;comment:手续费;"`                                                    // 手续费
 }
 
 // TableName 合约品种 Symbol自定义表名 symbol

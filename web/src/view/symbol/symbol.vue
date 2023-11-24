@@ -87,6 +87,7 @@
         <el-table-column align="left" label="止赢点位赔付价格" prop="point_success_price" width="120" />
         <el-table-column align="left" label="止损点位" prop="point_fail" width="120" />
         <el-table-column align="left" label="止损点位赔付价格" prop="point_fail_price" width="120" />
+        <el-table-column align="left" label="手续费" prop="fee" width="120" />
         <el-table-column align="left" label="状态" prop="status" width="120">
             <template #default="scope">{{ formatBoolean(scope.row.status) }}</template>
         </el-table-column>
@@ -148,6 +149,9 @@
             <el-form-item label="止损价格:"  prop="point_fail_price" >
               <el-input v-model.number="formData.point_fail_price" :clearable="true" placeholder="请输入止损点位赔付价格" />
             </el-form-item>
+            <el-form-item label="手续费:"  prop="fee" >
+              <el-input v-model.number="formData.fee" :clearable="true" placeholder="请输入手续费" />
+            </el-form-item>
             <el-form-item label="状态:"  prop="status" >
               <el-switch v-model="formData.status" active-color="#13ce66" inactive-color="#ff4949" active-text="是" inactive-text="否" clearable ></el-switch>
             </el-form-item>
@@ -203,6 +207,9 @@
                 <el-descriptions-item label="止损点位赔付价格">
                         {{ formData.point_fail_price }}
                 </el-descriptions-item>
+          <el-descriptions-item label="手续费">
+            {{ formData.fee }}
+          </el-descriptions-item>
                 <el-descriptions-item label="状态">
                     {{ formatBoolean(formData.status) }}
                 </el-descriptions-item>
@@ -251,6 +258,7 @@ const formData = ref({
         point_success_price: 0,
         point_fail: 0,
         point_fail_price: 0,
+        fee: 0,
         status: false,
         })
 

@@ -1448,6 +1448,9 @@ definitions:
       days:
         description: 开盘特殊时间
         type: string
+      fee:
+        description: 手续费
+        type: integer
       id:
         description: 主键ID
         type: integer
@@ -5506,6 +5509,10 @@ paths:
         in: query
         name: days
         type: string
+      - description: 手续费
+        in: query
+        name: fee
+        type: integer
       - description: 主键ID
         in: query
         name: id
@@ -5590,6 +5597,10 @@ paths:
       - in: query
         name: endCreatedAt
         type: string
+      - description: 手续费
+        in: query
+        name: fee
+        type: integer
       - description: 主键ID
         in: query
         name: id

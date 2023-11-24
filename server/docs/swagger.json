@@ -5889,6 +5889,12 @@
                     },
                     {
                         "type": "integer",
+                        "description": "手续费",
+                        "name": "fee",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
                         "description": "主键ID",
                         "name": "id",
                         "in": "query"
@@ -6015,6 +6021,12 @@
                     {
                         "type": "string",
                         "name": "endCreatedAt",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "手续费",
+                        "name": "fee",
                         "in": "query"
                     },
                     {
@@ -10432,6 +10444,10 @@
                 "days": {
                     "description": "开盘特殊时间",
                     "type": "string"
+                },
+                "fee": {
+                    "description": "手续费",
+                    "type": "integer"
                 },
                 "id": {
                     "description": "主键ID",

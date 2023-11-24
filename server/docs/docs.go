@@ -5897,6 +5897,12 @@ const docTemplate = `{
                     },
                     {
                         "type": "integer",
+                        "description": "手续费",
+                        "name": "fee",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
                         "description": "主键ID",
                         "name": "id",
                         "in": "query"
@@ -6023,6 +6029,12 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "name": "endCreatedAt",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "手续费",
+                        "name": "fee",
                         "in": "query"
                     },
                     {
@@ -10440,6 +10452,10 @@ const docTemplate = `{
                 "days": {
                     "description": "开盘特殊时间",
                     "type": "string"
+                },
+                "fee": {
+                    "description": "手续费",
+                    "type": "integer"
                 },
                 "id": {
                     "description": "主键ID",

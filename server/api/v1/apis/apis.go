@@ -555,28 +555,24 @@ func (uApi *ApisApi) OrdersCreate(c *gin.Context) {
 		thirdPrice = int(req.BackPrice) / 100
 	}
 	order := &orders.Orders{
-		//Bond:           &bond,
-		User_id:    &userID,
-		Account_id: &accountID,
-		Price:      &price,
-		Volume:     &volume,
-		Direction:  &direction,
-		Order_no:   utils.MD5(fmt.Sprintf("%d", time.Now().UnixNano())),
-		SymbolID:   req.Symbol,
-		SymbolName: ss.Name,
-		Status:     &status,
-		DecrAmount: int64(decrAmount),
-		//Fee:            int64(decrAmount),
+		Bond:           &bond,
+		User_id:        &userID,
+		Account_id:     &accountID,
+		Price:          &price,
+		Volume:         &volume,
+		Direction:      &direction,
+		Order_no:       utils.MD5(fmt.Sprintf("%d", time.Now().UnixNano())),
+		SymbolID:       req.Symbol,
+		SymbolName:     ss.Name,
+		Status:         &status,
+		DecrAmount:     int64(decrAmount),
+		Fee:            int64(ss.Fee * 100),
 		ThirdDirection: int(thirdDirection),
 		ThirdPrice:     int(req.BackPrice / 100),
 		SuccessAt:      model.LocalTime(time.Now()),
 		SuccessPrice:   int64(price),
 	}
-	if ss.Type == 1 {
-		order.Bond = &bond
-	} else {
-		order.Fee = int64(bond)
-	}
+
 	err = orderService.CreateOrders(order)
 	if err != nil {
 		response.FailWithMessageWithCode(10002, "下单失败", c)
