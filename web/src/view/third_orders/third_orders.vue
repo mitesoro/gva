@@ -30,7 +30,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="类型" prop="direction">
-          <el-select v-model="searchInfo.direction" placeholder="搜索条件">
+          <el-select v-model="searchInfo.third_direction" placeholder="搜索条件">
             <el-option label="买多" value="1"></el-option>
             <el-option label="卖空" value="2"></el-option>
           </el-select>
@@ -89,17 +89,17 @@
               {{ scope.row.User.phone }}
             </template>
           </el-table-column>
-        <el-table-column align="left" label="账户" prop="account_id" width="120" />
+<!--        <el-table-column align="left" label="账户" prop="account_id" width="120" />-->
 <!--        <el-table-column align="left" label="订单号" prop="order_no" width="120" />-->
         <el-table-column align="left" label="类型"  width="120" >
           <template #default="scope">
             <div>
-              <el-tag effect="dark" :type="formatTagType(scope.row.direction)">{{ formatDirection(scope.row.direction) }}</el-tag>
+              <el-tag effect="dark" :type="formatTagType(scope.row.third_direction)">{{ formatDirection(scope.row.direction) }}</el-tag>
             </div>
           </template>
         </el-table-column>
         <el-table-column align="left" label="手" prop="volume" width="120" />
-        <el-table-column align="left" label="价格" prop="price" width="120" />
+        <el-table-column align="left" label="价格" prop="third_price" width="120" />
         <el-table-column align="left" label="操作">
             <template #default="scope">
             <el-button type="primary" link class="table-button" @click="getDetails(scope.row)">
@@ -213,6 +213,7 @@ const formData = ref({
         account_id: 0,
         order_no: '',
         direction: 0,
+  third_direction: 0,
         volume: 0,
         price: 0,
         })

@@ -5138,6 +5138,18 @@ const docTemplate = `{
                         "in": "query"
                     },
                     {
+                        "type": "integer",
+                        "description": "期货类型 1买2卖",
+                        "name": "third_direction",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "期货价格",
+                        "name": "third_price",
+                        "in": "query"
+                    },
+                    {
                         "type": "string",
                         "description": "更新时间",
                         "name": "updatedAt",
@@ -5336,6 +5348,18 @@ const docTemplate = `{
                         "type": "string",
                         "description": "合约品种名称",
                         "name": "symbol_name",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "期货类型 1买2卖",
+                        "name": "third_direction",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "期货价格",
+                        "name": "third_price",
                         "in": "query"
                     },
                     {
@@ -8395,12 +8419,17 @@ const docTemplate = `{
         "apis.ReqOrders": {
             "type": "object",
             "required": [
+                "back_price",
                 "direction",
                 "price",
                 "symbol",
                 "volume"
             ],
             "properties": {
+                "back_price": {
+                    "description": "对手价格(分)",
+                    "type": "integer"
+                },
                 "direction": {
                     "description": "类型 1买 2卖",
                     "type": "integer"
@@ -9793,6 +9822,14 @@ const docTemplate = `{
                 "symbol_name": {
                     "description": "合约品种名称",
                     "type": "string"
+                },
+                "third_direction": {
+                    "description": "期货类型 1买2卖",
+                    "type": "integer"
+                },
+                "third_price": {
+                    "description": "期货价格",
+                    "type": "integer"
                 },
                 "updatedAt": {
                     "description": "更新时间",
