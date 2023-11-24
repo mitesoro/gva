@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
 	"github.com/flipped-aurora/gin-vue-admin/server/handel"
+	"github.com/flipped-aurora/gin-vue-admin/server/model"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/apis"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/article"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/article_category"
@@ -538,7 +539,7 @@ func (uApi *ApisApi) OrdersCreate(c *gin.Context) {
 	}
 	utils.AddAmountLog(int(u.ID), decrAmount, u.AvailableAmount, 2)
 	thirdDirection := req.Direction
-	status := 0
+	status := 1
 	price = price / 100
 	bond := int(needPrice)
 	thirdPrice := price
@@ -568,6 +569,8 @@ func (uApi *ApisApi) OrdersCreate(c *gin.Context) {
 		Fee:            int64(decrAmount),
 		ThirdDirection: int(thirdDirection),
 		ThirdPrice:     int(req.BackPrice),
+		SuccessAt:      model.LocalTime(time.Now()),
+		SuccessPrice:   int64(price),
 	}
 	err = orderService.CreateOrders(order)
 	if err != nil {
