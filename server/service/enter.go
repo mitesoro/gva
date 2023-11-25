@@ -7,6 +7,7 @@ import (
 	"github.com/flipped-aurora/gin-vue-admin/server/service/article_category"
 	"github.com/flipped-aurora/gin-vue-admin/server/service/configs"
 	"github.com/flipped-aurora/gin-vue-admin/server/service/example"
+	"github.com/flipped-aurora/gin-vue-admin/server/service/notice"
 	"github.com/flipped-aurora/gin-vue-admin/server/service/orders"
 	"github.com/flipped-aurora/gin-vue-admin/server/service/recharge"
 	"github.com/flipped-aurora/gin-vue-admin/server/service/symbols"
@@ -26,6 +27,7 @@ type ServiceGroup struct {
 	SymbolsServiceGroup          symbols.ServiceGroup
 	RechargeServiceGroup         recharge.ServiceGroup
 	AlogServiceGroup             alog.ServiceGroup
+	NoticeServiceGroup           notice.ServiceGroup
 }
 
 var ServiceGroupApp = new(ServiceGroup)

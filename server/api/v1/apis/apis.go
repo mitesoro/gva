@@ -14,6 +14,8 @@ import (
 	"github.com/flipped-aurora/gin-vue-admin/server/model/common/response"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/configs"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/data"
+	"github.com/flipped-aurora/gin-vue-admin/server/model/message"
+	"github.com/flipped-aurora/gin-vue-admin/server/model/notice"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/orders"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/symbols"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/system"
@@ -613,6 +615,14 @@ func (uApi *ApisApi) OrdersCreate(c *gin.Context) {
 			global.GVA_LOG.Error("update order GetOrderRef", zap.Error(err))
 		}
 		global.GVA_LOG.Info("CreateOrders", zap.Any("res", res))
+	} else {
+		// 发送成交消息
+		ssss := "买入"
+		if req.Direction == 2 {
+			ssss = "卖出"
+		}
+		utils.AddMessage(int64(*order.User_id),
+			fmt.Sprintf("【成交通知】您%s的一手产品名已成交，成交价：%d", ssss, price))
 	}
 
 	response.OkWithMessage("success", c)
@@ -976,6 +986,106 @@ func (uApi *ApisApi) OrdersList(c *gin.Context) {
 		}
 	}
 	err = db.Where("user_id = ?", userID).Order("id DESC").Offset(offset).Limit(limit).Find(&os).Error
+	if err != nil {
+		global.GVA_LOG.Error("PriceData err", zap.Error(err))
+		response.FailWithMessageWithCode(10002, "获取失败", c)
+		return
+	}
+	response.OkWithData(os, c)
+	return
+}
+
+// MessageList 消息记录
+// @Tags 前端接口API
+// @Summary 消息记录
+// @Security ApiKeyAuth
+// @accept application/json
+// @Produce application/json
+// @Param data query apis.ReqTrade true "查询参数"
+// @Success 200 {array} message.Message "{"code":0,"data":{},"msg":"success"}"
+// @Router /api/message/list [get]
+func (uApi *ApisApi) MessageList(c *gin.Context) {
+	var req apis.ReqTrade
+	err := c.ShouldBindQuery(&req)
+	if err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	page := 1
+	if req.Page > 1 {
+		page = int(req.Page)
+	}
+	limit := 20
+	offset := (page - 1) * limit
+	id, _ := c.Get("uid")
+	userID := cast.ToInt(id)
+	var os []*message.Message
+	db := global.GVA_DB
+	db = db.Where("status =?", req.Status)
+	err = db.Where("user_id = ?", userID).Order("id DESC").Offset(offset).Limit(limit).Find(&os).Error
+	if err != nil {
+		global.GVA_LOG.Error("PriceData err", zap.Error(err))
+		response.FailWithMessageWithCode(10002, "获取失败", c)
+		return
+	}
+	response.OkWithData(os, c)
+	return
+}
+
+// MessageRead 读消息
+// @Tags 前端接口API
+// @Summary 读消息
+// @Security ApiKeyAuth
+// @accept application/json
+// @Produce application/json
+// @Param data query apis.ReqMessage true "查询参数"
+// @Success 200 "{"code":0,"data":{},"msg":"success"}"
+// @Router /api/message/read [post]
+func (uApi *ApisApi) MessageRead(c *gin.Context) {
+	var req apis.ReqMessage
+	err := c.ShouldBindJSON(&req)
+	if err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	id, _ := c.Get("uid")
+	userID := cast.ToInt(id)
+	err = global.GVA_DB.Model(message.Message{}).Where("id = ? and user_id = ?", req.ID, userID).
+		Update("status", 1).Error
+	if err != nil {
+		global.GVA_LOG.Error("update message err", zap.Error(err), zap.Any("id", req))
+		response.FailWithMessageWithCode(10002, "操作失败", c)
+		return
+	}
+
+	response.OkWithMessage("success", c)
+	return
+}
+
+// NoticeList 公告列表
+// @Tags 前端接口API
+// @Summary 公告列表
+// @Security ApiKeyAuth
+// @accept application/json
+// @Produce application/json
+// @Param data query apis.ReqNotice true "查询参数"
+// @Success 200 {array} notice.Notice "{"code":0,"data":{},"msg":"success"}"
+// @Router /api/notice/list [get]
+func (uApi *ApisApi) NoticeList(c *gin.Context) {
+	var req apis.ReqNotice
+	err := c.ShouldBindQuery(&req)
+	if err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	page := 1
+	if req.Page > 1 {
+		page = int(req.Page)
+	}
+	limit := 20
+	offset := (page - 1) * limit
+	var os []*notice.Notice
+	err = global.GVA_DB.Order("id DESC").Offset(offset).Limit(limit).Find(&os).Error
 	if err != nil {
 		global.GVA_LOG.Error("PriceData err", zap.Error(err))
 		response.FailWithMessageWithCode(10002, "获取失败", c)

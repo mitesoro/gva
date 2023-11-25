@@ -1544,6 +1544,123 @@
                 }
             }
         },
+        "/api/message/list": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "前端接口API"
+                ],
+                "summary": "消息记录",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "分页",
+                        "name": "page",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "状态 0未读 1已读",
+                        "name": "status",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\":0,\"data\":{},\"msg\":\"success\"}",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/message.Message"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/message/read": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "前端接口API"
+                ],
+                "summary": "读消息",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "消息id",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\":0,\"data\":{},\"msg\":\"success\"}"
+                    }
+                }
+            }
+        },
+        "/api/notice/list": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "前端接口API"
+                ],
+                "summary": "公告列表",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "分页",
+                        "name": "page",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\":0,\"data\":{},\"msg\":\"success\"}",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/notice.Notice"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/orders/create": {
             "post": {
                 "security": [
@@ -1609,7 +1726,7 @@
                     },
                     {
                         "type": "integer",
-                        "description": "状态 0下单中 1成功(持仓) 2取消 3失败  5平仓 6成交",
+                        "description": "状态 0未读 1已读",
                         "name": "status",
                         "in": "query"
                     }
@@ -4872,6 +4989,304 @@
                                     }
                                 }
                             ]
+                        }
+                    }
+                }
+            }
+        },
+        "/no/createNotice": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Notice"
+                ],
+                "summary": "创建公告",
+                "parameters": [
+                    {
+                        "description": "创建公告",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/notice.Notice"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"success\":true,\"data\":{},\"msg\":\"创建成功\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/no/deleteNotice": {
+            "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Notice"
+                ],
+                "summary": "删除公告",
+                "parameters": [
+                    {
+                        "description": "删除公告",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/notice.Notice"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"success\":true,\"data\":{},\"msg\":\"删除成功\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/no/deleteNoticeByIds": {
+            "delete": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Notice"
+                ],
+                "summary": "批量删除公告",
+                "parameters": [
+                    {
+                        "description": "批量删除公告",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.IdsReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"success\":true,\"data\":{},\"msg\":\"批量删除成功\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/no/findNotice": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Notice"
+                ],
+                "summary": "用id查询公告",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "内容",
+                        "name": "content",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "创建时间",
+                        "name": "createdAt",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "主键ID",
+                        "name": "id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "标题",
+                        "name": "title",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "更新时间",
+                        "name": "updatedAt",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"success\":true,\"data\":{},\"msg\":\"查询成功\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/no/getNoticeList": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Notice"
+                ],
+                "summary": "分页获取公告列表",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "内容",
+                        "name": "content",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "创建时间",
+                        "name": "createdAt",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "endCreatedAt",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "主键ID",
+                        "name": "id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "关键字",
+                        "name": "keyword",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "页码",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "每页大小",
+                        "name": "pageSize",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "startCreatedAt",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "标题",
+                        "name": "title",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "更新时间",
+                        "name": "updatedAt",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"success\":true,\"data\":{},\"msg\":\"获取成功\"}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/no/updateNotice": {
+            "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Notice"
+                ],
+                "summary": "更新公告",
+                "parameters": [
+                    {
+                        "description": "更新公告",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/notice.Notice"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"success\":true,\"data\":{},\"msg\":\"更新成功\"}",
+                        "schema": {
+                            "type": "string"
                         }
                     }
                 }
@@ -9752,6 +10167,60 @@
                 },
                 "to": {
                     "description": "收件人:多个以英文逗号分隔 例：a@qq.com b@qq.com 正式开发中请把此项目作为参数使用",
+                    "type": "string"
+                }
+            }
+        },
+        "message.Message": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "description": "内容",
+                    "type": "string"
+                },
+                "createdAt": {
+                    "description": "创建时间",
+                    "type": "string"
+                },
+                "id": {
+                    "description": "主键ID",
+                    "type": "integer"
+                },
+                "status": {
+                    "description": "是否已读 1读取 0未读",
+                    "type": "integer"
+                },
+                "updatedAt": {
+                    "description": "更新时间",
+                    "type": "string"
+                },
+                "user_id": {
+                    "description": "用户编号",
+                    "type": "integer"
+                }
+            }
+        },
+        "notice.Notice": {
+            "type": "object",
+            "properties": {
+                "content": {
+                    "description": "内容",
+                    "type": "string"
+                },
+                "createdAt": {
+                    "description": "创建时间",
+                    "type": "string"
+                },
+                "id": {
+                    "description": "主键ID",
+                    "type": "integer"
+                },
+                "title": {
+                    "description": "标题",
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "description": "更新时间",
                     "type": "string"
                 }
             }

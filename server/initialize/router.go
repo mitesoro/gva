@@ -114,6 +114,10 @@ func Routers() *gin.Engine {
 		alogRouter := router.RouterGroupApp.Alog
 		alogRouter.InitAlogRouter(PrivateGroup)
 	}
+	{
+		noticeRouter := router.RouterGroupApp.Notice
+		noticeRouter.InitNoticeRouter(PrivateGroup)
+	}
 
 	global.GVA_LOG.Info("router register success")
 	return Router

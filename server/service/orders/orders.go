@@ -81,6 +81,9 @@ func (osService *OrdersService) GetOrdersInfoList(info ordersReq.OrdersSearch) (
 	if info.Price != nil {
 		db = db.Where("price = ?", info.Price)
 	}
+	if info.Status != nil {
+		db = db.Where("status = ?", info.Status)
+	}
 	if info.User_id != nil {
 		db = db.Where("user_id = ?", info.User_id)
 	}

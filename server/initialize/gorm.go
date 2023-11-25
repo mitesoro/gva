@@ -2,22 +2,24 @@ package initialize
 
 import (
 	"github.com/flipped-aurora/gin-vue-admin/server/model/data"
+	"github.com/flipped-aurora/gin-vue-admin/server/model/message"
 	"os"
 
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/example"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/system"
 
+	"github.com/flipped-aurora/gin-vue-admin/server/model/alog"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/article"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/article_category"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/configs"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/orders"
+	"github.com/flipped-aurora/gin-vue-admin/server/model/recharge"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/symbols"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/users"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
-	"github.com/flipped-aurora/gin-vue-admin/server/model/recharge"
-	"github.com/flipped-aurora/gin-vue-admin/server/model/alog"
+	"github.com/flipped-aurora/gin-vue-admin/server/model/notice"
 )
 
 func Gorm() *gorm.DB {
@@ -69,7 +71,8 @@ func RegisterTables() {
 		data.Data360{},
 		data.Data480{},
 		data.Data1440{},
-		example.ExaFileUploadAndDownload{}, users.Users{}, article_category.ArticleCategory{}, article.Article{}, orders.Orders{}, configs.Config{}, symbols.Symbol{}, recharge.Recharge{}, alog.Alog{},
+		message.Message{},
+		example.ExaFileUploadAndDownload{}, users.Users{}, article_category.ArticleCategory{}, article.Article{}, orders.Orders{}, configs.Config{}, symbols.Symbol{}, recharge.Recharge{}, alog.Alog{}, notice.Notice{},
 	)
 	if err != nil {
 		global.GVA_LOG.Error("register table failed", zap.Error(err))

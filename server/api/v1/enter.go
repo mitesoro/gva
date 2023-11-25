@@ -7,6 +7,7 @@ import (
 	"github.com/flipped-aurora/gin-vue-admin/server/api/v1/article_category"
 	"github.com/flipped-aurora/gin-vue-admin/server/api/v1/configs"
 	"github.com/flipped-aurora/gin-vue-admin/server/api/v1/example"
+	"github.com/flipped-aurora/gin-vue-admin/server/api/v1/notice"
 	"github.com/flipped-aurora/gin-vue-admin/server/api/v1/orders"
 	"github.com/flipped-aurora/gin-vue-admin/server/api/v1/recharge"
 	"github.com/flipped-aurora/gin-vue-admin/server/api/v1/symbols"
@@ -26,6 +27,7 @@ type ApiGroup struct {
 	SymbolsApiGroup          symbols.ApiGroup
 	RechargeApiGroup         recharge.ApiGroup
 	AlogApiGroup             alog.ApiGroup
+	NoticeApiGroup           notice.ApiGroup
 }
 
 var ApiGroupApp = new(ApiGroup)

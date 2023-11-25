@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/alog"
+	"github.com/flipped-aurora/gin-vue-admin/server/model/message"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/symbols"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/users"
 	"go.uber.org/zap"
@@ -11,6 +12,17 @@ import (
 	"strconv"
 	"time"
 )
+
+// AddMessage 添加消息
+func AddMessage(userID int64, msg string) {
+	al := message.Message{
+		UserId:  userID,
+		Content: msg,
+	}
+	if err := global.GVA_DB.Create(&al).Error; err != nil {
+		global.GVA_LOG.Error("AddMessage err", zap.Error(err))
+	}
+}
 
 func Decimal(value float64) float64 {
 	value, _ = strconv.ParseFloat(fmt.Sprintf("%.2f", value), 64)

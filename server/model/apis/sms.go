@@ -86,7 +86,15 @@ type YdData struct {
 
 type ReqTrade struct {
 	Page   int64 `json:"page" form:"page" binding:"required" ` // 分页
-	Status int64 `json:"status" form:"status" `                // 状态 0下单中 1成功(持仓) 2取消 3失败  5平仓 6成交
+	Status int64 `json:"status" form:"status" `                // 状态 0未读 1已读
+}
+
+type ReqNotice struct {
+	Page int64 `json:"page" form:"page" binding:"required" ` // 分页
+}
+
+type ReqMessage struct {
+	ID int64 `json:"id" form:"id" binding:"required" ` // 消息id
 }
 
 type SymbolDataResp struct {

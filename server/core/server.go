@@ -300,6 +300,15 @@ func handelNotifyOrder(msg string) {
 			return
 		}
 	}
+	if status == 1 {
+		// 发送成交消息
+		ssss := "买入"
+		if *o.Direction == 2 {
+			ssss = "卖出"
+		}
+		utils.AddMessage(int64(*o.User_id),
+			fmt.Sprintf("【成交通知】您%s的一手产品名已成交，成交价：%d", ssss, o.Price))
+	}
 }
 
 type MsgOrder struct {

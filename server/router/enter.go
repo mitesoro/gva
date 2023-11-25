@@ -7,6 +7,7 @@ import (
 	"github.com/flipped-aurora/gin-vue-admin/server/router/article_category"
 	"github.com/flipped-aurora/gin-vue-admin/server/router/configs"
 	"github.com/flipped-aurora/gin-vue-admin/server/router/example"
+	"github.com/flipped-aurora/gin-vue-admin/server/router/notice"
 	"github.com/flipped-aurora/gin-vue-admin/server/router/orders"
 	"github.com/flipped-aurora/gin-vue-admin/server/router/recharge"
 	"github.com/flipped-aurora/gin-vue-admin/server/router/symbols"
@@ -26,6 +27,7 @@ type RouterGroup struct {
 	Symbols          symbols.RouterGroup
 	Recharge         recharge.RouterGroup
 	Alog             alog.RouterGroup
+	Notice           notice.RouterGroup
 }
 
 var RouterGroupApp = new(RouterGroup)

@@ -18,6 +18,7 @@ func (s *ApiRouter) InitApiRouter(Router *gin.RouterGroup) {
 		uRouter.Any("test", aApi.Test)                                                    // test
 		uRouter.GET("article/category", aApi.GetArticleCategory)                          // 文章分类
 		uRouter.GET("article/list", aApi.GetArticleList)                                  // 文章列表
+		uRouter.GET("notice/list", aApi.NoticeList)                                       // 公告列表
 		uRouter.GET("article/info", aApi.GetArticleInfo)                                  // 文章详情
 		uRouter.GET("k/data", aApi.PriceData)                                             // k线
 		uRouter.GET("symbol/data/list", aApi.SymbolData)                                  // 行情列表
@@ -32,6 +33,8 @@ func (s *ApiRouter) InitApiRouter(Router *gin.RouterGroup) {
 		uRouter.Use(middleware.Token()).POST("orders/create", aApi.OrdersCreate)          // 下单
 		uRouter.Use(middleware.Token()).GET("user/info", aApi.GetUserInfo)                // 下单
 		uRouter.Use(middleware.Token()).GET("orders/list", aApi.OrdersList)               // 交易记录
+		uRouter.Use(middleware.Token()).GET("message/list", aApi.MessageList)             // 消息记录
+		uRouter.Use(middleware.Token()).POST("message/read", aApi.MessageRead)            // 读消息
 	}
 
 }

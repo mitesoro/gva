@@ -134,6 +134,17 @@ func HandelOrders(d data.Data) {
 			}
 			res, err := global.GVA_GrpcCLient.Order(context.Background(), reqClient)
 			global.GVA_LOG.Info("grp order", zap.Any("res", res), zap.Error(err), zap.Any("reqClient", reqClient))
+			ssss := "买入"
+			sss := "盈利"
+			if *order.Direction == 2 {
+				ssss = "卖出"
+			}
+			if order.IsWin == 2 {
+				sss = "亏损"
+			}
+			utils.AddMessage(int64(*order.User_id),
+				fmt.Sprintf("【平仓通知】您%s的一手产品名已平仓，成交价：%d，平仓价：%d，%s:%d元",
+					ssss, order.Price, order.ClosePrice, sss, order.WinAmount/100))
 		}
 		firstLock.Release(context.Background())
 	}

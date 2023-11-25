@@ -29,6 +29,11 @@
             <el-option v-for="(item,key) in userOptions" :key="key" :label="item.label" :value="item.value" />
           </el-select>
         </el-form-item>
+        <el-form-item label="订单状态" prop="status">
+          <el-select v-model="searchInfo.status" clearable placeholder="请选择" @clear="()=>{searchInfo.status=undefined}">
+            <el-option v-for="(item,key) in orderOptions" :key="key" :label="item.label" :value="item.value" />
+          </el-select>
+        </el-form-item>
         <el-form-item label="类型" prop="direction">
           <el-select v-model="searchInfo.direction" placeholder="搜索条件">
             <el-option label="买多" value="1"></el-option>
@@ -89,7 +94,7 @@
               {{ scope.row.User.phone }}
             </template>
           </el-table-column>
-        <el-table-column align="left" label="账户" prop="account_id" width="120" />
+<!--        <el-table-column align="left" label="账户" prop="account_id" width="120" />-->
 <!--        <el-table-column align="left" label="订单号" prop="order_no" width="120" />-->
         <el-table-column align="left" label="类型"  width="120" >
           <template #default="scope">
@@ -98,18 +103,31 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column align="left" label="手" prop="volume" width="120" />
-        <el-table-column align="left" label="价格" prop="price" width="120" />
-        <el-table-column align="left" label="操作">
+          <el-table-column align="left" label="订单状态" prop="status" width="120" >
             <template #default="scope">
-            <el-button type="primary" link class="table-button" @click="getDetails(scope.row)">
-                <el-icon style="margin-right: 5px"><InfoFilled /></el-icon>
-                查看详情
-            </el-button>
-<!--            <el-button type="primary" link icon="edit" class="table-button" @click="updateOrdersFunc(scope.row)">变更</el-button>-->
-<!--            <el-button type="primary" link icon="delete" @click="deleteRow(scope.row)">删除</el-button>-->
+              <div>
+                <el-tag effect="dark" >{{ formatOrderStatus(scope.row.status) }}</el-tag>
+              </div>
             </template>
-        </el-table-column>
+          </el-table-column>
+        <el-table-column align="left" label="手" prop="volume" width="120" />
+        <el-table-column align="left" label="价格" prop="price" :formatter="row => formatCurrency1(row.price)" width="120" />
+        <el-table-column align="left" label="手续费" prop="fee" :formatter="row => formatCurrency(row.fee)" width="120" />
+        <el-table-column align="left" label="保证金" prop="bond"  :formatter="row => formatCurrency(row.bond)" width="120" />
+        <el-table-column align="left" label="平仓价" prop="close_price" :formatter="row => formatCurrency1(row.close_price)" width="120" />
+        <el-table-column align="left" label="平仓时间" prop="complete_at" width="120" />
+        <el-table-column align="left" label="盈亏" prop="is_win" :formatter="row => formatDirectionWin(row.is_win)" width="120" />
+        <el-table-column align="left" label="盈亏金额" prop="win_amount" :formatter="row => formatCurrency(row.win_amount)" width="120" />
+<!--        <el-table-column align="left" label="操作">-->
+<!--            <template #default="scope">-->
+<!--            <el-button type="primary" link class="table-button" @click="getDetails(scope.row)">-->
+<!--                <el-icon style="margin-right: 5px"><InfoFilled /></el-icon>-->
+<!--                查看详情-->
+<!--            </el-button>-->
+<!--&lt;!&ndash;            <el-button type="primary" link icon="edit" class="table-button" @click="updateOrdersFunc(scope.row)">变更</el-button>&ndash;&gt;-->
+<!--&lt;!&ndash;            <el-button type="primary" link icon="delete" @click="deleteRow(scope.row)">删除</el-button>&ndash;&gt;-->
+<!--            </template>-->
+<!--        </el-table-column>-->
         </el-table>
         <div class="gva-pagination">
             <el-pagination
@@ -131,9 +149,9 @@
                 <el-option v-for="(item,key) in intOptions" :key="key" :label="item.label" :value="item.value" />
               </el-select>
             </el-form-item>
-            <el-form-item label="账户:"  prop="account_id" >
-              <el-input v-model.number="formData.account_id" :clearable="true" placeholder="请输入账户" />
-            </el-form-item>
+<!--            <el-form-item label="账户:"  prop="account_id" >-->
+<!--              <el-input v-model.number="formData.account_id" :clearable="true" placeholder="请输入账户" />-->
+<!--            </el-form-item>-->
             <el-form-item label="订单号:"  prop="order_no" >
               <el-input v-model="formData.order_no" :clearable="true"  placeholder="请输入订单号" />
             </el-form-item>
@@ -175,8 +193,17 @@
                         {{ formData.volume }}
                 </el-descriptions-item>
                 <el-descriptions-item label="价格">
-                        {{ formData.price }}
+                        {{ formatCurrency1(formData.price) }}
                 </el-descriptions-item>
+          <el-descriptions-item label="保证金">
+            {{ formatCurrency(formData.bond) }}
+          </el-descriptions-item>
+          <el-descriptions-item label="手续费">
+            {{ formatCurrency(formData.fee) }}
+          </el-descriptions-item>
+          <el-descriptions-item label="平仓价">
+            {{ formatCurrency1(formData.close_price) }}
+          </el-descriptions-item>
         </el-descriptions>
       </el-scrollbar>
     </el-dialog>
@@ -201,6 +228,7 @@ import { useRoute } from 'vue-router'
 
 
 const userOptions = ref([])
+const orderOptions = ref([])
 defineOptions({
     name: 'Orders'
 })
@@ -354,6 +382,7 @@ onMounted(() => {
 const setOptions = async () =>{
     intOptions.value = await getDictFunc('user')
   userOptions.value = await getDictFunc('user')
+  orderOptions.value = await getDictFunc('order_status')
 }
 
 // 获取需要的字典 可能为空 按需保留
@@ -529,11 +558,47 @@ const formatDirection = (direction) => {
   return "买多" ;
 }
 
+const formatDirectionWin = (direction) => {
+  if (direction === 2) {
+    return "亏";
+  }
+  if (direction === 1) {
+    return "赢";
+  }
+  return "--" ;
+}
+
+const formatOrderStatus= (direction) => {
+  if (direction === 1) {
+    return "成交";
+  }
+  if (direction === 2) {
+    return "取消";
+  }
+  if (direction === 3) {
+    return "失败";
+  }
+  if (direction === 5) {
+    return "平仓";
+  }
+  return "失败" ;
+}
 const formatTagType = (direction) => {
   return direction === 1 ? 'success' : 'danger';
 }
 
+const formatCurrency = (amount) => {
+  return (amount / 100).toFixed(2);
+}
 
+const formatCurrency1 = (amount) => {
+  return (amount).toFixed(2);
+}
+
+const formatTime = (amount) => {
+  console.log(amount);
+  return amount;
+}
 
 </script>
 
