@@ -19,6 +19,7 @@ func (s *ApiRouter) InitApiRouter(Router *gin.RouterGroup) {
 		uRouter.GET("article/category", aApi.GetArticleCategory)                          // 文章分类
 		uRouter.GET("article/list", aApi.GetArticleList)                                  // 文章列表
 		uRouter.GET("notice/list", aApi.NoticeList)                                       // 公告列表
+		uRouter.GET("notice/info", aApi.NoticeInfo)                                       // 公告详情
 		uRouter.GET("article/info", aApi.GetArticleInfo)                                  // 文章详情
 		uRouter.GET("k/data", aApi.PriceData)                                             // k线
 		uRouter.GET("symbol/data/list", aApi.SymbolData)                                  // 行情列表

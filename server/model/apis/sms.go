@@ -94,7 +94,7 @@ type ReqNotice struct {
 }
 
 type ReqMessage struct {
-	ID int64 `json:"id" form:"id" binding:"required" ` // 消息id
+	ID int64 `json:"id" form:"id" binding:"required" ` // id
 }
 
 type SymbolDataResp struct {

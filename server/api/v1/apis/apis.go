@@ -1094,3 +1094,29 @@ func (uApi *ApisApi) NoticeList(c *gin.Context) {
 	response.OkWithData(os, c)
 	return
 }
+
+// NoticeInfo 公告详情
+// @Tags 前端接口API
+// @Summary 公告详情
+// @Security ApiKeyAuth
+// @accept application/json
+// @Produce application/json
+// @Param data query apis.ReqMessage true "查询参数"
+// @Success 200 {object} notice.Notice "{"code":0,"data":{},"msg":"success"}"
+// @Router /api/notice/info [get]
+func (uApi *ApisApi) NoticeInfo(c *gin.Context) {
+	var req apis.ReqMessage
+	err := c.ShouldBindQuery(&req)
+	if err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+
+	var os notice.Notice
+	err = global.GVA_DB.Where("id = ?", &req.ID).First(&os).Error
+	if err != nil {
+		global.GVA_LOG.Error("NoticeInfo err", zap.Error(err))
+	}
+	response.OkWithData(os, c)
+	return
+}

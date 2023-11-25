@@ -1617,7 +1617,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "消息id",
+                        "description": "id",
                         "name": "id",
                         "in": "query",
                         "required": true
@@ -1626,6 +1626,42 @@ const docTemplate = `{
                 "responses": {
                     "200": {
                         "description": "{\"code\":0,\"data\":{},\"msg\":\"success\"}"
+                    }
+                }
+            }
+        },
+        "/api/notice/info": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "前端接口API"
+                ],
+                "summary": "公告详情",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "id",
+                        "name": "id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"code\":0,\"data\":{},\"msg\":\"success\"}",
+                        "schema": {
+                            "$ref": "#/definitions/notice.Notice"
+                        }
                     }
                 }
             }
@@ -5153,6 +5189,12 @@ const docTemplate = `{
                         "in": "query"
                     },
                     {
+                        "type": "boolean",
+                        "description": "否1是",
+                        "name": "status",
+                        "in": "query"
+                    },
+                    {
                         "type": "string",
                         "description": "标题",
                         "name": "title",
@@ -5237,6 +5279,12 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "name": "startCreatedAt",
+                        "in": "query"
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "否1是",
+                        "name": "status",
                         "in": "query"
                     },
                     {
@@ -10222,6 +10270,10 @@ const docTemplate = `{
                 "id": {
                     "description": "主键ID",
                     "type": "integer"
+                },
+                "status": {
+                    "description": "否1是",
+                    "type": "boolean"
                 },
                 "title": {
                     "description": "标题",

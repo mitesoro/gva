@@ -57,6 +57,9 @@
                             [富文本内容]
                          </template>
                       </el-table-column>
+          <el-table-column align="left" label="是否弹出" prop="status" width="120">
+            <template #default="scope">{{ formatBoolean(scope.row.status) }}</template>
+          </el-table-column>
         <el-table-column align="left" label="操作">
             <template #default="scope">
             <el-button type="primary" link class="table-button" @click="getDetails(scope.row)">
@@ -88,6 +91,9 @@
             </el-form-item>
             <el-form-item label="内容:"  prop="content" >
               <RichEdit v-model="formData.content"/>
+            </el-form-item>
+            <el-form-item label="是否弹出:"  prop="status" >
+              <el-switch v-model="formData.status" active-color="#13ce66" inactive-color="#ff4949" active-text="是" inactive-text="否" clearable ></el-switch>
             </el-form-item>
           </el-form>
       </el-scrollbar>

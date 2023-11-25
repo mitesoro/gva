@@ -995,6 +995,9 @@ definitions:
       id:
         description: 主键ID
         type: integer
+      status:
+        description: 否1是
+        type: boolean
       title:
         description: 标题
         type: string
@@ -3034,7 +3037,7 @@ paths:
       consumes:
       - application/json
       parameters:
-      - description: 消息id
+      - description: id
         in: query
         name: id
         required: true
@@ -3047,6 +3050,28 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: 读消息
+      tags:
+      - 前端接口API
+  /api/notice/info:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: id
+        in: query
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"code":0,"data":{},"msg":"success"}'
+          schema:
+            $ref: '#/definitions/notice.Notice'
+      security:
+      - ApiKeyAuth: []
+      summary: 公告详情
       tags:
       - 前端接口API
   /api/notice/list:
@@ -5079,6 +5104,10 @@ paths:
         in: query
         name: id
         type: integer
+      - description: 否1是
+        in: query
+        name: status
+        type: boolean
       - description: 标题
         in: query
         name: title
@@ -5134,6 +5163,10 @@ paths:
       - in: query
         name: startCreatedAt
         type: string
+      - description: 否1是
+        in: query
+        name: status
+        type: boolean
       - description: 标题
         in: query
         name: title
