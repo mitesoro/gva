@@ -100,6 +100,7 @@ func HandelOrders(d data.Data) {
 			}
 		}
 		if isComplete { // 平仓
+			order.ClosePrice = int(price)
 			global.GVA_LOG.Error("平仓", zap.Any("price", price), zap.Any("d_price", d.LastPrice),
 				zap.Any("order", order), zap.Any("d", d))
 			global.GVA_LOG.Error("SymbolID", zap.Any("s", s), zap.Any("order.SymbolID", order.SymbolID), zap.Any("ms", ms))

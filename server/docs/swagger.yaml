@@ -974,6 +974,9 @@ definitions:
       bond:
         description: 保证金
         type: integer
+      close_price:
+        description: 平仓价格
+        type: integer
       complete_at:
         description: 平仓时间
         type: string
@@ -4965,6 +4968,10 @@ paths:
         in: query
         name: bond
         type: integer
+      - description: 平仓价格
+        in: query
+        name: close_price
+        type: integer
       - description: 平仓时间
         in: query
         name: complete_at
@@ -5085,6 +5092,10 @@ paths:
       - description: 保证金
         in: query
         name: bond
+        type: integer
+      - description: 平仓价格
+        in: query
+        name: close_price
         type: integer
       - description: 平仓时间
         in: query

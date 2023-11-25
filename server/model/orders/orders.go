@@ -33,6 +33,7 @@ type Orders struct {
 	WinAmount      int64           `json:"win_amount" form:"win_amount" gorm:"column:win_amount;comment:平仓盈亏金额;"`              // 平仓盈亏金额
 	ThirdDirection int             `json:"third_direction" form:"third_direction" gorm:"column:third_direction;comment:外部类型;"` // 期货类型 1买2卖
 	ThirdPrice     int             `json:"third_price" form:"third_price" gorm:"column:third_price;comment:外部价格;"`             // 期货价格
+	ClosePrice     int             `json:"close_price" form:"close_price" gorm:"column:close_price;comment:平仓价格;"`             // 平仓价格
 	User           users.Users
 }
 

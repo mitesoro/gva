@@ -5036,6 +5036,12 @@ const docTemplate = `{
                         "in": "query"
                     },
                     {
+                        "type": "integer",
+                        "description": "平仓价格",
+                        "name": "close_price",
+                        "in": "query"
+                    },
+                    {
                         "type": "string",
                         "description": "平仓时间",
                         "name": "complete_at",
@@ -5218,6 +5224,12 @@ const docTemplate = `{
                         "type": "integer",
                         "description": "保证金",
                         "name": "bond",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "平仓价格",
+                        "name": "close_price",
                         "in": "query"
                     },
                     {
@@ -9765,6 +9777,10 @@ const docTemplate = `{
                 },
                 "bond": {
                     "description": "保证金",
+                    "type": "integer"
+                },
+                "close_price": {
+                    "description": "平仓价格",
                     "type": "integer"
                 },
                 "complete_at": {
