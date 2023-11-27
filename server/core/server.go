@@ -129,6 +129,9 @@ func handelData(msg string) {
 	utils.SafeGO(func() {
 		handel.HandelOrders(d)
 	})
+	utils.SafeGO(func() {
+		handel.DoKData(d)
+	})
 	d.InsertAt = now.Unix()
 	d.PreSettlementPrice = utils.Decimal(d.PreSettlementPrice)
 	d.PreClosePrice = utils.Decimal(d.PreClosePrice)
