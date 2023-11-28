@@ -2,6 +2,7 @@ package initialize
 
 import (
 	"github.com/flipped-aurora/gin-vue-admin/server/model/data"
+	"github.com/flipped-aurora/gin-vue-admin/server/model/kdata"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/message"
 	"os"
 
@@ -13,13 +14,13 @@ import (
 	"github.com/flipped-aurora/gin-vue-admin/server/model/article"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/article_category"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/configs"
+	"github.com/flipped-aurora/gin-vue-admin/server/model/notice"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/orders"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/recharge"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/symbols"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/users"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
-	"github.com/flipped-aurora/gin-vue-admin/server/model/notice"
 )
 
 func Gorm() *gorm.DB {
@@ -71,6 +72,16 @@ func RegisterTables() {
 		data.Data360{},
 		data.Data480{},
 		data.Data1440{},
+		kdata.KData{},
+		kdata.KData5{},
+		kdata.KData15{},
+		kdata.KData30{},
+		kdata.KData60{},
+		kdata.KData120{},
+		kdata.KData240{},
+		kdata.KData360{},
+		kdata.KData480{},
+		kdata.KData1440{},
 		message.Message{},
 		example.ExaFileUploadAndDownload{}, users.Users{}, article_category.ArticleCategory{}, article.Article{}, orders.Orders{}, configs.Config{}, symbols.Symbol{}, recharge.Recharge{}, alog.Alog{}, notice.Notice{},
 	)

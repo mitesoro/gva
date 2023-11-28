@@ -1,13 +1,16 @@
 package utils
 
 import (
+	"context"
 	"fmt"
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/alog"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/message"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/symbols"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/users"
+	"github.com/spf13/cast"
 	"go.uber.org/zap"
+	"math"
 	"math/rand"
 	"strconv"
 	"time"
@@ -108,4 +111,46 @@ func RandStr(length int) string {
 		b = append(b, chars[r.Intn(len(chars))])
 	}
 	return string(b)
+}
+
+func GetKDataValue(ctx context.Context, key string) float64 {
+	v, _ := global.GVA_REDIS.Get(ctx, key).Result()
+	return cast.ToFloat64(v)
+}
+
+func FindMin(arr []int64) int64 {
+	min := int64(math.MaxInt64)
+	for _, v := range arr {
+		if v < min {
+			min = v
+		}
+	}
+	return min
+}
+
+func FindMax(arr []int64) int64 {
+	max := int64(-math.MaxInt64)
+	for _, v := range arr {
+		if v > max {
+			max = v
+		}
+	}
+	return max
+}
+
+type KD struct {
+	Open  int64 `json:"open"  form:"open" gorm:"column:open;comment:开盘价;"`    // 开盘价
+	High  int64 `json:"high"  form:"high" gorm:"column:high;comment:最高价;"`    // 最高价
+	Low   int64 `json:"low"  form:"low" gorm:"column:low;comment:最低价;"`       // 最低价
+	Close int64 `json:"close"  form:"close" gorm:"column:close;comment:收盘价;"` // 收盘价
+}
+
+func GetKd(ctx context.Context, key string) KD {
+	res, _ := global.GVA_REDIS.HGetAll(ctx, key).Result()
+	return KD{
+		Open:  cast.ToInt64(res["open"]),
+		High:  cast.ToInt64(res["high"]),
+		Low:   cast.ToInt64(res["low"]),
+		Close: cast.ToInt64(res["close"]),
+	}
 }

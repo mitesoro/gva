@@ -56,7 +56,7 @@ func HandelOrders(d data.Data) {
 		var isComplete bool
 		var u users.Users
 		var sPrice float64
-		if err := global.GVA_DB.Where("id = ?", order.User_id).First(&u).Error; err != nil {
+		if err = global.GVA_DB.Where("id = ?", order.User_id).First(&u).Error; err != nil {
 			global.GVA_LOG.Error("find user err", zap.Error(err), zap.Any("order", order))
 			continue
 		}
@@ -128,9 +128,20 @@ func HandelOrders(d data.Data) {
 				C:       order.SymbolID,
 				V:       1,
 				Close:   true,
-				Sell:    true,
 				OrderId: int32(order.ID),
 				P:       float32(sPrice),
+			}
+			if *order.Direction == 1 {
+				reqClient.Buy = true
+				if u.OrderType == 2 {
+					reqClient.Sell = true
+				}
+			}
+			if *order.Direction == 2 {
+				reqClient.Sell = true
+				if u.OrderType == 2 {
+					reqClient.Buy = true
+				}
 			}
 			res, err := global.GVA_GrpcCLient.Order(context.Background(), reqClient)
 			global.GVA_LOG.Info("grp order", zap.Any("res", res), zap.Error(err), zap.Any("reqClient", reqClient))
