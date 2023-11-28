@@ -14,6 +14,7 @@ import (
 	"github.com/flipped-aurora/gin-vue-admin/server/model/common/response"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/configs"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/data"
+	"github.com/flipped-aurora/gin-vue-admin/server/model/kdata"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/message"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/notice"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/orders"
@@ -650,33 +651,33 @@ func (uApi *ApisApi) PriceData(c *gin.Context) {
 	}
 	var yData []apis.YdData
 	var dates interface{}
-	dates = []data.Data{}
+	dates = []kdata.KData{}
 	if req.Period == 5 {
-		dates = []data.Data5{}
+		dates = []kdata.KData5{}
 	}
 	if req.Period == 15 {
-		dates = []data.Data15{}
+		dates = []kdata.KData15{}
 	}
 	if req.Period == 30 {
-		dates = []data.Data30{}
+		dates = []kdata.KData30{}
 	}
 	if req.Period == 60 {
-		dates = []data.Data60{}
+		dates = []kdata.KData60{}
 	}
 	if req.Period == 120 {
-		dates = []data.Data120{}
+		dates = []kdata.KData120{}
 	}
 	if req.Period == 240 {
-		dates = []data.Data240{}
+		dates = []kdata.KData240{}
 	}
 	if req.Period == 360 {
-		dates = []data.Data360{}
+		dates = []kdata.KData360{}
 	}
 	if req.Period == 480 {
-		dates = []data.Data480{}
+		dates = []kdata.KData480{}
 	}
 	if req.Period == 1440 {
-		dates = []data.Data1440{}
+		dates = []kdata.KData1440{}
 	}
 	err = global.GVA_DB.Where("symbol_id = ?", req.Symbol).Order("id DESC").Limit(int(req.Rows)).Find(&dates).Error
 	if err != nil {
@@ -686,139 +687,139 @@ func (uApi *ApisApi) PriceData(c *gin.Context) {
 	}
 	var price float64
 	switch v := dates.(type) {
-	case []data.Data:
+	case []kdata.KData:
 		for k, d := range v {
 			if k == 0 {
-				price = d.PreClosePrice
+				price = float64(d.Open)
 			}
 			yData = append(yData, apis.YdData{
-				Uptime: d.InsertAt,
-				Cjl:    d.OpenInterest, // 持仓量
-				Close:  d.PreClosePrice,
-				Vol:    float64(d.Volume),
-				Open:   d.OpenInterest,
-				High:   d.AveragePrice,
-				Low:    d.LowerLimitPrice,
+				Uptime: d.Uptime,
+				Cjl:    float64(d.Cjl),
+				Close:  float64(d.Close),
+				Vol:    float64(d.Vol),
+				Open:   float64(d.Open),
+				High:   float64(d.High),
+				Low:    float64(d.Low),
 			})
 		}
-	case []data.Data5:
+	case []kdata.KData5:
 		for k, d := range v {
 			if k == 0 {
-				price = d.PreClosePrice
+				price = float64(d.Open)
 			}
 			yData = append(yData, apis.YdData{
-				Uptime: d.InsertAt,
-				Cjl:    d.OpenInterest, // 持仓量
-				Close:  d.PreClosePrice,
-				Vol:    float64(d.Volume),
-				Open:   d.OpenInterest,
-				High:   d.AveragePrice,
-				Low:    d.LowerLimitPrice,
+				Uptime: d.Uptime,
+				Cjl:    float64(d.Cjl),
+				Close:  float64(d.Close),
+				Vol:    float64(d.Vol),
+				Open:   float64(d.Open),
+				High:   float64(d.High),
+				Low:    float64(d.Low),
 			})
 		}
-	case []data.Data15:
+	case []kdata.KData15:
 		for k, d := range v {
 			if k == 0 {
-				price = d.PreClosePrice
+				price = float64(d.Open)
 			}
 			yData = append(yData, apis.YdData{
-				Uptime: d.InsertAt,
-				Cjl:    d.OpenInterest, // 持仓量
-				Close:  d.PreClosePrice,
-				Vol:    float64(d.Volume),
-				Open:   d.OpenInterest,
-				High:   d.AveragePrice,
-				Low:    d.LowerLimitPrice,
+				Uptime: d.Uptime,
+				Cjl:    float64(d.Cjl),
+				Close:  float64(d.Close),
+				Vol:    float64(d.Vol),
+				Open:   float64(d.Open),
+				High:   float64(d.High),
+				Low:    float64(d.Low),
 			})
 		}
-	case []data.Data30:
+	case []kdata.KData30:
 		for k, d := range v {
 			if k == 0 {
-				price = d.PreClosePrice
+				price = float64(d.Open)
 			}
 			yData = append(yData, apis.YdData{
-				Uptime: d.InsertAt,
-				Cjl:    d.OpenInterest, // 持仓量
-				Close:  d.PreClosePrice,
-				Vol:    float64(d.Volume),
-				Open:   d.OpenInterest,
-				High:   d.AveragePrice,
-				Low:    d.LowerLimitPrice,
+				Uptime: d.Uptime,
+				Cjl:    float64(d.Cjl),
+				Close:  float64(d.Close),
+				Vol:    float64(d.Vol),
+				Open:   float64(d.Open),
+				High:   float64(d.High),
+				Low:    float64(d.Low),
 			})
 		}
-	case []data.Data60:
+	case []kdata.KData60:
 		for k, d := range v {
 			if k == 0 {
-				price = d.PreClosePrice
+				price = float64(d.Open)
 			}
 			yData = append(yData, apis.YdData{
-				Uptime: d.InsertAt,
-				Cjl:    d.OpenInterest, // 持仓量
-				Close:  d.PreClosePrice,
-				Vol:    float64(d.Volume),
-				Open:   d.OpenInterest,
-				High:   d.AveragePrice,
-				Low:    d.LowerLimitPrice,
+				Uptime: d.Uptime,
+				Cjl:    float64(d.Cjl),
+				Close:  float64(d.Close),
+				Vol:    float64(d.Vol),
+				Open:   float64(d.Open),
+				High:   float64(d.High),
+				Low:    float64(d.Low),
 			})
 		}
-	case []data.Data120:
+	case []kdata.KData120:
 		for k, d := range v {
 			if k == 0 {
-				price = d.PreClosePrice
+				price = float64(d.Open)
 			}
 			yData = append(yData, apis.YdData{
-				Uptime: d.InsertAt,
-				Cjl:    d.OpenInterest, // 持仓量
-				Close:  d.PreClosePrice,
-				Vol:    float64(d.Volume),
-				Open:   d.OpenInterest,
-				High:   d.AveragePrice,
-				Low:    d.LowerLimitPrice,
+				Uptime: d.Uptime,
+				Cjl:    float64(d.Cjl),
+				Close:  float64(d.Close),
+				Vol:    float64(d.Vol),
+				Open:   float64(d.Open),
+				High:   float64(d.High),
+				Low:    float64(d.Low),
 			})
 		}
-	case []data.Data240:
+	case []kdata.KData240:
 		for k, d := range v {
 			if k == 0 {
-				price = d.PreClosePrice
+				price = float64(d.Open)
 			}
 			yData = append(yData, apis.YdData{
-				Uptime: d.InsertAt,
-				Cjl:    d.OpenInterest, // 持仓量
-				Close:  d.PreClosePrice,
-				Vol:    float64(d.Volume),
-				Open:   d.OpenInterest,
-				High:   d.AveragePrice,
-				Low:    d.LowerLimitPrice,
+				Uptime: d.Uptime,
+				Cjl:    float64(d.Cjl),
+				Close:  float64(d.Close),
+				Vol:    float64(d.Vol),
+				Open:   float64(d.Open),
+				High:   float64(d.High),
+				Low:    float64(d.Low),
 			})
 		}
-	case []data.Data360:
+	case []kdata.KData360:
 		for k, d := range v {
 			if k == 0 {
-				price = d.PreClosePrice
+				price = float64(d.Open)
 			}
 			yData = append(yData, apis.YdData{
-				Uptime: d.InsertAt,
-				Cjl:    d.OpenInterest, // 持仓量
-				Close:  d.PreClosePrice,
-				Vol:    float64(d.Volume),
-				Open:   d.OpenInterest,
-				High:   d.AveragePrice,
-				Low:    d.LowerLimitPrice,
+				Uptime: d.Uptime,
+				Cjl:    float64(d.Cjl),
+				Close:  float64(d.Close),
+				Vol:    float64(d.Vol),
+				Open:   float64(d.Open),
+				High:   float64(d.High),
+				Low:    float64(d.Low),
 			})
 		}
-	case []data.Data480:
+	case []kdata.KData480:
 		for k, d := range v {
 			if k == 0 {
-				price = d.PreClosePrice
+				price = float64(d.Open)
 			}
 			yData = append(yData, apis.YdData{
-				Uptime: d.InsertAt,
-				Cjl:    d.OpenInterest, // 持仓量
-				Close:  d.PreClosePrice,
-				Vol:    float64(d.Volume),
-				Open:   d.OpenInterest,
-				High:   d.AveragePrice,
-				Low:    d.LowerLimitPrice,
+				Uptime: d.Uptime,
+				Cjl:    float64(d.Cjl),
+				Close:  float64(d.Close),
+				Vol:    float64(d.Vol),
+				Open:   float64(d.Open),
+				High:   float64(d.High),
+				Low:    float64(d.Low),
 			})
 		}
 	case []data.Data1440:
