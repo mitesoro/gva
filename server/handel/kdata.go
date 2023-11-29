@@ -46,8 +46,8 @@ var (
 
 // DoKData 处理k线
 func DoKData(d data.Data) {
-	dateFormat := "2006-01-02-15:04"
 	ctx := context.Background()
+	dateFormat := "2006-01-02-15:04"
 	now := time.Now()
 	kd := kdata.KData{
 		Uptime: now.Unix(),
@@ -103,6 +103,9 @@ func DoKData(d data.Data) {
 			global.GVA_LOG.Error("DoKData:", zap.Error(err1), zap.Any("res", res))
 		}
 		kd.SymbolId = d.SymbolId
+		if kd.Open == 0 || kd.Close == 0 || kd.High == 0 || kd.Low == 0 {
+			return
+		}
 		if err = global.GVA_DB.Create(&kd).Error; err != nil {
 			global.GVA_LOG.Error("DoKData:", zap.Error(err), zap.Any("d", d))
 			// return
@@ -136,6 +139,9 @@ func DoKData(d data.Data) {
 		kd5.Low = mix
 		kd5.SymbolId = d.SymbolId
 		kd5.Uptime = now.Add(-1 * time.Minute).Unix()
+		if kd5.Open == 0 || kd5.Close == 0 || kd5.High == 0 || kd5.Low == 0 {
+			return
+		}
 		if err := global.GVA_DB.Create(&kd5).Error; err != nil {
 			global.GVA_LOG.Error("DoKData:", zap.Error(err), zap.Any("d", d))
 			// return
@@ -168,6 +174,9 @@ func DoKData(d data.Data) {
 		kd15.Low = mix
 		kd15.SymbolId = d.SymbolId
 		kd15.Uptime = now.Add(-1 * time.Minute).Unix()
+		if kd15.Open == 0 || kd15.Close == 0 || kd15.High == 0 || kd15.Low == 0 {
+			return
+		}
 		if err := global.GVA_DB.Create(&kd15).Error; err != nil {
 			global.GVA_LOG.Error("DoKData:", zap.Error(err), zap.Any("d", d))
 			// return
@@ -199,6 +208,9 @@ func DoKData(d data.Data) {
 		kd30.High = max
 		kd30.Low = mix
 		kd30.SymbolId = d.SymbolId
+		if kd30.Open == 0 || kd30.Close == 0 || kd30.High == 0 || kd30.Low == 0 {
+			return
+		}
 		if err := global.GVA_DB.Create(&kd30).Error; err != nil {
 			global.GVA_LOG.Error("DoKData:", zap.Error(err), zap.Any("d", d))
 			// return
@@ -229,6 +241,9 @@ func DoKData(d data.Data) {
 		kd60.High = max
 		kd60.Low = mix
 		kd60.SymbolId = d.SymbolId
+		if kd60.Open == 0 || kd60.Close == 0 || kd60.High == 0 || kd60.Low == 0 {
+			return
+		}
 		if err := global.GVA_DB.Create(&kd60).Error; err != nil {
 			global.GVA_LOG.Error("DoKData:", zap.Error(err), zap.Any("d", d))
 			// return
@@ -260,6 +275,9 @@ func DoKData(d data.Data) {
 		kd120.High = max
 		kd120.Low = mix
 		kd120.SymbolId = d.SymbolId
+		if kd120.Open == 0 || kd120.Close == 0 || kd120.High == 0 || kd120.Low == 0 {
+			return
+		}
 		if err := global.GVA_DB.Create(&kd120).Error; err != nil {
 			global.GVA_LOG.Error("DoKData:", zap.Error(err), zap.Any("d", d))
 			// return
@@ -290,6 +308,9 @@ func DoKData(d data.Data) {
 		kd240.High = max
 		kd240.Low = mix
 		kd240.SymbolId = d.SymbolId
+		if kd240.Open == 0 || kd240.Close == 0 || kd240.High == 0 || kd240.Low == 0 {
+			return
+		}
 		if err := global.GVA_DB.Create(&kd240).Error; err != nil {
 			global.GVA_LOG.Error("DoKData:", zap.Error(err), zap.Any("d", d))
 			// return
@@ -321,6 +342,9 @@ func DoKData(d data.Data) {
 		kd360.High = max
 		kd360.Low = mix
 		kd360.SymbolId = d.SymbolId
+		if kd360.Open == 0 || kd360.Close == 0 || kd360.High == 0 || kd360.Low == 0 {
+			return
+		}
 		if err := global.GVA_DB.Create(&kd360).Error; err != nil {
 			global.GVA_LOG.Error("DoKData:", zap.Error(err), zap.Any("d", d))
 			// return
@@ -352,6 +376,9 @@ func DoKData(d data.Data) {
 		kd480.High = max
 		kd480.Low = mix
 		kd480.SymbolId = d.SymbolId
+		if kd480.Open == 0 || kd480.Close == 0 || kd480.High == 0 || kd480.Low == 0 {
+			return
+		}
 		if err := global.GVA_DB.Create(&kd480).Error; err != nil {
 			global.GVA_LOG.Error("DoKData:", zap.Error(err), zap.Any("d", d))
 			// return
@@ -383,6 +410,9 @@ func DoKData(d data.Data) {
 		kd1440.High = max
 		kd1440.Low = mix
 		kd1440.SymbolId = d.SymbolId
+		if kd1440.Open == 0 || kd1440.Close == 0 || kd1440.High == 0 || kd1440.Low == 0 {
+			return
+		}
 		if err := global.GVA_DB.Create(&kd1440).Error; err != nil {
 			global.GVA_LOG.Error("DoKData:", zap.Error(err), zap.Any("d", d))
 			// return

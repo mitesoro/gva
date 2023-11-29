@@ -110,7 +110,6 @@ func HandelOrders(d data.Data) {
 			}
 			// 添加金币
 			amount := int(order.DecrAmount) + int(order.WinAmount)
-			u.Amount += amount
 			u.AvailableAmount += amount
 			u.FreezeAmount -= amount
 			if u.FreezeAmount < 0 {
