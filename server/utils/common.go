@@ -121,6 +121,9 @@ func GetKDataValue(ctx context.Context, key string) float64 {
 func FindMin(arr []int64) int64 {
 	min := int64(math.MaxInt64)
 	for _, v := range arr {
+		if v == 0 {
+			continue
+		}
 		if v < min {
 			min = v
 		}

@@ -196,7 +196,7 @@ func DoKData(d data.Data) {
 		global.GVA_REDIS.Expire(ctx, rKey, time.Hour*24)
 	}
 
-	if (now.Minute()%31 == 0 && now.Second() == 0) || (now.Minute()%1 == 0 && now.Second() == 0) { // 30分钟(31,01)
+	if (now.Minute()%31 == 0 && now.Second() == 0) || (now.Minute() == 1 && now.Second() == 0) { // 30分钟(31,01)
 		kd30 := kdata.KData30(kd)
 		kd30.Uptime = now.Add(-1 * time.Minute).Unix()
 		v1 := utils.GetKd(ctx, fmt.Sprintf("k_data15_%s_%s", now.Format(dateFormat), d.SymbolId))
@@ -215,7 +215,7 @@ func DoKData(d data.Data) {
 			global.GVA_LOG.Error("DoKData:", zap.Error(err), zap.Any("d", d))
 			// return
 		}
-		// 存储15分钟数据
+		// 存储30分钟数据
 		value30 := map[string]interface{}{
 			"open":  kd30.Open,
 			"high":  kd30.High,
