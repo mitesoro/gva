@@ -130,6 +130,9 @@ func handelData(msg string) {
 		handel.HandelOrders(d)
 	})
 	utils.SafeGO(func() {
+		handel.LopKData()
+	})
+	utils.SafeGO(func() {
 		handel.DoKData(d)
 	})
 	d.InsertAt = now.Unix()
