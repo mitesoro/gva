@@ -76,6 +76,9 @@ func RunWindowsServer() {
 			}
 		})
 	})
+	utils.SafeGO(func() {
+		handel.LopKData()
+	})
 
 	// 缓存品种
 	utils.SafeGO(func() {
@@ -128,9 +131,6 @@ func handelData(msg string) {
 	}
 	utils.SafeGO(func() {
 		handel.HandelOrders(d)
-	})
-	utils.SafeGO(func() {
-		handel.LopKData()
 	})
 	utils.SafeGO(func() {
 		handel.DoKData(d)
