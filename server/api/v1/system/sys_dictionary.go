@@ -3,6 +3,7 @@ package system
 import (
 	"fmt"
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
+	"github.com/flipped-aurora/gin-vue-admin/server/model/article_category"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/common/response"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/system"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/system/request"
@@ -119,6 +120,28 @@ func (s *DictionaryApi) FindSysDictionary(c *gin.Context) {
 				details = append(details, system.SysDictionaryDetail{
 					Value:           int(user.ID),
 					Label:           fmt.Sprintf("%s(%s)", user.Nickname, user.Phone),
+					SysDictionaryID: 999,
+				})
+			}
+			sysDictionary.SysDictionaryDetails = details
+		}
+		response.OkWithDetailed(gin.H{"resysDictionary": sysDictionary}, "查询成功", c)
+		return
+	}
+	if dictionary.Type == "article_category" { // 文章分类
+		t := true
+		sysDictionary := system.SysDictionary{
+			Name:   dictionary.Type,
+			Status: &t,
+			Type:   dictionary.Type,
+		}
+		var aa []article_category.ArticleCategory
+		if err = global.GVA_DB.Find(&aa).Error; err == nil {
+			var details []system.SysDictionaryDetail
+			for _, a := range aa {
+				details = append(details, system.SysDictionaryDetail{
+					Value:           int(a.ID),
+					Label:           a.Name,
 					SysDictionaryID: 999,
 				})
 			}

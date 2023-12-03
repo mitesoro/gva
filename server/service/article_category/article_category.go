@@ -5,7 +5,6 @@ import (
 	"github.com/flipped-aurora/gin-vue-admin/server/model/article_category"
 	article_categoryReq "github.com/flipped-aurora/gin-vue-admin/server/model/article_category/request"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/common/request"
-	"github.com/flipped-aurora/gin-vue-admin/server/model/system"
 )
 
 type ArticleCategoryService struct {
@@ -15,15 +14,6 @@ type ArticleCategoryService struct {
 // Author [piexlmax](https://github.com/piexlmax)
 func (acService *ArticleCategoryService) CreateArticleCategory(ac *article_category.ArticleCategory) (err error) {
 	err = global.GVA_DB.Create(ac).Error
-	True := true
-	sysDictionaryDetail := system.SysDictionaryDetail{
-		Label:           ac.Name,
-		Value:           int(ac.ID),
-		Status:          &True,
-		Sort:            int(ac.ID),
-		SysDictionaryID: 7,
-	}
-	err = global.GVA_DB.Create(&sysDictionaryDetail).Error
 	return err
 }
 
