@@ -451,7 +451,7 @@ func LopKData() {
 					global.GVA_LOG.Error("Symbol err", zap.Error(err))
 					continue
 				}
-				global.GVA_LOG.Error("LopKData")
+				// global.GVA_LOG.Error("LopKData")
 				now := time.Now()
 				for _, sss := range ss {
 					s := sss
