@@ -69,13 +69,13 @@ func GetSymbol(code string) (*symbols.Symbol, error) {
 
 func IsWithinBusinessHours(t time.Time, start string, end string) bool {
 	// Parse the start and end times
-	layout := "15:04"
+	layout := "15:04:05" // Added seconds to the layout
 	parsedStartTime, _ := time.Parse(layout, start)
 	parsedEndTime, _ := time.Parse(layout, end)
 
 	// Combine the current date with the parsed start and end times
-	startTime := time.Date(t.Year(), t.Month(), t.Day(), parsedStartTime.Hour(), parsedStartTime.Minute(), 0, 0, t.Location())
-	endTime := time.Date(t.Year(), t.Month(), t.Day(), parsedEndTime.Hour(), parsedEndTime.Minute(), 0, 0, t.Location())
+	startTime := time.Date(t.Year(), t.Month(), t.Day(), parsedStartTime.Hour(), parsedStartTime.Minute(), parsedStartTime.Second(), 0, t.Location())
+	endTime := time.Date(t.Year(), t.Month(), t.Day(), parsedEndTime.Hour(), parsedEndTime.Minute(), parsedEndTime.Second(), 0, t.Location())
 
 	// Check if the time is between start and end
 	isBetween := t.After(startTime) && t.Before(endTime)
