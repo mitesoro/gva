@@ -79,6 +79,9 @@ func RunWindowsServer() {
 	utils.SafeGO(func() {
 		handel.LopKData()
 	})
+	utils.SafeGO(func() {
+		handel.KDataDB()
+	})
 
 	// 缓存品种
 	utils.SafeGO(func() {
