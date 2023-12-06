@@ -166,7 +166,7 @@ func add() {
 	}
 	for _, sss := range ss {
 		kd := kdata.KData{
-			Uptime: now.Unix() - 60,
+			Uptime: now.Unix(),
 		}
 		dataMinute := now.Add(-1 * time.Minute).Format(dateFormat)
 		// 获取开盘
