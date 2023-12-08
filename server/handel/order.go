@@ -35,7 +35,14 @@ func HandelOrders(d data.Data) {
 	price := d.LastPrice //  最新价
 	status := 5          // 平仓
 	for _, order := range list {
-		key := fmt.Sprintf("lock_order_%d", order.ID)
+		s, ok := ms[order.SymbolID]
+		if !ok {
+			continue
+		}
+		if d.SymbolId != order.SymbolID {
+			continue
+		}
+		key := fmt.Sprintf("lock_order_%d_%s", order.ID, order.SymbolID)
 		firstLock := utils.NewRedisLock(global.GVA_REDIS, key)
 		firstLock.SetExpire(5)
 		againAcquire, err := firstLock.Acquire(context.Background())
@@ -44,13 +51,6 @@ func HandelOrders(d data.Data) {
 			continue
 		}
 		if !againAcquire {
-			continue
-		}
-		s, ok := ms[order.SymbolID]
-		if !ok {
-			continue
-		}
-		if d.SymbolId != order.SymbolID {
 			continue
 		}
 		var isComplete bool
