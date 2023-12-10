@@ -18,6 +18,26 @@ import (
 
 // HandelOrders 处理平仓
 func HandelOrders(d data.Data) {
+	now := time.Now()
+	if now.Hour() < 9 {
+		return
+	}
+	if now.Hour() == 10 && now.Minute() > 15 && now.Minute() < 30 {
+		return
+	}
+
+	if now.Hour() == 11 && now.Minute() > 30 {
+		return
+	}
+	if now.Hour() == 12 {
+		return
+	}
+	if now.Hour() == 13 && now.Minute() < 30 {
+		return
+	}
+	if now.Hour() == 15 && now.Minute() > 0 {
+		return
+	}
 	var list []orders.Orders
 	if err := global.GVA_DB.Model(orders.Orders{}).Where("status = 1").Order("id desc").Find(&list).Error; err != nil {
 		global.GVA_LOG.Error("handelOrders err", zap.Error(err))

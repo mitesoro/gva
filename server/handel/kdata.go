@@ -72,6 +72,7 @@ func DoKData(d data.Data) {
 	if err := global.GVA_REDIS.Eval(ctx, luaLowScript, []string{lowKey}, d.LastPrice).Err(); err != nil {
 		global.GVA_LOG.Error("DoKData luaLowScript1 Eval err:", zap.Error(err), zap.Any("d", d))
 	}
+	// 有数据丢失，废弃
 	if now.Minute()%1 == 0 && now.Second() == 0 && false { // 分钟
 		lockKey := fmt.Sprintf("lock_k_data_%d_%s", now.Unix(), d.SymbolId)
 		firstLock := utils.NewRedisLock(global.GVA_REDIS, lockKey)
@@ -155,18 +156,30 @@ func KDataDB() {
 }
 
 func add() {
-	global.GVA_LOG.Error("add", zap.Any("time", time.Now().Format(time.DateTime)))
 	ctx := context.Background()
 	dateFormat := "2006-01-02-15:04"
 	now := time.Now()
+	if now.Hour()%2 == 0 && now.Minute() == 0 && now.Second() == 0 {
+		global.GVA_LOG.Error("add", zap.Any("time", time.Now().Format(time.DateTime)))
+	}
+	if now.Hour() == 8 && now.Minute() < 59 {
+		return
+	}
+	if now.Hour() == 15 && now.Minute() > 1 {
+		return
+	}
+
 	var ss []symbols.Symbol
 	if err := global.GVA_DB.Find(&ss).Error; err != nil {
 		global.GVA_LOG.Error("Symbol err", zap.Error(err))
 		return
 	}
+	if now.Hour()%2 == 0 && now.Minute() == 0 && now.Second() == 0 {
+		global.GVA_LOG.Error("symbols", zap.Any("ss", ss))
+	}
 	for _, sss := range ss {
 		kd := kdata.KData{
-			Uptime: now.Unix() - 60,
+			Uptime: now.Unix(),
 		}
 		dataMinute := now.Add(-1 * time.Minute).Format(dateFormat)
 		// 获取开盘
@@ -215,336 +228,346 @@ func add() {
 }
 
 func LopKData() {
-	// 创建一个用于退出的通道
-	done := make(chan bool)
-	ticker := time.NewTicker(time.Second) // 每分钟处理
+	// 计算到下一分钟的等待时间
+	next := time.Now().Truncate(time.Minute).Add(time.Minute)
+	wait := time.Until(next)
+
+	// 等待到下一分钟
+	time.Sleep(wait)
+	// 创建一个每分钟触发一次的Ticker
+	ticker := time.NewTicker(1 * time.Minute)
+	quit := make(chan struct{})
+
 	go func() {
 		for {
 			select {
 			case <-ticker.C:
-				var ss []symbols.Symbol
-				if err := global.GVA_DB.Find(&ss).Error; err != nil {
-					global.GVA_LOG.Error("Symbol err", zap.Error(err))
-					continue
-				}
-				// global.GVA_LOG.Error("LopKData")
-				now := time.Now()
-				for _, sss := range ss {
-					s := sss
-					// 5分钟
-					if (now.Minute()%10 == 6 && now.Second() == 0) || (now.Minute()%10 == 1 && now.Second() == 0) {
-						var kds []kdata.KData
-						if err := global.GVA_DB.Where("symbol_id = ? and uptime between ? and ? ", s.Code, now.Add(-6*time.Minute).Unix(), now.Unix()-1).Order("uptime desc").Limit(5).Find(&kds).Error; err != nil {
-							global.GVA_LOG.Error("LopKData:", zap.Error(err))
-							continue
-						}
-						if len(kds) != 5 {
-							continue
-						}
-						var low []int64
-						var high []int64
-						for _, kd := range kds {
-							low = append(low, kd.Low)
-							high = append(high, kd.High)
-						}
-						min := utils.FindMin(low)
-						max := utils.FindMax(high)
-						kd5 := kdata.KData5{
-							Uptime:   now.Add(-1 * time.Minute).Unix(),
-							Open:     kds[len(kds)-1].Open,
-							High:     max,
-							Low:      min,
-							Close:    kds[0].Close,
-							SymbolId: s.Code,
-						}
-						if kd5.Open == 0 || kd5.Close == 0 || kd5.High == 0 || kd5.Low == 0 {
-							return
-						}
-						if err := global.GVA_DB.Create(&kd5).Error; err != nil {
-							global.GVA_LOG.Error("LopKData:", zap.Error(err), zap.Any("kds", kds))
-							// return
-						}
-					}
-					// 15分钟(15,30,45,00)
-					if (now.Minute() == 16 && now.Second() == 0) || (now.Minute() == 31 && now.Second() == 0) ||
-						(now.Minute() == 46 && now.Second() == 0) || (now.Minute() == 1 && now.Second() == 0) {
-						var kds []kdata.KData5
-						if err := global.GVA_DB.Where("symbol_id = ? and uptime between ? and ?", s.Code, now.Add(-16*time.Minute).Unix(), now.Unix()-1).Order("uptime desc").Limit(3).Find(&kds).Error; err != nil {
-							global.GVA_LOG.Error("LopKData:", zap.Error(err))
-							continue
-						}
-						if len(kds) != 3 {
-							continue
-						}
-						var low []int64
-						var high []int64
-						for _, kd := range kds {
-							low = append(low, kd.Low)
-							high = append(high, kd.High)
-						}
-						min := utils.FindMin(low)
-						max := utils.FindMax(high)
-						kd15 := kdata.KData15{
-							Uptime:   now.Add(-1 * time.Minute).Unix(),
-							Open:     kds[len(kds)-1].Open,
-							High:     max,
-							Low:      min,
-							Close:    kds[0].Close,
-							SymbolId: s.Code,
-						}
-						if kd15.Open == 0 || kd15.Close == 0 || kd15.High == 0 || kd15.Low == 0 {
-							return
-						}
-						if err := global.GVA_DB.Create(&kd15).Error; err != nil {
-							global.GVA_LOG.Error("LopKData:", zap.Error(err), zap.Any("kds", kds))
-							// return
-						}
-					}
-					// 30分钟(31,01)
-					if (now.Minute()%31 == 0 && now.Second() == 0) || (now.Minute() == 1 && now.Second() == 0) {
-						var kds []kdata.KData15
-						if err := global.GVA_DB.Where("symbol_id = ? and uptime between ? and ?", s.Code, now.Add(-31*time.Minute).Unix(), now.Unix()-1).Order("uptime desc").Limit(2).Find(&kds).Error; err != nil {
-							global.GVA_LOG.Error("LopKData:", zap.Error(err))
-							continue
-						}
-						if len(kds) != 2 {
-							continue
-						}
-						var low []int64
-						var high []int64
-						for _, kd := range kds {
-							low = append(low, kd.Low)
-							high = append(high, kd.High)
-						}
-						min := utils.FindMin(low)
-						max := utils.FindMax(high)
-						kd := kdata.KData30{
-							Uptime:   now.Add(-1 * time.Minute).Unix(),
-							Open:     kds[len(kds)-1].Open,
-							High:     max,
-							Low:      min,
-							Close:    kds[0].Close,
-							SymbolId: s.Code,
-						}
-						if kd.Open == 0 || kd.Close == 0 || kd.High == 0 || kd.Low == 0 {
-							return
-						}
-						if err := global.GVA_DB.Create(&kd).Error; err != nil {
-							global.GVA_LOG.Error("LopKData:", zap.Error(err), zap.Any("kds", kds))
-							// return
-						}
-					}
-					// 小时线
-					if now.Minute() == 1 && now.Second() == 0 {
-						var kds []kdata.KData30
-						if err := global.GVA_DB.Where("symbol_id = ? and uptime between ? and ?", s.Code, now.Add(-61*time.Minute).Unix(), now.Unix()-1).Order("uptime desc").Limit(2).Find(&kds).Error; err != nil {
-							global.GVA_LOG.Error("LopKData:", zap.Error(err))
-							continue
-						}
-						if len(kds) != 2 {
-							continue
-						}
-						var low []int64
-						var high []int64
-						for _, kd := range kds {
-							low = append(low, kd.Low)
-							high = append(high, kd.High)
-						}
-						min := utils.FindMin(low)
-						max := utils.FindMax(high)
-						kd := kdata.KData60{
-							Uptime:   now.Add(-1 * time.Minute).Unix(),
-							Open:     kds[len(kds)-1].Open,
-							High:     max,
-							Low:      min,
-							Close:    kds[0].Close,
-							SymbolId: s.Code,
-						}
-						if kd.Open == 0 || kd.Close == 0 || kd.High == 0 || kd.Low == 0 {
-							return
-						}
-						if err := global.GVA_DB.Create(&kd).Error; err != nil {
-							global.GVA_LOG.Error("LopKData:", zap.Error(err), zap.Any("kds", kds))
-							// return
-						}
-					}
-					// 2小时
-					if now.Minute() == 1 && now.Second() == 0 && now.Hour()%2 == 0 {
-						var kds []kdata.KData60
-						if err := global.GVA_DB.Where("symbol_id = ? and uptime between ? and ?", s.Code, now.Add(-121*time.Minute).Unix(), now.Unix()-1).Order("uptime desc").Limit(2).Find(&kds).Error; err != nil {
-							global.GVA_LOG.Error("LopKData:", zap.Error(err))
-							continue
-						}
-						if len(kds) != 2 {
-							continue
-						}
-						var low []int64
-						var high []int64
-						for _, kd := range kds {
-							low = append(low, kd.Low)
-							high = append(high, kd.High)
-						}
-						min := utils.FindMin(low)
-						max := utils.FindMax(high)
-						kd := kdata.KData120{
-							Uptime:   now.Add(-1 * time.Minute).Unix(),
-							Open:     kds[len(kds)-1].Open,
-							High:     max,
-							Low:      min,
-							Close:    kds[0].Close,
-							SymbolId: s.Code,
-						}
-						if kd.Open == 0 || kd.Close == 0 || kd.High == 0 || kd.Low == 0 {
-							return
-						}
-						if err := global.GVA_DB.Create(&kd).Error; err != nil {
-							global.GVA_LOG.Error("LopKData:", zap.Error(err), zap.Any("kds", kds))
-							// return
-						}
-					}
-					// 4小时
-					if now.Minute() == 1 && now.Second() == 0 && now.Hour()%4 == 0 {
-						var kds []kdata.KData120
-						if err := global.GVA_DB.Where("symbol_id = ? and uptime between ? and ?", s.Code, now.Add(-241*time.Minute).Unix(), now.Unix()-1).Order("uptime desc").Limit(2).Find(&kds).Error; err != nil {
-							global.GVA_LOG.Error("LopKData:", zap.Error(err))
-							continue
-						}
-						if len(kds) != 2 {
-							continue
-						}
-						var low []int64
-						var high []int64
-						for _, kd := range kds {
-							low = append(low, kd.Low)
-							high = append(high, kd.High)
-						}
-						min := utils.FindMin(low)
-						max := utils.FindMax(high)
-						kd := kdata.KData240{
-							Uptime:   now.Add(-1 * time.Minute).Unix(),
-							Open:     kds[len(kds)-1].Open,
-							High:     max,
-							Low:      min,
-							Close:    kds[0].Close,
-							SymbolId: s.Code,
-						}
-						if kd.Open == 0 || kd.Close == 0 || kd.High == 0 || kd.Low == 0 {
-							return
-						}
-						if err := global.GVA_DB.Create(&kd).Error; err != nil {
-							global.GVA_LOG.Error("LopKData:", zap.Error(err), zap.Any("kds", kds))
-							// return
-						}
-					}
-					// 6小时
-					if now.Minute() == 1 && now.Second() == 0 && now.Hour()%6 == 0 {
-						var kds []kdata.KData120
-						if err := global.GVA_DB.Where("symbol_id = ? and uptime between ? and ?", s.Code, now.Add(-361*time.Minute).Unix(), now.Unix()-1).Order("uptime desc").Limit(3).Find(&kds).Error; err != nil {
-							global.GVA_LOG.Error("LopKData:", zap.Error(err))
-							continue
-						}
-						if len(kds) != 3 {
-							continue
-						}
-						var low []int64
-						var high []int64
-						for _, kd := range kds {
-							low = append(low, kd.Low)
-							high = append(high, kd.High)
-						}
-						min := utils.FindMin(low)
-						max := utils.FindMax(high)
-						kd := kdata.KData360{
-							Uptime:   now.Add(-1 * time.Minute).Unix(),
-							Open:     kds[len(kds)-1].Open,
-							High:     max,
-							Low:      min,
-							Close:    kds[0].Close,
-							SymbolId: s.Code,
-						}
-						if kd.Open == 0 || kd.Close == 0 || kd.High == 0 || kd.Low == 0 {
-							return
-						}
-						if err := global.GVA_DB.Create(&kd).Error; err != nil {
-							global.GVA_LOG.Error("LopKData:", zap.Error(err), zap.Any("kds", kds))
-							// return
-						}
-					}
-					// 8小时
-					if now.Minute() == 1 && now.Second() == 0 && now.Hour()%8 == 0 {
-						var kds []kdata.KData240
-						if err := global.GVA_DB.Where("symbol_id = ? and uptime between ? and ?", s.Code, now.Add(-481*time.Minute).Unix(), now.Unix()-1).Order("uptime desc").Limit(2).Find(&kds).Error; err != nil {
-							global.GVA_LOG.Error("LopKData:", zap.Error(err))
-							continue
-						}
-						if len(kds) != 2 {
-							continue
-						}
-						var low []int64
-						var high []int64
-						for _, kd := range kds {
-							low = append(low, kd.Low)
-							high = append(high, kd.High)
-						}
-						min := utils.FindMin(low)
-						max := utils.FindMax(high)
-						kd := kdata.KData480{
-							Uptime:   now.Add(-1 * time.Minute).Unix(),
-							Open:     kds[len(kds)-1].Open,
-							High:     max,
-							Low:      min,
-							Close:    kds[0].Close,
-							SymbolId: s.Code,
-						}
-						if kd.Open == 0 || kd.Close == 0 || kd.High == 0 || kd.Low == 0 {
-							return
-						}
-						if err := global.GVA_DB.Create(&kd).Error; err != nil {
-							global.GVA_LOG.Error("LopKData:", zap.Error(err), zap.Any("kds", kds))
-							// return
-						}
-					}
-					// 24小时
-					if now.Minute() == 1 && now.Second() == 0 && now.Hour() == 0 {
-						var kds []kdata.KData480
-						if err := global.GVA_DB.Where("symbol_id = ? and uptime between ? and ?", s.Code, now.Add(-(1*time.Minute + time.Hour*24)).Unix(), now.Unix()-1).Order("uptime desc").Limit(3).Find(&kds).Error; err != nil {
-							global.GVA_LOG.Error("LopKData:", zap.Error(err))
-							continue
-						}
-						if len(kds) != 3 {
-							continue
-						}
-						var low []int64
-						var high []int64
-						for _, kd := range kds {
-							low = append(low, kd.Low)
-							high = append(high, kd.High)
-						}
-						min := utils.FindMin(low)
-						max := utils.FindMax(high)
-						kd := kdata.KData1440{
-							Uptime:   now.Add(-1 * time.Minute).Unix(),
-							Open:     kds[len(kds)-1].Open,
-							High:     max,
-							Low:      min,
-							Close:    kds[0].Close,
-							SymbolId: s.Code,
-						}
-						if kd.Open == 0 || kd.Close == 0 || kd.High == 0 || kd.Low == 0 {
-							return
-						}
-						if err := global.GVA_DB.Create(&kd).Error; err != nil {
-							global.GVA_LOG.Error("LopKData:", zap.Error(err), zap.Any("kds", kds))
-							// return
-						}
-					}
-				}
-
-			case <-done:
-				// 接收到退出通知后，结束goroutine
+				lopKData()
+			case <-quit:
+				ticker.Stop()
 				return
 			}
 		}
-
 	}()
+}
+
+func lopKData() {
+	var ss []symbols.Symbol
+	if err := global.GVA_DB.Find(&ss).Error; err != nil {
+		global.GVA_LOG.Error("Symbol err", zap.Error(err))
+		return
+	}
+	now := time.Now()
+	global.GVA_LOG.Error("lopKData", zap.Any("time", now.Format(time.DateTime)))
+
+	for _, sss := range ss {
+		s := sss
+		// 5分钟
+		if (now.Minute()%10 == 6 && now.Second() == 0) || (now.Minute()%10 == 1 && now.Second() == 0) {
+			var kds []kdata.KData
+			if err := global.GVA_DB.Where("symbol_id = ? and uptime between ? and ? ", s.Code, now.Add(-6*time.Minute).Unix(), now.Unix()-1).Order("uptime desc").Limit(5).Find(&kds).Error; err != nil {
+				global.GVA_LOG.Error("LopKData:", zap.Error(err))
+				continue
+			}
+			if len(kds) != 5 {
+				continue
+			}
+			var low []int64
+			var high []int64
+			for _, kd := range kds {
+				low = append(low, kd.Low)
+				high = append(high, kd.High)
+			}
+			min := utils.FindMin(low)
+			max := utils.FindMax(high)
+			kd5 := kdata.KData5{
+				Uptime:   now.Add(-1 * time.Minute).Unix(),
+				Open:     kds[len(kds)-1].Open,
+				High:     max,
+				Low:      min,
+				Close:    kds[0].Close,
+				SymbolId: s.Code,
+			}
+			if kd5.Open == 0 || kd5.Close == 0 || kd5.High == 0 || kd5.Low == 0 {
+				return
+			}
+			if err := global.GVA_DB.Create(&kd5).Error; err != nil {
+				global.GVA_LOG.Error("LopKData:", zap.Error(err), zap.Any("kds", kds))
+				// return
+			}
+		}
+		// 15分钟(15,30,45,00)
+		if (now.Minute() == 16 && now.Second() == 0) || (now.Minute() == 31 && now.Second() == 0) ||
+			(now.Minute() == 46 && now.Second() == 0) || (now.Minute() == 1 && now.Second() == 0) {
+			var kds []kdata.KData5
+			if err := global.GVA_DB.Where("symbol_id = ? and uptime between ? and ?", s.Code, now.Add(-16*time.Minute).Unix(), now.Unix()-1).Order("uptime desc").Limit(3).Find(&kds).Error; err != nil {
+				global.GVA_LOG.Error("LopKData:", zap.Error(err))
+				continue
+			}
+			if len(kds) != 3 {
+				continue
+			}
+			var low []int64
+			var high []int64
+			for _, kd := range kds {
+				low = append(low, kd.Low)
+				high = append(high, kd.High)
+			}
+			min := utils.FindMin(low)
+			max := utils.FindMax(high)
+			kd15 := kdata.KData15{
+				Uptime:   now.Add(-1 * time.Minute).Unix(),
+				Open:     kds[len(kds)-1].Open,
+				High:     max,
+				Low:      min,
+				Close:    kds[0].Close,
+				SymbolId: s.Code,
+			}
+			if kd15.Open == 0 || kd15.Close == 0 || kd15.High == 0 || kd15.Low == 0 {
+				return
+			}
+			if err := global.GVA_DB.Create(&kd15).Error; err != nil {
+				global.GVA_LOG.Error("LopKData:", zap.Error(err), zap.Any("kds", kds))
+				// return
+			}
+		}
+		// 30分钟(31,01)
+		if utils.IsK30(now) {
+			var kds []kdata.KData15
+			if err := global.GVA_DB.Where("symbol_id = ? and uptime <= ?", s.Code, now.Unix()).Order("uptime desc").Limit(2).Find(&kds).Error; err != nil {
+				global.GVA_LOG.Error("LopKData:", zap.Error(err))
+				continue
+			}
+			if len(kds) != 2 {
+				continue
+			}
+			var low []int64
+			var high []int64
+			for _, kd := range kds {
+				low = append(low, kd.Low)
+				high = append(high, kd.High)
+			}
+			min := utils.FindMin(low)
+			max := utils.FindMax(high)
+			kd := kdata.KData30{
+				Uptime:   now.Add(-1 * time.Minute).Unix(),
+				Open:     kds[len(kds)-1].Open,
+				High:     max,
+				Low:      min,
+				Close:    kds[0].Close,
+				SymbolId: s.Code,
+			}
+			if kd.Open == 0 || kd.Close == 0 || kd.High == 0 || kd.Low == 0 {
+				return
+			}
+			if err := global.GVA_DB.Create(&kd).Error; err != nil {
+				global.GVA_LOG.Error("LopKData:", zap.Error(err), zap.Any("kds", kds))
+				// return
+			}
+		}
+		// 小时线
+		if utils.IsK60(now) {
+			var kds []kdata.KData30
+			if err := global.GVA_DB.Where("symbol_id = ? and uptime <= ?", s.Code, now.Unix()).Order("uptime desc").Limit(2).Find(&kds).Error; err != nil {
+				global.GVA_LOG.Error("LopKData:", zap.Error(err))
+				continue
+			}
+			if len(kds) != 2 {
+				continue
+			}
+			var low []int64
+			var high []int64
+			for _, kd := range kds {
+				low = append(low, kd.Low)
+				high = append(high, kd.High)
+			}
+			min := utils.FindMin(low)
+			max := utils.FindMax(high)
+			kd := kdata.KData60{
+				Uptime:   now.Add(-1 * time.Minute).Unix(),
+				Open:     kds[len(kds)-1].Open,
+				High:     max,
+				Low:      min,
+				Close:    kds[0].Close,
+				SymbolId: s.Code,
+			}
+			if kd.Open == 0 || kd.Close == 0 || kd.High == 0 || kd.Low == 0 {
+				return
+			}
+			if err := global.GVA_DB.Create(&kd).Error; err != nil {
+				global.GVA_LOG.Error("LopKData:", zap.Error(err), zap.Any("kds", kds))
+				// return
+			}
+		}
+		// 2小时
+		if utils.IsK120(now) {
+			var kds []kdata.KData60
+			if err := global.GVA_DB.Where("symbol_id = ? and uptime <= ?", s.Code, now.Unix()).Order("uptime desc").Limit(2).Find(&kds).Error; err != nil {
+				global.GVA_LOG.Error("LopKData:", zap.Error(err))
+				continue
+			}
+			if len(kds) != 2 {
+				continue
+			}
+			var low []int64
+			var high []int64
+			for _, kd := range kds {
+				low = append(low, kd.Low)
+				high = append(high, kd.High)
+			}
+			min := utils.FindMin(low)
+			max := utils.FindMax(high)
+			kd := kdata.KData120{
+				Uptime:   now.Add(-1 * time.Minute).Unix(),
+				Open:     kds[len(kds)-1].Open,
+				High:     max,
+				Low:      min,
+				Close:    kds[0].Close,
+				SymbolId: s.Code,
+			}
+			if kd.Open == 0 || kd.Close == 0 || kd.High == 0 || kd.Low == 0 {
+				return
+			}
+			if err := global.GVA_DB.Create(&kd).Error; err != nil {
+				global.GVA_LOG.Error("LopKData:", zap.Error(err), zap.Any("kds", kds))
+				// return
+			}
+		}
+		// 4小时
+		if utils.IsK240(now) {
+			var kds []kdata.KData120
+			if err := global.GVA_DB.Where("symbol_id = ? and uptime <= ?", s.Code, now.Unix()).Order("uptime desc").Limit(2).Find(&kds).Error; err != nil {
+				global.GVA_LOG.Error("LopKData:", zap.Error(err))
+				continue
+			}
+			if len(kds) != 2 {
+				continue
+			}
+			var low []int64
+			var high []int64
+			for _, kd := range kds {
+				low = append(low, kd.Low)
+				high = append(high, kd.High)
+			}
+			min := utils.FindMin(low)
+			max := utils.FindMax(high)
+			kd := kdata.KData240{
+				Uptime:   now.Add(-1 * time.Minute).Unix(),
+				Open:     kds[len(kds)-1].Open,
+				High:     max,
+				Low:      min,
+				Close:    kds[0].Close,
+				SymbolId: s.Code,
+			}
+			if kd.Open == 0 || kd.Close == 0 || kd.High == 0 || kd.Low == 0 {
+				return
+			}
+			if err := global.GVA_DB.Create(&kd).Error; err != nil {
+				global.GVA_LOG.Error("LopKData:", zap.Error(err), zap.Any("kds", kds))
+				// return
+			}
+		}
+		// 6小时
+		if now.Minute() == 1 && now.Second() == 0 && now.Hour()%6 == 0 {
+			var kds []kdata.KData120
+			if err := global.GVA_DB.Where("symbol_id = ? and uptime between ? and ?", s.Code, now.Add(-361*time.Minute).Unix(), now.Unix()-1).Order("uptime desc").Limit(3).Find(&kds).Error; err != nil {
+				global.GVA_LOG.Error("LopKData:", zap.Error(err))
+				continue
+			}
+			if len(kds) != 3 {
+				continue
+			}
+			var low []int64
+			var high []int64
+			for _, kd := range kds {
+				low = append(low, kd.Low)
+				high = append(high, kd.High)
+			}
+			min := utils.FindMin(low)
+			max := utils.FindMax(high)
+			kd := kdata.KData360{
+				Uptime:   now.Add(-1 * time.Minute).Unix(),
+				Open:     kds[len(kds)-1].Open,
+				High:     max,
+				Low:      min,
+				Close:    kds[0].Close,
+				SymbolId: s.Code,
+			}
+			if kd.Open == 0 || kd.Close == 0 || kd.High == 0 || kd.Low == 0 {
+				return
+			}
+			if err := global.GVA_DB.Create(&kd).Error; err != nil {
+				global.GVA_LOG.Error("LopKData:", zap.Error(err), zap.Any("kds", kds))
+				// return
+			}
+		}
+		// 8小时
+		if now.Minute() == 1 && now.Second() == 0 && now.Hour()%8 == 0 {
+			var kds []kdata.KData240
+			if err := global.GVA_DB.Where("symbol_id = ? and uptime between ? and ?", s.Code, now.Add(-481*time.Minute).Unix(), now.Unix()-1).Order("uptime desc").Limit(2).Find(&kds).Error; err != nil {
+				global.GVA_LOG.Error("LopKData:", zap.Error(err))
+				continue
+			}
+			if len(kds) != 2 {
+				continue
+			}
+			var low []int64
+			var high []int64
+			for _, kd := range kds {
+				low = append(low, kd.Low)
+				high = append(high, kd.High)
+			}
+			min := utils.FindMin(low)
+			max := utils.FindMax(high)
+			kd := kdata.KData480{
+				Uptime:   now.Add(-1 * time.Minute).Unix(),
+				Open:     kds[len(kds)-1].Open,
+				High:     max,
+				Low:      min,
+				Close:    kds[0].Close,
+				SymbolId: s.Code,
+			}
+			if kd.Open == 0 || kd.Close == 0 || kd.High == 0 || kd.Low == 0 {
+				return
+			}
+			if err := global.GVA_DB.Create(&kd).Error; err != nil {
+				global.GVA_LOG.Error("LopKData:", zap.Error(err), zap.Any("kds", kds))
+				// return
+			}
+		}
+		// 24小时
+		if now.Minute() == 1 && now.Second() == 0 && now.Hour() == 0 {
+			var kds []kdata.KData480
+			if err := global.GVA_DB.Where("symbol_id = ? and uptime between ? and ?", s.Code, now.Add(-(1*time.Minute + time.Hour*24)).Unix(), now.Unix()-1).Order("uptime desc").Limit(3).Find(&kds).Error; err != nil {
+				global.GVA_LOG.Error("LopKData:", zap.Error(err))
+				continue
+			}
+			if len(kds) != 3 {
+				continue
+			}
+			var low []int64
+			var high []int64
+			for _, kd := range kds {
+				low = append(low, kd.Low)
+				high = append(high, kd.High)
+			}
+			min := utils.FindMin(low)
+			max := utils.FindMax(high)
+			kd := kdata.KData1440{
+				Uptime:   now.Add(-1 * time.Minute).Unix(),
+				Open:     kds[len(kds)-1].Open,
+				High:     max,
+				Low:      min,
+				Close:    kds[0].Close,
+				SymbolId: s.Code,
+			}
+			if kd.Open == 0 || kd.Close == 0 || kd.High == 0 || kd.Low == 0 {
+				return
+			}
+			if err := global.GVA_DB.Create(&kd).Error; err != nil {
+				global.GVA_LOG.Error("LopKData:", zap.Error(err), zap.Any("kds", kds))
+				// return
+			}
+		}
+	}
 }
