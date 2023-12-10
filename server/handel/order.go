@@ -90,7 +90,7 @@ func HandelOrders(d data.Data) {
 				isComplete = true
 				sPrice = float64(*order.Price + *s.PointSuccess)
 			}
-			if cast.ToFloat64(*order.Price)-cast.ToFloat64(*s.PointFail) > price { // 止损
+			if cast.ToFloat64(*order.Price)-cast.ToFloat64(*s.PointFail) >= price { // 止损
 				order.Status = &status
 				order.CompleteAt = model.LocalTime(time.Now())
 				order.IsWin = 2
@@ -101,7 +101,7 @@ func HandelOrders(d data.Data) {
 			}
 		}
 		if *order.Direction == 2 { // 卖空
-			if float64(*order.Price+*s.PointFail) < price { // 止损
+			if float64(*order.Price+*s.PointFail) <= price { // 止损
 				order.Status = &status
 				order.CompleteAt = model.LocalTime(time.Now())
 				order.IsWin = 2
