@@ -184,19 +184,19 @@ func add() {
 		dataMinute := now.Add(-1 * time.Minute).Format(dateFormat)
 		// 获取开盘
 		if res, err1 := global.GVA_REDIS.Get(ctx, fmt.Sprintf("k_data_1_start_%s_%s", dataMinute, sss.Code)).Result(); err1 == nil {
-			kd.Open = cast.ToInt64(res)
+			kd.Open = cast.ToInt64(utils.Decimal(cast.ToFloat64(res)))
 		}
 		// 获取收盘
 		if res, err1 := global.GVA_REDIS.Get(ctx, fmt.Sprintf("k_data_1_end_%s_%s", dataMinute, sss.Code)).Result(); err1 == nil {
-			kd.Close = cast.ToInt64(res)
+			kd.Close = cast.ToInt64(utils.Decimal(cast.ToFloat64(res)))
 		}
 		// 获取最高
 		if res, err1 := global.GVA_REDIS.Get(ctx, fmt.Sprintf("k_data_1_high_%s_%s", dataMinute, sss.Code)).Result(); err1 == nil {
-			kd.High = cast.ToInt64(res)
+			kd.High = cast.ToInt64(utils.Decimal(cast.ToFloat64(res)))
 		}
 		// 获取最低
 		if res, err1 := global.GVA_REDIS.Get(ctx, fmt.Sprintf("k_data_1_low_%s_%s", dataMinute, sss.Code)).Result(); err1 == nil {
-			kd.Low = cast.ToInt64(res)
+			kd.Low = cast.ToInt64(utils.Decimal(cast.ToFloat64(res)))
 		} else {
 			global.GVA_LOG.Error("DoKData:", zap.Error(err1), zap.Any("res", res))
 		}

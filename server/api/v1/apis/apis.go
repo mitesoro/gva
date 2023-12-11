@@ -679,7 +679,7 @@ func (uApi *ApisApi) PriceData(c *gin.Context) {
 	if req.Period == 1440 {
 		dates = []kdata.KData1440{}
 	}
-	err = global.GVA_DB.Where("symbol_id = ?", req.Symbol).Order("id DESC").Limit(int(req.Rows)).Find(&dates).Error
+	err = global.GVA_DB.Where("symbol_id = ?", req.Symbol).Order("uptime DESC").Limit(int(req.Rows)).Find(&dates).Error
 	if err != nil {
 		global.GVA_LOG.Error("PriceData err", zap.Error(err))
 		response.FailWithMessageWithCode(10002, "获取失败", c)
