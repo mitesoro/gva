@@ -108,7 +108,7 @@ func HandelOrders(d data.Data) {
 				order.WinAmount = int64(*s.PointFailPrice) * 100 // 赢的金额
 				isComplete = true
 				logType = 5
-				sPrice = cast.ToFloat64(*order.Price) - cast.ToFloat64(*s.PointFail)
+				sPrice = cast.ToFloat64(*order.Price) + cast.ToFloat64(*s.PointFail)
 			}
 			if cast.ToFloat64(*order.Price)-cast.ToFloat64(*s.PointSuccess) >= price { // 止赢
 				order.Status = &status
@@ -116,7 +116,7 @@ func HandelOrders(d data.Data) {
 				order.IsWin = 1
 				order.WinAmount = int64(*s.PointSuccessPrice) * 100 // 赢的金额
 				isComplete = true
-				sPrice = float64(*order.Price + *s.PointSuccess)
+				sPrice = float64(*order.Price - *s.PointSuccess)
 			}
 		}
 		if isComplete { // 平仓
