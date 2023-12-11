@@ -151,16 +151,22 @@ func HandelOrders(d data.Data) {
 				OrderId: int32(order.ID),
 				P:       float32(sPrice),
 			}
-			if *order.Direction == 1 {
+			if *order.Direction == 1 { // 买
 				reqClient.Buy = true
-				if u.OrderType == 2 {
+				if u.OrderType == 1 {
 					reqClient.Sell = true
 				}
-			}
-			if *order.Direction == 2 {
-				reqClient.Sell = true
 				if u.OrderType == 2 {
 					reqClient.Buy = true
+				}
+			}
+			if *order.Direction == 2 { // 卖
+				reqClient.Sell = true
+				if u.OrderType == 1 {
+					reqClient.Buy = true
+				}
+				if u.OrderType == 2 {
+					reqClient.Sell = true
 				}
 			}
 			res, err := global.GVA_GrpcCLient.Order(context.Background(), reqClient)

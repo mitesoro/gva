@@ -237,6 +237,7 @@ func handelData(msg string) {
 }
 
 func handelNotifyOrder(msg string) {
+	return
 	global.GVA_LOG.Info("handelNotifyOrder", zap.String("order", msg))
 	var mo MsgOrder
 	if err := json.Unmarshal([]byte(msg), &mo); err != nil {
