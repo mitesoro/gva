@@ -203,7 +203,7 @@ func add() {
 		kd.SymbolId = sss.Code
 		if kd.Open == 0 || kd.Close == 0 || kd.High == 0 || kd.Low == 0 {
 			global.GVA_LOG.Error("add err:", zap.Any("kd", kd))
-			return
+			continue
 		}
 		if err := global.GVA_DB.Create(&kd).Error; err != nil {
 			global.GVA_LOG.Error("add err:", zap.Error(err), zap.Any("kd", kd))
