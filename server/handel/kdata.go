@@ -200,9 +200,22 @@ func add() {
 		} else {
 			global.GVA_LOG.Error("DoKData:", zap.Error(err1), zap.Any("res", res))
 		}
+		if utils.IsOpenTime(now) {
+			// 设置开盘价
+			if err := global.GVA_REDIS.Set(ctx, fmt.Sprintf("k_data_1_start_%s_%s", now.Format(dateFormat), sss.Code), kd.Open, 24*time.Hour).Err(); err != nil {
+				global.GVA_LOG.Error("DoKData:", zap.Error(err), zap.Any("kd", kd))
+			}
+		}
 		kd.SymbolId = sss.Code
 		if kd.Open == 0 || kd.Close == 0 || kd.High == 0 || kd.Low == 0 {
 			global.GVA_LOG.Error("add err:", zap.Any("kd", kd))
+			continue
+		}
+		if utils.IsCloseTime(now) {
+			global.GVA_LOG.Error("update k_data close:", zap.Any("close", kd.Close), zap.Any("time", now.Add(-1*time.Minute).Unix()))
+			if err := global.GVA_DB.Model(kdata.KData{}).Where("uptime = ?", now.Add(-1*time.Minute).Unix()).Update("close", kd.Close).Error; err != nil {
+				global.GVA_LOG.Error("update k_data err:", zap.Error(err), zap.Any("kd", kd))
+			}
 			continue
 		}
 		if err := global.GVA_DB.Create(&kd).Error; err != nil {
