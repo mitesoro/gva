@@ -215,9 +215,16 @@ func add() {
 			global.GVA_LOG.Error("add err:", zap.Any("kd", kd))
 			continue
 		}
-		if utils.IsCloseTime(now) {
+		if utils.IsCloseTime(now) && !utils.IsYe(sss.Code) {
 			global.GVA_LOG.Error("update k_data close:", zap.Any("close", kd.Close), zap.Any("time", now.Add(-1*time.Minute).Unix()))
-			if err := global.GVA_DB.Model(kdata.KData{}).Where("uptime = ?", now.Add(-1*time.Minute).Unix()).Update("close", kd.Close).Error; err != nil {
+			if err := global.GVA_DB.Model(kdata.KData{}).Where("uptime = ? and symbol_id = ?", now.Add(-1*time.Minute).Unix(), sss.Code).Update("close", kd.Close).Error; err != nil {
+				global.GVA_LOG.Error("update k_data err:", zap.Error(err), zap.Any("kd", kd))
+			}
+			continue
+		}
+		if utils.IsCloseTimeYe(now) && utils.IsYe(sss.Code) {
+			global.GVA_LOG.Error("update k_data close:", zap.Any("close", kd.Close), zap.Any("time", now.Add(-1*time.Minute).Unix()))
+			if err := global.GVA_DB.Model(kdata.KData{}).Where("uptime = ? and symbol_id = ?", now.Add(-1*time.Minute).Unix(), sss.Code).Update("close", kd.Close).Error; err != nil {
 				global.GVA_LOG.Error("update k_data err:", zap.Error(err), zap.Any("kd", kd))
 			}
 			continue

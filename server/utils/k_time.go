@@ -243,6 +243,19 @@ func IsCloseTime(now time.Time) bool {
 	if now.Hour() == 23 && now.Minute() == 1 {
 		return true
 	}
+	return false
+}
+
+func IsCloseTimeYe(now time.Time) bool {
+	if now.Hour() == 15 && now.Minute() == 1 {
+		return true
+	}
+	if now.Hour() == 10 && now.Minute() == 16 {
+		return true
+	}
+	if now.Hour() == 11 && now.Minute() == 31 {
+		return true
+	}
 	if now.Hour() == 1 && now.Minute() == 1 {
 		return true
 	}
