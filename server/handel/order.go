@@ -22,6 +22,9 @@ func HandelOrders(d data.Data) {
 	if now.Hour() < 9 {
 		return
 	}
+	if now.Hour() == 20 {
+		return
+	}
 	if now.Hour() == 10 && now.Minute() > 16 && now.Minute() < 30 {
 		return
 	}

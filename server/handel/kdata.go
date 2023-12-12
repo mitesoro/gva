@@ -165,6 +165,9 @@ func add() {
 	if now.Hour() == 8 && now.Minute() < 59 {
 		return
 	}
+	if now.Hour() == 20 && now.Minute() < 59 {
+		return
+	}
 	if now.Hour() == 15 && now.Minute() > 1 {
 		return
 	}
@@ -205,6 +208,7 @@ func add() {
 			if err := global.GVA_REDIS.Set(ctx, fmt.Sprintf("k_data_1_start_%s_%s", now.Format(dateFormat), sss.Code), kd.Open, 24*time.Hour).Err(); err != nil {
 				global.GVA_LOG.Error("DoKData:", zap.Error(err), zap.Any("kd", kd))
 			}
+			continue
 		}
 		kd.SymbolId = sss.Code
 		if kd.Open == 0 || kd.Close == 0 || kd.High == 0 || kd.Low == 0 {
