@@ -54,6 +54,29 @@ func DoKData(d data.Data) {
 		Uptime: now.Unix(),
 	}
 	key := now.Format(dateFormat)
+	// 日k 开盘
+	if err := global.GVA_REDIS.SetNX(ctx, fmt.Sprintf("k_data_day_start_%s_%s", key, d.SymbolId), d.LastPrice, 24*time.Hour).Err(); err != nil {
+		global.GVA_LOG.Error("DoKData:", zap.Error(err), zap.Any("d", d))
+	}
+	// 日k 收盘
+	if err := global.GVA_REDIS.SetEx(ctx, fmt.Sprintf("k_data_day_end_%s_%s", key, d.SymbolId), d.LastPrice, 24*time.Hour).Err(); err != nil {
+		global.GVA_LOG.Error("DoKData:", zap.Error(err), zap.Any("d", d))
+	}
+	// 日k 最高价
+	highDayKey := fmt.Sprintf("k_data_day_high_%s_%s", key, d.SymbolId)
+	if err := global.GVA_REDIS.Eval(ctx, luaHighScript, []string{highDayKey}, d.LastPrice).Err(); err != nil {
+		global.GVA_LOG.Error("DoKData luaHighScript1 Eval err:", zap.Error(err), zap.Any("d", d))
+	}
+	// 日k 最低价
+	lowLowKey := fmt.Sprintf("k_data_day_low_%s_%s", key, d.SymbolId)
+	if err := global.GVA_REDIS.Eval(ctx, luaLowScript, []string{lowLowKey}, d.LastPrice).Err(); err != nil {
+		global.GVA_LOG.Error("DoKData luaLowScript1 Eval err:", zap.Error(err), zap.Any("d", d))
+	}
+	// 日k 交易日
+	if err := global.GVA_REDIS.SetEx(ctx, fmt.Sprintf("k_data_day_trading_day_%s_%s", key, d.SymbolId), d.TradingDay, 24*time.Hour).Err(); err != nil {
+		global.GVA_LOG.Error("DoKData:", zap.Error(err), zap.Any("d", d))
+	}
+
 	// 开始 开盘
 	if err := global.GVA_REDIS.SetNX(ctx, fmt.Sprintf("k_data_1_start_%s_%s", key, d.SymbolId), d.LastPrice, 24*time.Hour).Err(); err != nil {
 		global.GVA_LOG.Error("DoKData:", zap.Error(err), zap.Any("d", d))
@@ -247,6 +270,73 @@ func add() {
 			// return
 		}
 		global.GVA_REDIS.Expire(ctx, rKey, time.Hour*24)
+
+		// 处理日k
+		// 获取开盘
+		// 日k 交易日
+		tradeDay := int64(0)
+		if res, err1 := global.GVA_REDIS.Get(ctx, fmt.Sprintf("k_data_day_trading_day_%s_%s", key, sss.Code)).Result(); err1 != nil {
+			tradeDay = cast.ToInt64(res)
+		}
+		zeroTime := utils.GetTime(tradeDay)
+		var dkd kdata.KData
+		var isAdd bool
+		if err := global.GVA_DB.Where("uptime = ? and symbol_id = ?", zeroTime, sss.Code).First(&dkd).Error; err != nil {
+			global.GVA_LOG.Error("add err:", zap.Error(err), zap.Any("zeroTime", zeroTime), zap.Any("sss.Code", sss.Code))
+		}
+		if dkd.ID == 0 && dkd.Uptime == 0 {
+			dkd = kdata.KData{
+				Uptime: zeroTime,
+			}
+			isAdd = true
+		}
+		if res, err1 := global.GVA_REDIS.Get(ctx, fmt.Sprintf("k_data_day_start_%s_%s", dataMinute, sss.Code)).Result(); err1 == nil {
+			dkd.Open = cast.ToInt64(utils.Decimal(cast.ToFloat64(res)))
+		}
+		// 获取收盘
+		if res, err1 := global.GVA_REDIS.Get(ctx, fmt.Sprintf("k_data_day_end_%s_%s", dataMinute, sss.Code)).Result(); err1 == nil {
+			dkd.Close = cast.ToInt64(utils.Decimal(cast.ToFloat64(res)))
+		}
+		// 获取最高
+		if res, err1 := global.GVA_REDIS.Get(ctx, fmt.Sprintf("k_data_day_high_%s_%s", dataMinute, sss.Code)).Result(); err1 == nil {
+			dkd.High = cast.ToInt64(utils.Decimal(cast.ToFloat64(res)))
+		}
+		// 获取最低
+		if res, err1 := global.GVA_REDIS.Get(ctx, fmt.Sprintf("k_data_day_low_%s_%s", dataMinute, sss.Code)).Result(); err1 == nil {
+			dkd.Low = cast.ToInt64(utils.Decimal(cast.ToFloat64(res)))
+		}
+		dkd.SymbolId = sss.Code
+		if dkd.Open == 0 || dkd.Close == 0 || dkd.High == 0 || dkd.Low == 0 {
+			global.GVA_LOG.Error("add err:", zap.Any("kd", dkd))
+			continue
+		}
+		if isAdd { // 添加
+			if err := global.GVA_DB.Create(&dkd).Error; err != nil {
+				global.GVA_LOG.Error("add err:", zap.Error(err), zap.Any("kd", kd))
+				// return
+			}
+		} else { // 更新
+			if err := global.GVA_DB.Save(&dkd).Error; err != nil {
+				global.GVA_LOG.Error("add err:", zap.Error(err), zap.Any("kd", kd))
+				// return
+			}
+		}
+
+		// 存储每分钟数据
+		value1 := map[string]interface{}{
+			"open":        dkd.Open,
+			"high":        dkd.High,
+			"low":         dkd.Low,
+			"close":       dkd.Close,
+			"trading_day": tradeDay,
+		}
+
+		rDayKey := fmt.Sprintf("k_data_day_%s_%s", key, sss.Code)
+		if err := global.GVA_REDIS.HMSet(ctx, rDayKey, value1).Err(); err != nil {
+			global.GVA_LOG.Error("add err:", zap.Error(err), zap.Any("kd", kd))
+			// return
+		}
+		global.GVA_REDIS.Expire(ctx, rDayKey, time.Hour*24)
 	}
 
 }

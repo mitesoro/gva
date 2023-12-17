@@ -68,6 +68,7 @@
             </template>
         </el-table-column>
           <el-table-column align="left" label="合约" prop="symbol" width="120" />
+          <el-table-column align="left" label="是否推荐" prop="is_recommend" width="60" />
         <el-table-column align="left" label="操作">
             <template #default="scope">
             <el-button type="primary" link class="table-button" @click="getDetails(scope.row)">
@@ -114,6 +115,9 @@
             <el-form-item label="合约:"  prop="symbol" >
               <el-input v-model="formData.symbol" :clearable="true"  placeholder="请输入合约" />
             </el-form-item>
+            <el-form-item label="是否推荐:"  prop="is_recommend" >
+              <el-switch v-model="formData.is_recommend" active-color="#13ce66" inactive-color="#ff4949" active-text="是" inactive-text="否" clearable ></el-switch>
+            </el-form-item>
           </el-form>
       </el-scrollbar>
       <template #footer>
@@ -144,6 +148,9 @@
                 </el-descriptions-item>
           <el-descriptions-item label="合约">
             {{ formData.symbol }}
+          </el-descriptions-item>
+          <el-descriptions-item label="是否推荐">
+            {{ formatBoolean(formData.is_recommend) }}
           </el-descriptions-item>
         </el-descriptions>
       </el-scrollbar>
@@ -179,7 +186,8 @@ const formData = ref({
         content: '',
         author: '',
         article_category: undefined,
-  symbol: '',
+        symbol: '',
+        is_recommend: 0,
         })
 
 

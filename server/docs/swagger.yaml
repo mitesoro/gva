@@ -209,6 +209,9 @@ definitions:
       id:
         description: 主键ID
         type: integer
+      is_recommend:
+        description: 是否推荐 1推荐0不推荐
+        type: integer
       symbol:
         description: 合约
         type: string
@@ -2172,6 +2175,10 @@ paths:
         in: query
         name: id
         type: integer
+      - description: 是否推荐 1推荐0不推荐
+        in: query
+        name: is_recommend
+        type: integer
       - description: 合约
         in: query
         name: symbol
@@ -2227,6 +2234,10 @@ paths:
       - description: 主键ID
         in: query
         name: id
+        type: integer
+      - description: 是否推荐 1推荐0不推荐
+        in: query
+        name: is_recommend
         type: integer
       - description: 关键字
         in: query
@@ -2714,6 +2725,10 @@ paths:
       - description: 分类id
         in: query
         name: article_category_id
+        type: integer
+      - description: 是否推荐 1推荐
+        in: query
+        name: is_recommend
         type: integer
       - description: 分页
         in: query

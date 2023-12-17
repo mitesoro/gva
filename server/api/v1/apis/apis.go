@@ -118,6 +118,9 @@ func (uApi *ApisApi) GetArticleList(c *gin.Context) {
 	if req.Symbol != "" {
 		db = db.Where("symbol = ? ", req.Symbol)
 	}
+	if req.IsRecommend != 0 {
+		db = db.Where("is_recommend = ? ", req.IsRecommend)
+	}
 
 	if db.Offset(offset).Limit(limit).Order("id desc").Find(&a).Error != nil {
 		response.FailWithMessageWithCode(10001, "获取失败", c)
@@ -553,9 +556,22 @@ func (uApi *ApisApi) OrdersCreate(c *gin.Context) {
 		}
 		if direction == 2 {
 			req.Direction = 1
-			thirdDirection = 2
+			thirdDirection = 1
 		}
 		thirdPrice = int(req.BackPrice) / 100
+	}
+	key := fmt.Sprintf("s:info:%s", req.Symbol)
+	res, err := global.GVA_REDIS.Get(c.Request.Context(), key).Result()
+	if err != nil {
+		global.GVA_LOG.Error("SymbolData hgetall err ", zap.Error(err), zap.String("key", key))
+		response.FailWithMessageWithCode(10002, "获取失败", c)
+		return
+	}
+	var sd apis.SymbolData
+	if err = json.Unmarshal([]byte(res), &sd); err != nil {
+		global.GVA_LOG.Error("SymbolData Unmarshal err ", zap.Error(err), zap.String("res", res))
+		response.FailWithMessageWithCode(10002, "获取失败", c)
+		return
 	}
 	order := &orders.Orders{
 		Bond:           &bond,
@@ -574,6 +590,7 @@ func (uApi *ApisApi) OrdersCreate(c *gin.Context) {
 		ThirdPrice:     int(req.BackPrice / 100),
 		SuccessAt:      model.LocalTime(time.Now()),
 		SuccessPrice:   int64(price),
+		ThirdDate:      sd.TradingDay,
 	}
 
 	err = orderService.CreateOrders(order)

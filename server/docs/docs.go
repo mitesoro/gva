@@ -184,6 +184,12 @@ const docTemplate = `{
                         "in": "query"
                     },
                     {
+                        "type": "integer",
+                        "description": "是否推荐 1推荐0不推荐",
+                        "name": "is_recommend",
+                        "in": "query"
+                    },
+                    {
                         "type": "string",
                         "description": "合约",
                         "name": "symbol",
@@ -269,6 +275,12 @@ const docTemplate = `{
                         "type": "integer",
                         "description": "主键ID",
                         "name": "id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "是否推荐 1推荐0不推荐",
+                        "name": "is_recommend",
                         "in": "query"
                     },
                     {
@@ -1057,6 +1069,12 @@ const docTemplate = `{
                         "type": "integer",
                         "description": "分类id",
                         "name": "article_category_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "是否推荐 1推荐",
+                        "name": "is_recommend",
                         "in": "query"
                     },
                     {
@@ -9142,6 +9160,10 @@ const docTemplate = `{
                 },
                 "id": {
                     "description": "主键ID",
+                    "type": "integer"
+                },
+                "is_recommend": {
+                    "description": "是否推荐 1推荐0不推荐",
                     "type": "integer"
                 },
                 "symbol": {

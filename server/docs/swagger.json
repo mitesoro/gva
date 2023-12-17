@@ -176,6 +176,12 @@
                         "in": "query"
                     },
                     {
+                        "type": "integer",
+                        "description": "是否推荐 1推荐0不推荐",
+                        "name": "is_recommend",
+                        "in": "query"
+                    },
+                    {
                         "type": "string",
                         "description": "合约",
                         "name": "symbol",
@@ -261,6 +267,12 @@
                         "type": "integer",
                         "description": "主键ID",
                         "name": "id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "是否推荐 1推荐0不推荐",
+                        "name": "is_recommend",
                         "in": "query"
                     },
                     {
@@ -1049,6 +1061,12 @@
                         "type": "integer",
                         "description": "分类id",
                         "name": "article_category_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "是否推荐 1推荐",
+                        "name": "is_recommend",
                         "in": "query"
                     },
                     {
@@ -9134,6 +9152,10 @@
                 },
                 "id": {
                     "description": "主键ID",
+                    "type": "integer"
+                },
+                "is_recommend": {
+                    "description": "是否推荐 1推荐0不推荐",
                     "type": "integer"
                 },
                 "symbol": {

@@ -67,6 +67,7 @@ type ArticleListReq struct {
 	ArticleCategoryID int64  `json:"article_category_id"  form:"article_category_id" ` // 分类id
 	Page              int64  `json:"page"  form:"page" binding:"required" `            // 分页
 	Symbol            string `json:"symbol" form:"symbol"`                             // 合约
+	IsRecommend       int64  `json:"is_recommend" form:"is_recommend"`                 // 是否推荐 1推荐
 }
 
 type KDataResp struct {

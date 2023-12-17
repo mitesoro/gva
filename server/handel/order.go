@@ -42,7 +42,7 @@ func HandelOrders(d data.Data) {
 		return
 	}
 	var list []orders.Orders
-	if err := global.GVA_DB.Model(orders.Orders{}).Where("status = 1").Order("id desc").Find(&list).Error; err != nil {
+	if err := global.GVA_DB.Model(orders.Orders{}).Where("status = 1").Order("id asc").Find(&list).Error; err != nil {
 		global.GVA_LOG.Error("handelOrders err", zap.Error(err))
 		return
 	}
@@ -139,6 +139,11 @@ func HandelOrders(d data.Data) {
 			if u.FreezeAmount < 0 {
 				u.FreezeAmount = 0
 			}
+			if order.WinAmount > 0 {
+				u.Success++
+			} else {
+				u.Fail++
+			}
 			if err = global.GVA_DB.Save(&u).Error; err != nil {
 				global.GVA_LOG.Error("save user err", zap.Error(err), zap.Any("order", order))
 				continue
@@ -153,6 +158,11 @@ func HandelOrders(d data.Data) {
 				Close:   true,
 				OrderId: int32(order.ID),
 				P:       float32(sPrice),
+			}
+			day := cast.ToInt64(time.Now().Format("20060102"))
+			if day == order.ThirdDate { // 平今
+				reqClient.Close = false
+				reqClient.Closetoday = true
 			}
 			if *order.Direction == 1 { // 买
 				reqClient.Buy = true

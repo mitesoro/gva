@@ -14,6 +14,7 @@ type Article struct {
 	Author           string `json:"author" form:"author" gorm:"column:author;comment:作者;"`                                 //作者
 	Article_category *int   `json:"article_category" form:"article_category" gorm:"column:article_category;comment:文章分类;"` //文章分类
 	Symbol           string `json:"symbol" form:"symbol" gorm:"column:symbol;comment:合约;size:255;"`                        // 合约
+	IsRecommend      bool   `json:"is_recommend" form:"is_recommend" gorm:"column:is_recommend;comment:是否推荐;"`             //  是否推荐 1推荐0不推荐
 }
 
 // TableName 文章 Article自定义表名 article
