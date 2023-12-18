@@ -273,6 +273,10 @@ func IsOpenTime(now time.Time) bool {
 }
 
 func GetTime(inputDate int64) int64 {
+	if inputDate <= 0 {
+		fmt.Println("无效的日期")
+		return 0
+	}
 
 	// 指定时区
 	timezone := "Asia/Shanghai"
@@ -283,7 +287,7 @@ func GetTime(inputDate int64) int64 {
 	}
 
 	// 将整数转换为时间对象，并指定时区
-	dateTime, err := time.ParseInLocation("20060102", fmt.Sprint(inputDate), location)
+	dateTime, err := time.ParseInLocation("20060102", fmt.Sprintf("%08d", inputDate), location)
 	if err != nil {
 		fmt.Println("日期解析错误:", err)
 		return 0
