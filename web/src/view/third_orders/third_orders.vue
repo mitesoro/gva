@@ -94,7 +94,7 @@
         <el-table-column align="left" label="类型"  width="120" >
           <template #default="scope">
             <div>
-              <el-tag effect="dark" :type="formatTagType(scope.row.third_direction)">{{ formatDirection(scope.row.direction) }}</el-tag>
+              <el-tag effect="dark" :type="formatTagType(scope.row.third_direction)">{{ formatDirection(scope.row.third_direction) }}</el-tag>
             </div>
           </template>
         </el-table-column>

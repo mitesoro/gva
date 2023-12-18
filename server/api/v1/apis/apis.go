@@ -839,19 +839,19 @@ func (uApi *ApisApi) PriceData(c *gin.Context) {
 				Low:    float64(d.Low),
 			})
 		}
-	case []data.Data1440:
+	case []kdata.KData1440:
 		for k, d := range v {
 			if k == 0 {
-				price = d.PreClosePrice
+				price = float64(d.Open)
 			}
 			yData = append(yData, apis.YdData{
-				Uptime: d.InsertAt,
-				Cjl:    d.OpenInterest, // 持仓量
-				Close:  d.PreClosePrice,
-				Vol:    float64(d.Volume),
-				Open:   d.OpenInterest,
-				High:   d.AveragePrice,
-				Low:    d.LowerLimitPrice,
+				Uptime: d.Uptime,
+				Cjl:    float64(d.Cjl),
+				Close:  float64(d.Close),
+				Vol:    float64(d.Vol),
+				Open:   float64(d.Open),
+				High:   float64(d.High),
+				Low:    float64(d.Low),
 			})
 		}
 	default:

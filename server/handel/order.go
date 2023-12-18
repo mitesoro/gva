@@ -159,7 +159,10 @@ func HandelOrders(d data.Data) {
 				OrderId: int32(order.ID),
 				P:       float32(sPrice),
 			}
-			day := cast.ToInt64(time.Now().Format("20060102"))
+			day := int64(0)
+			if res, err1 := global.GVA_REDIS.Get(context.Background(), fmt.Sprintf("k_data_day_trading_day_%s", order.SymbolID)).Result(); err1 == nil {
+				day = cast.ToInt64(res)
+			}
 			if day == order.ThirdDate { // 平今
 				reqClient.Close = false
 				reqClient.Closetoday = true
