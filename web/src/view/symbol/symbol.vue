@@ -161,7 +161,7 @@
                         effect="light">
               </el-alert>
             </el-form-item>
-            <el-form-item label="特殊时间:"  prop="days" >
+            <el-form-item label="法定假日:"  prop="days" >
               <el-input type="textarea" v-model="formData.days" rows="3"></el-input>
               <el-alert title="格式为【2023-12-09 09:30:00~2023-12-10 18:30:00】，多个换行" type=info :closable="true"  :show-icon="false"
                         effect="light">
@@ -216,7 +216,7 @@
           <el-descriptions-item label="时间段">
             <el-input type="textarea" v-model="formData.times" disabled rows="3"></el-input>
           </el-descriptions-item>
-          <el-descriptions-item label="特殊时间">
+          <el-descriptions-item label="法定假日">
             <el-input type="textarea" v-model="formData.days" disabled rows="3"></el-input>
           </el-descriptions-item>
         </el-descriptions>

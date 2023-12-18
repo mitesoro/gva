@@ -80,9 +80,6 @@
         @selection-change="handleSelectionChange"
         >
         <el-table-column type="selection" width="55" />
-          <el-table-column align="left" label="ID" width="20">
-            <template #default="scope">{{ formatDate(scope.row.id) }}</template>
-          </el-table-column>
         <el-table-column align="left" label="开仓日期" width="120">
             <template #default="scope">{{ formatDate(scope.row.CreatedAt) }}</template>
         </el-table-column>
@@ -99,33 +96,31 @@
           </el-table-column>
 <!--        <el-table-column align="left" label="账户" prop="account_id" width="120" />-->
 <!--        <el-table-column align="left" label="订单号" prop="order_no" width="120" />-->
-        <el-table-column align="left" label="类型"  width="60" >
+        <el-table-column align="left" label="类型"  width="80" >
           <template #default="scope">
             <div>
               <el-tag effect="dark" :type="formatTagType(scope.row.direction)">{{ formatDirection(scope.row.direction) }}</el-tag>
             </div>
           </template>
         </el-table-column>
-          <el-table-column align="left" label="合约" width="60">
-            <template #default="scope">{{ formatDate(scope.row.symbol_id) }}</template>
-          </el-table-column>
-          <el-table-column align="left" label="订单状态" prop="status" width="60" >
+          <el-table-column align="left" label="合约" prop="symbol_id" width="80" />
+          <el-table-column align="left" label="订单状态" prop="status" width="80" >
             <template #default="scope">
               <div>
                 <el-tag effect="dark" >{{ formatOrderStatus(scope.row.status) }}</el-tag>
               </div>
             </template>
           </el-table-column>
-        <el-table-column align="left" label="手数" prop="volume" width="20" />
-        <el-table-column align="left" label="开仓价格" prop="price" :formatter="row => formatCurrency1(row.price)" width="60" />
+        <el-table-column align="left" label="手数" prop="volume" width="40" />
+        <el-table-column align="left" label="开仓价格" prop="price" :formatter="row => formatCurrency1(row.price)" width="80" />
 
 
-        <el-table-column align="left" label="平仓价" prop="close_price" :formatter="row => formatCurrency1(row.close_price)" width="60" />
+        <el-table-column align="left" label="平仓价" prop="close_price" :formatter="row => formatCurrency1(row.close_price)" width="80" />
         <el-table-column align="left" label="平仓时间" prop="complete_at" width="120" />
-        <el-table-column align="left" label="盈亏" prop="is_win" :formatter="row => formatDirectionWin(row.is_win)" width="60" />
-        <el-table-column align="left" label="盈亏金额" prop="win_amount" :formatter="row => formatCurrency(row.win_amount)" width="60" />
-        <el-table-column align="left" label="保证金" prop="bond"  :formatter="row => formatCurrency(row.bond)" width="60" />
-        <el-table-column align="left" label="手续费" prop="fee" :formatter="row => formatCurrency(row.fee)" width="60" />
+        <el-table-column align="left" label="盈亏" prop="is_win" :formatter="row => formatDirectionWin(row.is_win)" width="80" />
+        <el-table-column align="left" label="盈亏金额" prop="win_amount" :formatter="row => formatCurrency(row.win_amount)" width="80" />
+        <el-table-column align="left" label="保证金" prop="bond"  :formatter="row => formatCurrency(row.bond)" width="100" />
+        <el-table-column align="left" label="手续费" prop="fee" :formatter="row => formatCurrency(row.fee)" width="80" />
 <!--        <el-table-column align="left" label="操作">-->
 <!--            <template #default="scope">-->
 <!--            <el-button type="primary" link class="table-button" @click="getDetails(scope.row)">-->

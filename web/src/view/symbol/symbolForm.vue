@@ -32,7 +32,7 @@
         <el-form-item label="时间段:"  prop="times" >
           <el-input type="textarea" v-model="formData.times" rows="3"></el-input>
         </el-form-item>
-        <el-form-item label="特殊时间:"  prop="days" >
+        <el-form-item label="法定假日:"  prop="days" >
           <el-input type="textarea" v-model="formData.days" rows="3"></el-input>
         </el-form-item>
         <el-form-item>
