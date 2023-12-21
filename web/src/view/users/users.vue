@@ -89,13 +89,15 @@
           </el-table-column>
         <el-table-column align="left" label="操作">
             <template #default="scope">
-            <el-button type="primary" link class="table-button" @click="getDetails(scope.row)">
-                <el-icon style="margin-right: 5px"><InfoFilled /></el-icon>
-                查看详情
-            </el-button>
-            <el-button type="primary" link icon="edit" class="table-button" @click="updateUsersFunc(scope.row)">变更</el-button>
-            <el-button type="primary" link icon="list" @click="order(scope.row)">订单列表</el-button>
-            <el-button type="primary" link icon="delete" @click="deleteRow(scope.row)">删除</el-button>
+              <div v-if="userStore.userInfo.authority.authorityName === '超级管理员'">
+                <el-button type="primary" link class="table-button" @click="getDetails(scope.row)">
+                  <el-icon style="margin-right: 5px"><InfoFilled /></el-icon>
+                  查看详情
+                </el-button>
+                <el-button type="primary" link icon="edit" class="table-button" @click="updateUsersFunc(scope.row)">变更</el-button>
+                <el-button type="primary" link icon="delete" @click="deleteRow(scope.row)">删除</el-button>
+              </div>
+              <el-button type="primary" link icon="list" @click="order(scope.row)">订单列表</el-button>
             </template>
         </el-table-column>
         </el-table>
