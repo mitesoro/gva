@@ -373,6 +373,10 @@ onMounted(() => {
     searchInfo.value.user_id = parseInt(userIdFromRoute, 10);
     // 在这里可以使用 searchInfo.value.user_id 进行进一步的操作
   }
+  if (userStore.userInfo.authority.authorityName === "合伙人") {
+    searchInfo.value.admin_id = userStore.userInfo.ID;
+    success.value = 1;
+  }
   getTableData();
 });
 

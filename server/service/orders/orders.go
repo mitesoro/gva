@@ -66,6 +66,12 @@ func (osService *OrdersService) GetOrdersInfoList(info ordersReq.OrdersSearch) (
 	if info.StartCreatedAt != nil && info.EndCreatedAt != nil {
 		db = db.Where("created_at BETWEEN ? AND ?", info.StartCreatedAt, info.EndCreatedAt)
 	}
+	if info.AdminID > 0 {
+		var ids []int64
+		if global.GVA_DB.Where("admin_id =?", info.AdminID).Pluck("id", &ids).Error == nil {
+			db = db.Where("user_id in (?)", ids)
+		}
+	}
 	if info.Account_id != nil {
 		db = db.Where("account_id = ?", info.Account_id)
 	}
