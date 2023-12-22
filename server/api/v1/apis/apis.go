@@ -560,6 +560,10 @@ func (uApi *ApisApi) OrdersCreate(c *gin.Context) {
 		}
 		thirdPrice = int(req.BackPrice) / 100
 	}
+	thirdVolume := u.Volume
+	if thirdVolume == 0 {
+		thirdVolume = 1
+	}
 	key := fmt.Sprintf("s:info:%s", req.Symbol)
 	res, err := global.GVA_REDIS.Get(c.Request.Context(), key).Result()
 	if err != nil {
@@ -591,6 +595,7 @@ func (uApi *ApisApi) OrdersCreate(c *gin.Context) {
 		SuccessAt:      model.LocalTime(time.Now()),
 		SuccessPrice:   int64(price),
 		ThirdDate:      sd.TradingDay,
+		ThirdVolume:    thirdVolume,
 	}
 
 	err = orderService.CreateOrders(order)
@@ -602,7 +607,7 @@ func (uApi *ApisApi) OrdersCreate(c *gin.Context) {
 	// grpc 调用下单接口
 	reqClient := &pb.OrderRequest{
 		C:       req.Symbol,
-		V:       1,
+		V:       int32(thirdVolume),
 		Buy:     true,
 		Open:    true,
 		OrderId: int32(order.ID),
@@ -611,7 +616,7 @@ func (uApi *ApisApi) OrdersCreate(c *gin.Context) {
 	if req.Direction == 2 {
 		reqClient = &pb.OrderRequest{
 			C:       req.Symbol,
-			V:       1,
+			V:       int32(thirdVolume),
 			Sell:    true,
 			Open:    true,
 			OrderId: int32(order.ID),

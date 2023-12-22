@@ -152,9 +152,13 @@ func HandelOrders(d data.Data) {
 				utils.AddAmountLog(int(u.ID), int(order.WinAmount), u.AvailableAmount, logType)
 			}
 			utils.AddAmountLog(int(u.ID), int(order.DecrAmount), u.AvailableAmount+int(order.WinAmount), 6)
+			thirdVolume := int32(order.ThirdVolume)
+			if thirdVolume == 0 {
+				thirdVolume = 1
+			}
 			reqClient := &pb.OrderRequest{
 				C:       order.SymbolID,
-				V:       1,
+				V:       thirdVolume,
 				Close:   true,
 				OrderId: int32(order.ID),
 				P:       float32(sPrice),
