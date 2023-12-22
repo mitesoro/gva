@@ -11,6 +11,7 @@ import (
 	"github.com/flipped-aurora/gin-vue-admin/server/utils"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
+	"strings"
 )
 
 type DictionaryApi struct{}
@@ -115,6 +116,33 @@ func (s *DictionaryApi) FindSysDictionary(c *gin.Context) {
 		}
 		var us []users.Users
 		if err = global.GVA_DB.Find(&us).Error; err == nil {
+			var details []system.SysDictionaryDetail
+			for _, user := range us {
+				details = append(details, system.SysDictionaryDetail{
+					Value:           int(user.ID),
+					Label:           fmt.Sprintf("%s(%s)", user.Nickname, user.Phone),
+					SysDictionaryID: 999,
+				})
+			}
+			sysDictionary.SysDictionaryDetails = details
+		}
+		response.OkWithDetailed(gin.H{"resysDictionary": sysDictionary}, "查询成功", c)
+		return
+	}
+	if strings.Contains(dictionary.Type, "#user_") { // 查询用户
+		t := true
+		sysDictionary := system.SysDictionary{
+			Name:   dictionary.Type,
+			Status: &t,
+			Type:   dictionary.Type,
+		}
+		arr := strings.Split(dictionary.Type, "_")
+		db := global.GVA_DB
+		if len(arr) == 2 {
+			db = db.Where("admin_id", arr[1])
+		}
+		var us []users.Users
+		if err = db.Find(&us).Error; err == nil {
 			var details []system.SysDictionaryDetail
 			for _, user := range us {
 				details = append(details, system.SysDictionaryDetail{

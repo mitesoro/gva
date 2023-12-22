@@ -317,6 +317,10 @@ const sortChange = ({ prop, order }) => {
 // 重置
 const onReset = () => {
   searchInfo.value = {}
+  if (userStore.userInfo.authority.authorityName === "合伙人") {
+    searchInfo.value.admin_id = userStore.userInfo.ID;
+    success.value = 1;
+  }
   getTableData()
 }
 

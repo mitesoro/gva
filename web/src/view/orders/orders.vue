@@ -327,6 +327,10 @@ const fail = ref(0)
 // 重置
 const onReset = () => {
   searchInfo.value = {}
+  if (userStore.userInfo.authority.authorityName === "合伙人") {
+    searchInfo.value.admin_id = userStore.userInfo.ID;
+    success.value = 1;
+  }
   getTableData()
 }
 
@@ -390,7 +394,14 @@ onMounted(() => {
 // 获取需要的字典 可能为空 按需保留
 const setOptions = async () =>{
     intOptions.value = await getDictFunc('user')
-  userOptions.value = await getDictFunc('user')
+  if (userStore.userInfo.authority.authorityName === "合伙人") {
+    searchInfo.value.admin_id = userStore.userInfo.ID;
+    success.value = 1;
+    userOptions.value = await getDictFunc('#user_'+userStore.userInfo.ID)
+  } else {
+    userOptions.value = await getDictFunc('user')
+  }
+
   orderOptions.value = await getDictFunc('order_status')
 }
 
