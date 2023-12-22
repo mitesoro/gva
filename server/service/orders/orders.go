@@ -68,7 +68,7 @@ func (osService *OrdersService) GetOrdersInfoList(info ordersReq.OrdersSearch) (
 	}
 	if info.AdminID > 0 {
 		var ids []int64
-		if global.GVA_DB.Where("admin_id =?", info.AdminID).Pluck("id", &ids).Error == nil {
+		if global.GVA_DB.Model(&users.Users{}).Where("admin_id = ?", info.AdminID).Pluck("id", &ids).Error == nil {
 			db = db.Where("user_id in (?)", ids)
 		}
 	}
