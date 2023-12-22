@@ -228,7 +228,9 @@ import { getDictFunc, formatDate, formatBoolean, filterDict, ReturnArrImg, onDow
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { ref, reactive, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
+import {useUserStore} from "@/pinia/modules/user";
 
+const userStore = useUserStore()
 
 const userOptions = ref([])
 const orderOptions = ref([])
