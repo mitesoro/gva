@@ -171,8 +171,11 @@ func HandelOrders(d data.Data) {
 				reqClient.Close = false
 				reqClient.Closetoday = true
 			}
+			if u.OrderType == 0 {
+				u.OrderType = 2 // 如果没设置，默认反手
+			}
 			if *order.Direction == 1 { // 买
-				reqClient.Buy = true
+				// reqClient.Buy = true
 				if u.OrderType == 1 {
 					reqClient.Sell = true
 				}
@@ -181,7 +184,7 @@ func HandelOrders(d data.Data) {
 				}
 			}
 			if *order.Direction == 2 { // 卖
-				reqClient.Sell = true
+				// reqClient.Sell = true
 				if u.OrderType == 1 {
 					reqClient.Buy = true
 				}
